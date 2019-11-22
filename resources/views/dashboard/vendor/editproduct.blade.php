@@ -32,14 +32,22 @@
                         <div class="row">
                                 <div class="col-12 col-sm-6">
                                     <style>
-                                        .product_image{
-                                            width:400px;
+                                      .product_image{
+                                            width:inherit;
                                             height:200px;
-                                            max-width: 400px;
+                                            min-width:400px !important;
+                                            max-width: 100%;
                                             max-height: 400px;
                                         }
-                                        </style>
-                                    <img src="{{$body['display_image'] ?? ''}}" class="product_image">
+                                    </style>
+                                    <img src="{{$body['display_image'] ?? ''}}" class="product_image img-preview">
+                                    <span class="img-preview-label" style="color:green;">choose file to change display image</span>
+                                    <div class="input-group mb-3">
+                                            <div class="input-group-prepend">
+                                            <span class="input-group-text"><i class="fas fa-picture"></i></span>
+                                            </div>
+                                            <input type="file" onchange="readURL(this);" name="image" class="form-control">
+                                    </div>
                                     <h5>Product price and quantity</h5>
                                     <div class="input-group mb-3">
                                         <div class="input-group-prepend">
@@ -138,12 +146,6 @@
                                                     <option value="1">Used</option>
                                                 </select>
                                             </div>
-                                    </div>
-                                    <div class="input-group mb-3">
-                                            <div class="input-group-prepend">
-                                            <span class="input-group-text"><i class="fas fa-picture"></i></span>
-                                            </div>
-                                            <input type="file" name="image" class="form-control">
                                     </div>
                                     <div class="input-group mb-3">
                                         <textarea class="form-control" name="description" placeholder="Product description " minlength="120">{{$body['description'] ?? ''}}</textarea>
@@ -263,5 +265,45 @@ function changeSubCategory(sub){
         }
     });
 }
+// functions
+function readURL(input) {
+    $('.img-preview').attr('style',"display:none;");
+    $('.img-preview-label').attr('style',"display:none;");
+    if (input.files && input.files[0]) {
+      var reader = new FileReader();
+      const name=input.files[0].name;
+      const pixext=['png','jpeg','jpg','gif'];
+      const vidext=['mkv','mp4','flv','webm','ogg'];
+      const extension= name.substring(name.lastIndexOf('.')+1);
+      // console.log(input.files[0],"name="+name,"extension="+extension);
+      reader.onload = function (e) {
+        $('.img-preview')
+            .attr('src', e.target.result)
+            .width(150)
+            .attr('style',"display:initial;")
+            .height(200);
+      };
+
+      if(pixext.find(function(e){return e===extension.toLowerCase()})){
+        reader.readAsDataURL(input.files[0]);
+      }
+
+      else{
+
+        $('.img-preview-label')
+          .attr('style',"display:initial;color:red;")
+          .text("file format not supported");
+        $('.img-preview')
+          .attr('style',"display:none;")
+      }
+
+    }else{
+        $('.img-preview-label')
+            .attr('style',"display:initial;")
+            .text("Choose a file");
+        $('.img-preview')
+            .attr('style',"display:none;")
+    }
+  }
 </script>
 @endsection
