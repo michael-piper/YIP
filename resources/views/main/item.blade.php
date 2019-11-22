@@ -86,6 +86,8 @@
               </div>
               <!--BUTTON-->
               <button class="btn"><img src="">Add to Cart</button>
+              <!--BUTTON-->
+              <button class="btn"><img src="">Check Out</button>
              </form>
             </div>
             <!--LINKS-->
