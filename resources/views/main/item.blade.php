@@ -76,18 +76,25 @@
            <div class="block-select clearfix">
             <form>
 
-              <div class="select-size">
-                <span>Quantity</span>
-                <select class="size">
-                @for($i=1;$i < $product->available - $product->sold;$i++)
-                    <option>{{$i}}</option>
-                @endfor
-                </select>
-              </div>
-              <!--BUTTON-->
-              <button class="btn"><img src="">Add to Cart</button>
-              <!--BUTTON-->
-              <button class="btn"><img src="">Check Out</button>
+
+              <div class="uk-grid-small uk-width-1-1" uk-grid>
+                    <div class="select-size uk-width-1-1">
+                            <span>Quantity</span>
+                            <select class="size" style="width:100%;">
+                            @for($i=1;$i < $product->available - $product->sold;$i++)
+                                <option>{{$i}}</option>
+                            @endfor
+                            </select>
+                    </div>
+                    <div class="uk-width-1-2">
+                        <!--BUTTON-->
+                        <button class="btn">Add to Cart</button>
+                    </div>
+                    <div class="uk-width-1-2">
+                        <!--BUTTON-->
+                        <button class="btn">Check Out</button>
+                    </div>
+                </div>
              </form>
             </div>
             <!--LINKS-->
