@@ -303,8 +303,8 @@ to get the desired effect
     window.API_URL=location.protocol+'//'+location.host+'/api/';
     $.ajaxSetup({
     headers: {
-        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')||"",
-        'X-API-TOKEN' : $("meta[name='X-API-TOKEN']").attr("content")||''
+        'X-Csrf-Token': $('meta[name="csrf-token"]').attr('content')||"",
+        'X-Api-Token' : $("meta[name='X-API-TOKEN']").attr("content")||''
     }
 });
 </script>
