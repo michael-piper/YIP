@@ -102,6 +102,7 @@ Route::group(['prefix' => 'v1','namespace' => 'APIv1'], function(){
     Route::get("/product/category/{id}",'AddonsController@ProductCategoryById');
     Route::get("/product/subcategory",'AddonsController@ProductSubCategory');
     Route::get("/product/category",'AddonsController@ProductCategory');
+    Route::get("/product/status",'AddonsController@ProductStatus');
     Route::get("/product/{id}",'AddonsController@ProductById')->where('id','[0-9]+');
     Route::get("/product/{name}",'AddonsController@ProductByName')->where('name','[A-Z\_\-\.\sa-z0-9]+');
     Route::get("/product",'AddonsController@Product');

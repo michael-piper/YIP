@@ -65,7 +65,7 @@
                                     </div>
                                     <div class="input-group mb-3">
                                         <div class="input-group-prepend">
-                                        <span class="input-group-text">$</span>
+                                        <span class="input-group-text">{{App\Product::currency()}}</span>
                                         </div>
                                         <input type="text" name="price" class="form-control" placeholder="Product Price" value="{{$body['price'] ?? ''}}">
                                         <div class="input-group-append">
@@ -149,14 +149,14 @@
                                             <span class="input-group-text"><i class="fas fa-clock"></i></span>
                                             </div>
                                             <div class="form-control border-0 p-0 m-0">
-                                                <select name="condition" class="form-control select2" data-placeholder="choose product condition">
+                                                <select name="condition" class="form-control select2 condition load" data-placeholder="choose product condition">
                                                     <option value="2">New</option>
                                                     <option value="1">Used</option>
                                                 </select>
                                             </div>
                                     </div>
                                     <div class="input-group mb-3">
-                                        <textarea class="form-control" name="description" placeholder="Product description " minlength="120">{{$body['description'] ?? ''}}</textarea>
+                                        <textarea class="form-control" name="description" placeholder="Product description " minlength="70">{{$body['description'] ?? ''}}</textarea>
                                     </div>
                                 </div>
                         </div>
@@ -211,6 +211,7 @@ $.getJSON(API_URL+'v1/product/autofill/car_makes?norepeat=make').then(function(d
     if(make!=''){
         $(".make option[value='"+make+"']").attr("selected", true);
         changeCarModel(make);
+        $('.make').val(make);
     }
 });
 $.getJSON(API_URL+'v1/product/category?norepeat=name').then(function(data){
@@ -223,6 +224,20 @@ $.getJSON(API_URL+'v1/product/category?norepeat=name').then(function(data){
     if(category!=''){
         $(".category option[value='"+category+"']").attr("selected", true);
         changeSubCategory(category);
+        $('.category').val(category);
+    }
+});
+$.getJSON(API_URL+'v1/product/status?norepeat=name').then(function(data){
+    // console.log(data);
+    $('.condition').html('');
+    for(var i in data){
+        $('.condition').append('<option value="'+data[i].id+'">'+data[i].name+'</option>')
+    }
+    var condition='{{$body['condition']??''}}';
+    if(condition!=''){
+        $(".condition option[value='"+condition+"']").attr("selected", true);
+        changeSubCategory(condition);
+        $('.condition').val(condition);
     }
 });
 var years=@json($body['year']??[]);
@@ -244,6 +259,7 @@ function changeCarModel(make){
         var model='{{$body['model']??''}}';
         if(model!=''){
             $(".model option[value='"+model+"']").attr("selected", true);
+            $('.model').val(model);
         }
     });
 }
@@ -262,6 +278,7 @@ function changeSubCategory(sub){
         var subcategory='{{$body['subcategory']??''}}';
         if(subcategory!=''){
             $(".subcategory option[value='"+subcategory+"']").attr("selected", true);
+            $('.subcategory').val(subcategory);
         }
     });
 }

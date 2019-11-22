@@ -45,8 +45,8 @@
                                     <div class="input-group mb-3">
                                             <div class="input-group-prepend">
                                             <span class="input-group-text"><i class="fas fa-picture"></i></span>
-                                            </div>
-                                            <input type="file" onchange="readURL(this);" name="image" class="form-control">
+                                    </div>
+                                        <input type="file" onchange="readURL(this);" name="image" class="form-control">
                                     </div>
                                     <h5>Product price and quantity</h5>
                                     <div class="input-group mb-3">
@@ -57,7 +57,7 @@
                                     </div>
                                     <div class="input-group mb-3">
                                         <div class="input-group-prepend">
-                                        <span class="input-group-text">$</span>
+                                        <span class="input-group-text">{{App\Product::currency()}}</span>
                                         </div>
                                         <input type="text" name="price" class="form-control" placeholder="Product Price" value="{{$body['price'] ?? ''}}">
                                         <div class="input-group-append">
@@ -148,7 +148,7 @@
                                             </div>
                                     </div>
                                     <div class="input-group mb-3">
-                                        <textarea class="form-control" name="description" placeholder="Product description " minlength="120">{{$body['description'] ?? ''}}</textarea>
+                                        <textarea class="form-control" name="description" placeholder="Product description " minlength="70">{{$body['description'] ?? ''}}</textarea>
                                     </div>
                                 </div>
                         </div>

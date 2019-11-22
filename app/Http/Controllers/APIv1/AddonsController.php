@@ -8,6 +8,7 @@ use App\ProductCategory;
 use App\ProductSubCategory;
 use App\ProductAutoFill;
 use App\Product;
+use App\ProductStatus;
 use App\User;
 class AddonsController extends Controller
 {
@@ -26,6 +27,12 @@ class AddonsController extends Controller
     }
     function ProductByName($name){
         return response()->json(Product::where(['active'=>1,'name'=>$name])->first());
+    }
+    function ProductStatus(){
+        return response()->json(ProductStatus::where('active',1)->get());
+    }
+    function ProductStatusById($id){
+        return response()->json(ProductStatus::where(['active'=>1,'id'=>$id])->first());
     }
     function ProductCategory(){
         return response()->json(ProductCategory::where('active',1)->get());
