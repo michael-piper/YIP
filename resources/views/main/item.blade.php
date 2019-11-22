@@ -75,8 +75,6 @@
             <!--SELECT BLOCK-->
            <div class="block-select clearfix">
             <form>
-
-
               <div class="uk-grid-small uk-width-1-1" uk-grid>
                     <div class="select-size uk-width-1-1">
                             <span>Quantity</span>

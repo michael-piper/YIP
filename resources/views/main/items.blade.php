@@ -1,5 +1,18 @@
 @php($currency=App\Product::currency())
-@php($products=App\Product::where(['active'=>1])->paginate(16))
+
+@isset($_GET['q'])
+@php($products=App\Product::where(['active'=>1,['name','LIKE','%'.$_GET['q'].'%']]))
+@php($array=explode(' ',$_GET['q']))
+ @foreach($array as $q)
+ @php($where=[])
+ @php($where[]=['active','=',1])
+ @php($where[]=['name','=',$q])
+ @php($products=$products->orWhere($where))
+ @endforeach
+@else
+@php($products=App\Product::where(['active'=>1]))
+@endisset
+@php($products=$products->paginate(16))
 <section class="uk-text-center uk-padding-small">
         <div class="uk-grid-small uk-child-width-1-4@s uk-text-center" uk-grid>
                 @forelse($products as $product)
