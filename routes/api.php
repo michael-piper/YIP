@@ -124,7 +124,7 @@ Route::group(['prefix' => 'v1','namespace' => 'APIv1\Admin','middleware' => ['au
 });
 Route::group(['prefix' => 'v1','namespace' => 'APIv1\Vendor','middleware' => ['auth.api','auth.vendor']], function(){
     Route::apiResource('products', 'ProductController');
-    Route::apiResource('pages', 'PageController');
+    Route::apiResource('orders', 'OrderController');
     Route::apiResource('websites', 'WebsiteController');
     Route::apiResource('components', 'ComponentController');
     Route::apiResource('articles', 'ArticleController');

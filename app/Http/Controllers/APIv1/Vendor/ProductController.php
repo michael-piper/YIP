@@ -7,15 +7,24 @@ use Illuminate\Http\Request;
 use App\User;
 use App\Product;
 use App\ProductAvailable;
+use App\ProductCategory;
+use App\ProductSubCategory;
 class ProductController extends Controller
 {
     //
     public function index()
     {
         $user=User::from_api_token();
+        $products=Product::where(['user_id'=>$user->id])->get();
+        if(count($products)>0){
+            foreach($products as $key=>$product){
+                $products[$key]->category=ProductCategory::where('id',$product->category_id)->first();
+                $products[$key]->sub_category=ProductSubCategory::where('id',$product->sub_category_id)->first();
+            }
+        }
         return response()->json([
             'error' => false,
-            'data'  => Product::where(['user_id'=>$user->id])->get(),
+            'data'  => $products,
         ], 200);
     }
     public function store(Request $request)
@@ -160,9 +169,7 @@ class ProductController extends Controller
                 'message'  => "Product with id # $id not found",
             ], 404);
         }
-
         $product->delete();
-
         return response()->json([
             'error' => false,
             'message'  => "Product successfully deleted id # $id",
