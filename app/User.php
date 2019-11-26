@@ -6,6 +6,8 @@ use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Hash;
+use App\SessionMap;
 class User extends Authenticatable
 {
     use Notifiable;
@@ -49,8 +51,42 @@ class User extends Authenticatable
         return $this->hasOne('App\Order');
     }
     public static function verify_api_token(){
-        $api_token= getallheaders ()['X-Api-Token'] ?? '';
-        if($api_token){
+        $headers=getallheaders ();
+        $session=$headers['Authorization'] ?? null;
+        $session_data=explode(' ',$session);
+        $api_token= $hearders['X-Api-Token'] ?? null;
+        if(isset($session_data[0]) && isset($session_data[1])){
+            $session_data[0]=trim($session_data[0]);
+            if($session_data[0]=="Basic"){
+                $user=base64_decode($session_data[1]);
+                $user=explode(':',$user,2);
+                if(isset($user[0])&& isset($user[1])){
+                    $res = User::where(['phone'=>$user[0],'active'=>1])->orWhere(['email'=>$user[0]])->where(['active'=>1])->first();
+                   if(!is_null($res) && Hash::check($user[1],$res->password)){
+                    Auth::loginUsingId($data->id);
+                    return true;
+                   }else{
+                    return false;
+                   }
+                }
+                return false;
+            }else if($session_data[0]=="Bearer"){
+                $user=base64_decode($session_data[1]);
+                $user=explode(' ',$user,2);
+                if(isset($user[0]) && isset($user[1])){
+                   $res = SessionMap::where(['token'=>$user[0],'key'=>$user[1]])->first();
+                   if(!is_null($res)){
+                    Auth::loginUsingId($res->user_id);
+                    return true;
+                   }else{
+                    return false;
+                   }
+                }
+                return false;
+            }
+            return false;
+        }
+        else if($api_token){
             $data=User::where(['api_token' =>$api_token])->first();
             if($data){
                 Auth::loginUsingId($data->id);
@@ -61,8 +97,40 @@ class User extends Authenticatable
     }
     public static function from_api_token(){
         if(Auth::check()) return Auth::user();
-        $api_token= getallheaders ()['X-Api-Token'] ?? '';
-        if($api_token){
+        $headers=getallheaders ();
+        $session=$headers['Authorization'] ?? null;
+        $session_data=explode(' ',$session);
+        $api_token= $hearders['X-Api-Token'] ?? null;
+        if(isset($session_data[0]) && isset($session_data[1])){
+            $session_data[0]=trim($session_data[0]);
+            if($session_data[0]=="Basic"){
+                $user=base64_decode($session_data[1]);
+                $user=explode(':',$user,2);
+                if(isset($user[0])&& isset($user[1])){
+                   $res = User::where(['phone'=>$user[0],'active'=>1])->orWhere(['email'=>$user[0]])->where(['active'=>1])->first();
+                   if(!is_null($res) && Hash::check($user[1],$res->password)){
+                    return $res;
+                   }else{
+                    return null;
+                   }
+                }
+                return null;
+            }else if($session_data[0]=="Bearer"){
+                $user=base64_decode($session_data[1]);
+                $user=explode(' ',$user,2);
+                if(isset($user[0]) && isset($user[1])){
+                   $res= SessionMap::where(['token'=>$user[0],'key'=>$user[1]])->first();
+                   if(!is_null($res)){
+                    return User::where(['id' =>$res->user_id])->first();
+                   }else{
+                    return null;
+                   }
+                }
+                return null;
+            }
+            return null;
+        }
+        else if($api_token){
             $data=User::where(['api_token' =>$api_token])->first();
             if($data){
                 return $data;

@@ -37,12 +37,37 @@ class ScreenController extends Controller
             return "not autorized";
         }
     }
-    function addToCart($product_id,$quantity) {
-
-        return redirect()->intended('cart?m=item+added+cart+<br>+login+to+save+product+to+account');
+    function addToCart($cart_id,$quantity) {
+        $user=null;
+        if(Auth::check()){
+            $user=Auth::user();
+            $cart = Cart::where(['user_id'=>$user->id,'id'=>$cart_id])->first();  
+        }else{
+            $cart = Cart::where(['user_id'=>0,'id'=>$cart_id])->first();
+        }
+        if(is_null($cart)){
+            return redirect()->intended('cart?m='.urlencode('item not added to cart'));
+        }else{
+            $cart->quantity= $cart->quantity + $quantity;
+            $cart->save();
+        }
+        return redirect()->intended('cart?m='.urlencode('item added'));
     }
-    function removeFromCart($product_id,$quantity) {
-        return view('screen.cart');
+    function removeFromCart($cart_id,$quantity) {
+        $user=null;
+        if(Auth::check()){
+            $user=Auth::user();
+            $cart = Cart::where(['user_id'=>$user->id,'id'=>$cart_id])->first();  
+        }else{
+            $cart = Cart::where(['user_id'=>0,'id'=>$cart_id])->first();
+        }
+        if(is_null($cart)){
+            return redirect()->intended('cart?m='.urlencode('item not added to cart'));
+        }else{
+            $cart->quantity= $cart->quantity - $quantity;
+            $cart->save();
+        }
+        return redirect()->intended('cart?m='.urlencode('item removed'));
     }
     function addCartItem($product_id){
         $product=Product::where(['id'=>$product_id,'active'=>1])->first();
@@ -53,17 +78,31 @@ class ScreenController extends Controller
                 $cart->user_id=$user->id;
                 $cart->product_id=$product_id;
                 $cart->quantity=1;
-                $cart->save();
+                $check_cart=Cart::where(['user_id'=>$user->id,'product_id'=>$product_id])->first();
+                if(is_null($check_cart)){
+                    $cart->save();
+                }else{
+                    $check_cart->quantity=$check_cart->quantity+1;
+                    $check_cart->save();
+                }
                 return redirect()->intended('cart?m=item+added+to+cart');
             }else{
-                $cart = (object)[];
+                $cart = new Cart;
                 $cart->user_id=0;
                 $cart->product_id=$product_id;
                 $cart->quantity=1;
-                if(session()->has('users')){
-                    session()->push('cart',$cart);
+                $check_cart=Cart::where(['user_id'=>0,'product_id'=>$product_id])->first();
+                if(is_null($check_cart)){
+                    $cart->save();
+                    $cart->refresh();
+                    if(session()->has('cart')){
+                        session()->push('cart',$cart->id);
+                    }else{
+                        session(['cart'=>[$cart->id]]);
+                    }
                 }else{
-                    session(['cart'=>[$cart]]);
+                    $check_cart->quantity=$check_cart->quantity+1;
+                    $check_cart->save();
                 }
                 return redirect()->intended('cart?m=item+added+to+cart+<br>+login+to+save+product+to+account');
             }
@@ -74,8 +113,35 @@ class ScreenController extends Controller
         else
             return redirect()->intended('shop/product_not_found');
     }
-    function removeCartItem($product_id) {
-        return view('screen.cart');
+    function removeCartItem($cart_id) {
+        $user=null;
+        if(Auth::check()){
+            $user=Auth::user();
+            $cart = Cart::where(['user_id'=>$user->id,'id'=>$cart_id])->first();  
+        }else{
+            $cart = Cart::where(['user_id'=>0,'id'=>$cart_id])->first();
+        }
+        if(is_null($cart)){
+            return redirect()->intended('cart?m='.urlencode('item not added to cart'));
+        }else{
+            if(is_null($user)){
+                $session_cart=session('cart');
+                if(is_array($session_cart)){
+                    foreach($session_cart as $c_key=>$c_val){
+                        if($c_val==$cart_id){
+                            unset($session_cart[$c_key]);
+                            break;
+                        }
+                    }
+                    session(['cart'=>$session_cart]);
+                }else{
+                    session(['cart'=>[]]);
+                }
+               
+            }
+            $cart->delete();
+        }
+        return redirect()->intended('cart?m='.urlencode('item removed from cart'));
     }
     function order() {
         return view('screen.order');
@@ -91,6 +157,10 @@ class ScreenController extends Controller
     }
     function login(Request $request){
         $user=Auth::user();
+        if(!is_null($user) && $request->query('r'))
+        {
+            return redirect()->intended($request->query('r'));
+        }
         if(!is_null($user) && $user->type==1){
             return redirect()->intended('shop')->with('success', 'user valid!');
         }
@@ -107,11 +177,39 @@ class ScreenController extends Controller
         return redirect('login')->with(Auth::logout());
     }
     function doLogin(Request $request){
-        $credentials = $request->only('email', 'password');
+        $r=$request->query('r');
+        $credentials = ['email'=>$request->input('email'),'password'=>$request->input('password')];
 
         if (Auth::attempt($credentials)) {
             // Authentication passed...
             $user=Auth::user();
+            if(!is_null($user)){
+                $session_cart=session('cart');
+                if(is_array($session_cart)){
+                    foreach($session_cart as $cart_id){
+                        $cart=Cart::where(['user_id'=>0,'id'=>$cart_id])->first();
+                        if(!is_null($cart)){
+                            $check_cart=Cart::where(['user_id'=>$user->id,'product_id'=>$cart->product_id])->first();
+                            if(is_null($check_cart)){
+                                $cart->user_id=$user->id;
+                                $cart->save();
+                            }else{
+                                $check_cart->quantity=$check_cart->quantity+$cart->quantity;
+                                $check_cart->save();
+                                $cart->delete();
+                            }
+                           
+                        }
+                    }
+                    session(['cart'=>[]]);
+                }else{
+                    session(['cart'=>[]]);
+                }
+            }
+            if(!is_null($user) && isset($r))
+            {
+                return redirect()->intended($r);
+            }
             if(!is_null($user) && $user->type==1){
                 return redirect()->intended('shop')->with('success', 'user valid!');
             }

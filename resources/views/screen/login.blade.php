@@ -140,7 +140,7 @@ span.soldout{
                                     @endalert
                                 @endif
                                 <h3 class="uk-card-title uk-text-center">Welcome back!</h3>
-                                <form action="/login" method="POST">
+                                <form action="@isset($_GET['r']){{'/login?r='.$_GET['r']}} @else {{'/login '}}@endisset" method="POST">
                                     @csrf
                                     <div class="uk-margin">
                                         <div class="uk-inline uk-width-1-1">

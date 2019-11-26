@@ -1,4 +1,4 @@
-<ul class="uk-subnav uk-subnav-divider uk-divider uk-margin-remove-bottom" uk-margin>
+<ul class="uk-subnav w3-light uk-subnav-divider uk-divider uk-margin-remove-bottom" uk-margin>
         <li class="uk-active"><a href="#">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</a></li>
         <li><a href="#">info@motopartsarena.com</a></li>
         <li><a href="#">Phone : 08171902411</a></li>
@@ -25,7 +25,16 @@
             @else
             <li><a href="/login" class="uk-padding-bottom-remove"><span class="uk-button-text">Login | Sign up</span></a></li>
             @endauth
-            <li><a href="/cart" class="uk-padding-bottom-remove"><span class="uk-icon" uk-icon="icon: cart"></span> <span class="badge uk-float-left">10</span></a></li>
+            @auth
+            @php($user_cart=App\Cart::where(['user_id'=>$user->id])->select('id')->get())
+            @php($cart=[])
+            @foreach($user_cart as $cart_data)
+            @php($cart[]=$cart_data->id)
+            @endforeach
+            @else
+            @php($cart=session('cart')??[])
+            @endauth
+            <li><a href="/cart" class="uk-padding-bottom-remove"><span class="uk-icon" uk-icon="icon: cart"></span> <span class="badge uk-float-left">{{count($cart)}}</span></a></li>
         </ul>
     </div>
 

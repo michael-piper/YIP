@@ -60,7 +60,7 @@ class Product extends Model
         ->skip(0)
         ->take($length)->get();
     }
-    static function available(){
+    static function available($product_id){
         if(isset($product_id)){
             $product=Product::where(['id'=>$product_id,'active'=>1])->first();
             if(!is_null($product)){

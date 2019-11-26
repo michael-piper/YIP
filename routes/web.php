@@ -36,13 +36,18 @@ Route::post('/forgetpassword', 'ScreenController@doForgetPassword');
 
 Route::group(['prefix' => 'dashboard','middleware' => ['auth.admin']], function(){
     Route::get('/products', 'AdminController@products');
+    Route::get('/add_product', 'AdminController@addProduct');
+    Route::post('/add_product', 'AdminController@doAddProduct');
+    Route::get('/product/{product_id}', 'AdminController@product');
+    Route::get('/edit_product/{product_id}', 'AdminController@editProduct');
+    Route::post('/edit_product/{product_id}', 'AdminController@doEditProduct');
 
 });
 
 Route::group(['prefix' => 'dashboard','middleware' => ['auth.vendor']], function(){
+    Route::get('/products', 'VendorController@products');
     Route::get('/add_product', 'VendorController@addProduct');
     Route::post('/add_product', 'VendorController@doAddProduct');
-    Route::get('/products', 'VendorController@products');
     Route::get('/product/{product_id}', 'VendorController@product');
     Route::get('/edit_product/{product_id}', 'VendorController@editProduct');
     Route::post('/edit_product/{product_id}', 'VendorController@doEditProduct');

@@ -2,13 +2,73 @@
 
 namespace App\Http\Controllers;
 use Illuminate\Support\Str;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Http\Request;
 use App\User;
 use App\UserDetail;
 use App\ProductAvailable;
 use App\Product;
+use Mail;
 class ActionController extends Controller
 {
+    static function sendMail($msg=[],$template="general"){
+      $msg=(array)$msg;
+        Mail::send('mail.'.$template, $msg, function($message) use($msg){
+            $message->from('no-reply@motopartsarena.com', 'Motoparts Arena');
+            $message->SMTPDebug = 4;
+            $message->to($msg['email']);
+            $message->subject($msg['subject']);
+            //return response()->json(["succeess"=>'An Email has been sent to your account. Pls check to proceed']);
+        });
+    }
+    static function sendSMS($msg=[]){
+        $msg=(object)$msg;
+        if(isset($msg->phone) && isset($msg->body)){
+            $url = "http://www.quickbuysms.com/index.php?option=com_spc&comm=spc_api&username=primealert&password=primealert&sender=MOTOPARTSARENA&recipient=".$msg->phone."&message=".urlencode($msg->body);
+            $ch = curl_init($url);
+            curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+            curl_setopt($ch, CURLOPT_HEADER, 0);
+            $data = curl_exec($ch);
+            curl_close($ch);
+            return $data;
+        }else{
+            return false;
+        }
+    }
+    static function sendOTP($data){
+
+    }
+    static function tryRequestOTP(Request $request){
+
+    }
+    public function tryUpdatePassword(Request $request){
+        $user = User::from_api_token();
+
+        if(is_null($user)){
+            return ['error'=>true,'message'=>'user seession not recogized'];
+        }
+        if ($request->input('password') != $request->input('password1')) {
+            return ['error'=>true,'message'=> 'The new passwords provided does not match. Pls try again'];
+        }
+
+        if (Hash::check($request->input('old_password'), $user->password)) {
+            $user->password = bcrypt($request->input('password'));
+            $user->save();
+            return ['success'=>true, 'message'=>'Your profile has been successfully updated. Kindly check your email to proceed'];
+        }else{
+            return ['error'=>true, 'message'=>'You have provided a wrong password. Pls try again'];
+        }
+    }
+    public function tryActivateUser($token,$id){
+        $user = User::where(["token"=> $token,'id'=>$id])->first();
+        $user->status = "Activated";
+        if($user->save()){
+            Auth::loginUsingId($user->id);
+            return ['success'=>true,'message'=>'user account activated'];
+        }else{
+            return ['error'=>true,'message'=>'user account couldn\'t be activated'];
+        }
+    }
     static function tryRegisterCustomer($request){
         $newuser= new User();
         $newuser->display_name=$request->name;

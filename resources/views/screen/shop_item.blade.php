@@ -4,32 +4,12 @@
 
 @section('style')
 <style>
-* {
-  margin: 0;
-  border: 0;
-  padding: 0;
-  outline: 0;
-}
-body, html {
-  width: 100%;
-  height: 100%;
-}
 
 .clearfix {
   content:"";
   display: table;
 }
-/* .shop-bg {
-  position: fixed;
-  top: 0;
-  left: 0;
-  bottom: 0;
-  right: 0;
-  width: 100%;
-  height: 100%;
-  background: #222;
-  opacity: .8;
-} */
+
 .pop-up {
   width: 900px;
   height: auto;
@@ -271,7 +251,7 @@ select.color, select.size {
 }
 .wishlist {
   margin-top: 5px;
-}
+} */
 /*SOCIAL*/
 .social {
   float: right;
@@ -410,5 +390,13 @@ span.soldout{
 @endsection
 
 @section('content')
-@include( "main.item")
+<div class="uk-text-center uk-grid-small" uk-grid>
+   
+    <div class="uk-width-1-1@m">
+      @include( "main.item")
+    </div>
+    <div class="uk-width-1-1@m">
+      @includeIf("main.featuredproducts")
+    </div>
+</div>
 @endsection

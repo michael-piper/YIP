@@ -164,18 +164,29 @@ dl, ol, ul {
 @endsection
 
 @section('js')
-
+@parent
 @endsection
 
 @section('content')
 
 @includeIf("main.heros")
+<style>
+.map{
+    background:
+    url();
+    background-size:cover;
+}
+body{
+    background-color:#000;
+}
+</style>
 <div class="uk-text-center uk-grid-small" uk-grid>
-    <div class="uk-width-1-3@m">
-        @includeIf("main.sidebar")
-    </div>
-    <div class="uk-width-expand@m">
+   
+    <div class="uk-width-1-1@m">
         @includeIf("main.frequentbuyitems")
+    </div>
+    <div class="uk-width-1-1@m">
+        @includeIf("main.featuredproducts")
     </div>
 </div>
 @endsection

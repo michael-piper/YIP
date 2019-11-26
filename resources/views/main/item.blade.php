@@ -3,24 +3,35 @@
 @isset($product)
 @php($addons=$product->addons())
 <section>
-        <div class="shop-bg"></div>
-        <div class="pop-up clearfix">
-          <!--GALLERY-->
+<div class="uk-text-center uk-grid-small" uk-grid>
+   
+  <div class="uk-width-1-1@m">
+ 
+  <div class="uk-margin-left uk-margin-right uk-card-default uk-card-body radius-small uk-margin-top">
+     <!--GALLERY-->
           <div class="pics">
-          <span class="main-img" >
-              <img class="product-image" style="max-height:500px;" src="{{$product->display_image??'/images/products/placeholder.png'}}"></span>
-            <div class="additional-img">
-              <img src="https://images-na.ssl-images-amazon.com/images/I/81D8-r%2BiZgL._UX500_.jpg">
+          <span class="main-img">
+            <img class="product-image" style="max-height:500px;" src="{{$product->display_image??'/images/products/placeholder.png'}}"></span>
+            <div class="additional-img" uk-lightbox>
+              <a href="{{$product->display_image??'/images/products/placeholder.png'}}">
+              <img src="{{$product->display_image??'/images/products/placeholder.png'}}">
+              </a>
+               <a href="{{$product->display_image??'/images/products/placeholder.png'}}">
               <img src="https://images-na.ssl-images-amazon.com/images/I/81PVFwDiEqL._UX500_.jpg">
+              </a>
+               <a href="{{$product->display_image??'/images/products/placeholder.png'}}">
               <img src="https://images-na.ssl-images-amazon.com/images/I/81u04RfSYcL._UX500_.jpg">
+              </a>
+               <a href="{{$product->display_image??'/images/products/placeholder.png'}}">
               <img src="https://images-na.ssl-images-amazon.com/images/I/81nuwkilZSL._UX500_.jpg">
+              </a>
             </div>
           </div>
           <!-- PRODUCT INFORMATION -->
           <div class="product-item">
             <!--category-breadcrumb-->
             @php($category=App\ProductCategory::where("id",$product->category_id)->first())
-          <span class="category">{{$category->name??'None'}}</span>
+          <span class="category uk-text-left">{{$category->name??'None'}}</span>
 
             @if($product->available>$product->sold+5)
                 <!--stock-label-->
@@ -32,7 +43,7 @@
                 <!--stock-label-->
                 <span class="stock">Sold Out</span>
             @endif
-            <h1>{{$product->name}}</h1>
+            <h1 class="uk-text-left">{{$product->name}}</h1>
             <!--PRICE-RATING-REVIEW-->
             <div class="block-price-rating clearfix">
               <!--price-->
@@ -70,27 +81,20 @@
             </ul> -->
             <!--PRODUCT DESCRIPTION-->
             <div class="descr">
-            <p>{{$product->description}}</p>
+            <p class="uk-text-justify">{{$product->description}}</p>
            </div>
             <!--SELECT BLOCK-->
-           <div class="block-select clearfix">
+           <div class="block-select">
             <form>
               <div class="uk-grid-small uk-width-1-1" uk-grid>
-                    <div class="select-size uk-width-1-1">
-                            <span>Quantity</span>
-                            <select class="size" style="width:100%;">
-                            @for($i=1;$i < $product->available - $product->sold;$i++)
-                                <option>{{$i}}</option>
-                            @endfor
-                            </select>
+                
+                    <div class="uk-width-1-2">
+                        <!--BUTTON-->
+                        <a href="/add_to_cart/{{$product->id}}" class="btn uk-button" style="color:white;">Add to Cart</a>
                     </div>
                     <div class="uk-width-1-2">
                         <!--BUTTON-->
-                        <button class="btn">Add to Cart</button>
-                    </div>
-                    <div class="uk-width-1-2">
-                        <!--BUTTON-->
-                        <button class="btn">Check Out</button>
+                        <button class="btn uk-button">Check Out</button>
                     </div>
                 </div>
              </form>
@@ -116,7 +120,10 @@
             </div>
             </div>
           </div>
-        </div>
+
+ </div>
+ </div>
+ </div>
     </section>
 @else
 

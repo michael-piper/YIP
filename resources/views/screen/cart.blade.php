@@ -1,3 +1,5 @@
+@php($user=Auth::user())
+@php($currency=App\Product::currency())
 @extends('layouts.main')
 
 @section("title","")
@@ -411,117 +413,237 @@ a:hover {
 
 @section('content')
 
+@if($user)
+@php($user_cart=App\Cart::where(['user_id'=>$user->id])->select('id')->get())
+@php($cart=[])
+@foreach($user_cart as $cart_data)
+@php($cart[]=$cart_data->id)
+@endforeach
+@else
+@php($cart=session('cart')??[])
+@endif
 <header id="site-header">
 <div class="container">
-<h1>Shopping cart <span>[</span> <em><a href="" target="_blank">USERNAME </a></em> <span class="last-span is-open">]</span>
-<a href="/shop" class="continue">Continue Shopping</a>
+<h1>Shopping cart <span>[</span> <em><a href="" target="_blank">{{count($cart)}} </a></em> <span class="last-span is-open">]</span>
+
+ <a href="JavaScript::void(0);" class="continue btn-clearcart red">Clear Cart</a>
+ <a href="/shop" class="continue">Continue Shopping</a>
+
+
   </h1>
+ 
 </div>
 </header>
 <div class="container">
 <section id="cart">
-<article class="product">
+@if(is_null($user))
+<div class="uk-alert-warning" uk-alert>
+    <a class="uk-alert-close" uk-close></a>
+    <p>Please login to save item to your account.</p>
+</div>
+@endif
+@empty($cart)
+<h1>No products!</h1>
+@endempty
+
+
+@foreach($cart as $cart_id)
+@php($bag=App\Cart::where(['id'=>$cart_id])->first())
+@php($product=App\Product::where(['id'=>$bag->product_id])->first())
+<article class="product" cart-id="{{$cart_id}}">
 <header>
 <a class="remove">
-<img src="http://www.astudio.si/preview/blockedwp/wp-content/uploads/2012/08/1.jpg" alt="">
+<img src="{{$product->display_image}}" alt="">
 <h3>Remove product</h3>
 </a>
 </header>
 <div class="content">
-<h1>Lorem ipsum</h1>
-Lorem ipsum dolor sit amet, consectetur adipisicing elit. Soluta, numquam quis perspiciatis ea ad omnis provident laborum dolore in atque.
+<h1>{{$product->name}}</h1>
+{{$product->description}}
 <div style="top: 43px" class="type small red remove"><a class="remove-x text-white">X</a></div>
 
 </div>
 <footer class="content">
 <span class="qt-minus">-</span>
-<span class="qt">2</span>
+<span class="qt">{{$bag->quantity}}</span>
 <span class="qt-plus">+</span>
 <h2 class="full-price">
-29.98€
-</h2>
+{{$currency}}{{($product->price - $product->addons()->discount) * $bag->quantity}}
 <h2 class="price">
-14.99€
+{{$currency}}{{$product->price - $product->addons()->discount}}
 </h2>
 </footer>
 </article>
-<article class="product">
-<header>
-<a class="remove">
-<img src="http://www.astudio.si/preview/blockedwp/wp-content/uploads/2012/08/3.jpg" alt="">
-<h3>Remove product</h3>
-</a>
-</header>
-<div class="content">
-<h1>Lorem ipsum dolor</h1>
-Lorem ipsum dolor sit amet, consectetur adipisicing elit. Soluta, numquam quis perspiciatis ea ad omnis provident laborum dolore in atque.
-<div style="top: 43px" class="type small red remove"><a class="remove-x text-white">X</a></div>
-
-</div>
-<footer class="content">
-<span class="qt-minus">-</span>
-<span class="qt">1</span>
-<span class="qt-plus">+</span>
-<h2 class="full-price">
-79.99€
-</h2>
-<h2 class="price">
-79.99€
-</h2>
-</footer>
-</article>
-<article class="product">
-<header>
-<a class="remove">
-<img src="http://www.astudio.si/preview/blockedwp/wp-content/uploads/2012/08/5.jpg" alt="">
-<h3>Remove product</h3>
-</a>
-</header>
-<div class="content">
-<h1>Lorem ipsum dolor ipsdu</h1>
-Lorem ipsum dolor sit amet, consectetur adipisicing elit. Soluta, numquam quis perspiciatis ea ad omnis provident laborum dolore in atque.
-<div style="top: 43px" class="type small red remove"><a class="remove-x text-white">X</a></div>
-</div>
-<footer class="content">
-<span class="qt-minus">-</span>
-<span class="qt">3</span>
-<span class="qt-plus">+</span>
-<h2 class="full-price">
-53.99€
-</h2>
-<h2 class="price">
-17.99€
-</h2>
-</footer>
-</article>
+@endforeach
 </section>
 </div>
 <footer id="site-footer">
 <div class="container clearfix">
 <div class="left">
-<h2 class="subtotal">Subtotal: <span>163.96</span>€</h2>
-<h3 class="tax">Taxes (5%): <span>8.2</span>€</h3>
-<h3 class="shipping">Shipping: <span>5.00</span>€</h3>
+<h2 class="subtotal">Subtotal: {{$currency}}<span></span></h2>
+<h3 class="tax">Taxes (5%): {{$currency}}<span></span></h3>
+<h3 class="shipping">Shipping: {{$currency}}<span>5.00</span></h3>
 </div>
 <div class="right">
-<h1 class="total">Total: <span>177.16</span>€</h1>
-<a class="btn">Checkout</a>
+<h1 class="total">Total: {{$currency}}<span></span></h1>
+<a class="btn btn-checkout">Checkout</a>
 </div>
 </div>
 </footer>
+<!-- This is the modal with the outside close button -->
+<div id="modal-signin" uk-modal>
+    <div class="uk-modal-dialog uk-modal-body">
+        <button class="uk-modal-close-outside" type="button" uk-close></button>
+        <h2 class="uk-modal-title">Please Login!</h2>
+        <p>Please login to check items out of cart.</p>
+		 <p class="uk-text-right">
+            <button class="uk-button uk-button-default uk-modal-close" type="button">Cancel</button>
+            <a class="uk-button uk-button-primary" href="/login?r=/cart">Login</a>
+        </p>
+    </div>
+</div>
+
+<div id="modal-choosecontact" uk-modal>
+    <div class="uk-modal-dialog">
+
+        <button class="uk-modal-close-default" type="button" uk-close></button>
+
+        <div class="uk-modal-header">
+            <h2 class="uk-modal-title">Contact Details</h2>
+        </div>
+
+        <div class="uk-modal-body" uk-overflow-auto>
+		<ul uk-tab>
+    		<li><a href="#">Contact</a></li>
+			<li><a href="#">Add New</a></li>
+		</ul>
+
+		<ul class="uk-switcher uk-margin">
+			<li>
+			<ul class="uk-list uk-list-striped">
+				<li>
+				<div onclick="pickContact(this)" contact-id="2" class="uk-card-default uk-card-body contact-picker">
+					<span>Name:</span> Michael Piper<br/>
+					<span>Phone:</span> 2349031704764<br/>
+					<span>Address:</span> Ogba lagos ...<br/>
+					</div>
+				</li>
+				<li>
+					<div onclick="pickContact(this)" contact-id="2" class="uk-card-default uk-card-body contact-picker">
+					<span>Name:</span> Michael Piper<br/>
+					<span>Phone:</span> 2349031704764<br/>
+					<span>Address:</span> Ogba lagos ...<br/>
+					</div>
+				</li>
+				<li><div onclick="pickContact(this)" contact-id="2" class="uk-card-default uk-card-body contact-picker">
+					<span>Name:</span> Michael Piper<br/>
+					<span>Phone:</span> 2349031704764<br/>
+					<span>Address:</span> Ogba lagos ...<br/>
+					</div>
+				</li>
+			</ul>
+			</li>
+			<li>
+			 	<form action="" method="POST">
+                                    @csrf
+									 <div class="uk-margin">
+                                        <div class="uk-inline uk-width-1-1">
+                                            <span class="uk-form-icon" uk-icon="icon: mail"></span>
+                                            <input class="uk-input uk-form-large" name="shipping_name" placeholder="Shipping Name" type="text">
+                                        </div>
+                                    </div>
+                                    <div class="uk-margin">
+                                        <div class="uk-inline uk-width-1-1">
+                                            <span class="uk-form-icon" uk-icon="icon: mail"></span>
+                                            <input class="uk-input uk-form-large" name="shipping_email" placeholder="Email" type="email">
+                                        </div>
+                                    </div>
+                                    <div class="uk-margin">
+                                        <div class="uk-inline uk-width-1-1">
+                                            <span class="uk-form-icon" uk-icon="icon: receiver"></span>
+                                            <input class="uk-input uk-form-large" name="shipping_phone" placeholder="Phone" type="text">
+                                        </div>
+                                    </div>
+									<div class="uk-margin">
+                                        <div class="uk-inline uk-width-1-1">
+                                            <span class="uk-form-icon" uk-icon="icon: location"></span>
+                                            <select name="shipping_state" class="uk-input uk-select uk-form-large">
+                                                <option value="" default="" selected="">Select state</option>
+                                                <option value="Abia">Abia</option>
+                                                <option value="Adamawa">Adamawa</option>
+                                                <option value="Akwa Ibom">Akwa Ibom</option>
+                                                <option value="Anambra">Anambra</option>
+                                                <option value="Bauchi">Bauchi</option>
+                                                <option value="Bayelsa">Bayelsa</option>
+                                                <option value="Benue">Benue</option>
+                                                <option value="Borno">Borno</option>
+                                                <option value="Cross River">Cross River</option>
+                                                <option value="Delta">Delta</option>
+                                                <option value="Ebonyi">Ebonyi</option>
+                                                <option value="Edo">Edo</option>
+                                                <option value="Ekiti">Ekiti</option>
+                                                <option value="Enugu">Enugu</option>
+                                                <option value="FCT">FCT</option>
+                                                <option value="Gombe">Gombe</option>
+                                                <option value="Imo">Imo</option>
+                                                <option value="Jigawa">Jigawa</option>
+                                                <option value="Kaduna">Kaduna</option>
+                                                <option value="Kano">Kano</option>
+                                                <option value="Katsina">Katsina</option>
+                                                <option value="Kebbi">Kebbi</option>
+                                                <option value="Kogi">Kogi</option>
+                                                <option value="Kwara">Kwara</option>
+                                                <option value="Lagos">Lagos</option>
+                                                <option value="Nassarawa">Nassarawa</option>
+                                                <option value="Niger">Niger</option>
+                                                <option value="Ogun">Ogun</option>
+                                                <option value="Ondo">Ondo</option>
+                                                <option value="Osun">Osun</option>
+                                                <option value="Oyo">Oyo</option>
+                                                <option value="Plateau">Plateau</option>
+                                                <option value="Rivers">Rivers</option>
+                                                <option value="Sokoto">Sokoto</option>
+                                                <option value="Taraba">Taraba</option>
+                                                <option value="Yobe">Yobe</option>
+                                                <option value="Zamfara">Zamfara</option>
+                                            </select>
+                                        </div>
+                                    </div>
+									 <div class="uk-margin">
+                                        <div class="uk-inline uk-width-1-1">
+                                            <span class="uk-form-icon" uk-icon="icon: location"></span>
+                                            <input class="uk-input uk-form-large" name="shipping_Address" placeholder="Address" type="text">
+                                        </div>
+                                    </div>
+
+                         </form>
+			</li>
+		</ul>
+   		</div>
+
+        <div class="uk-modal-footer uk-text-right">
+            <button class="uk-button uk-button-default uk-modal-close" type="button">Cancel</button>
+            <button class="uk-button uk-button-primary" onclick="saveContactAddress()" type="button">Save</button>
+        </div>
+
+    </div>
+</div>
 @endsection
 
 
 @section('js')
 <script id="rendered-js">
       var check = true;
-
+function pickContact($this){
+	$('.contact-picker').attr('style','');
+	$($this).attr('style','background:green;color:white;')
+}
 function changeVal(el) {
   var qt = parseFloat(el.parent().children(".qt").html());
-  var price = parseFloat(el.parent().children(".price").html());
+  var price = parseFloat(el.parent().children(".price").html().replace(/[{{$currency}}]/gi,''));
   var eq = Math.round(price * qt * 100) / 100;
 
-  el.parent().children(".full-price").html(eq + "€");
+  el.parent().children(".full-price").html("{{$currency}}"+eq);
 
   changeTotal();
 }
@@ -531,7 +653,7 @@ function changeTotal() {
   var price = 0;
 
   $(".full-price").each(function (index) {
-    price += parseFloat($(".full-price").eq(index).html());
+    price += parseFloat($(".full-price").eq(index).html().replace(/[{{$currency}}]/gi,''));
   });
 
   price = Math.round(price * 100) / 100;
@@ -548,14 +670,17 @@ function changeTotal() {
   $(".total span").html(fullPrice);
 }
 
-$(document).ready(function () {
 
+$(document).ready(function () {
+changeTotal();
   $(".remove").click(function () {
     var el = $(this);
     el.parent().parent().addClass("removed");
     window.setTimeout(
     function () {
       el.parent().parent().slideUp('fast', function () {
+		var cart_id=el.parent().parent().attr('cart-id');
+		$.get('/remove_from_cart/'+cart_id);
         el.parent().parent().remove();
         if ($(".product").length == 0) {
 
@@ -572,6 +697,8 @@ $(document).ready(function () {
     window.setTimeout(
     function () {
       el.parent().parent().parent().slideUp('fast', function () {
+		var cart_id=el.parent().parent().parent().attr('cart-id');
+		$.get('/remove_from_cart/'+cart_id);
         el.parent().parent().parent().remove();
         if ($(".product").length == 0) {
 
@@ -589,6 +716,8 @@ $(document).ready(function () {
     $(this).parent().children(".full-price").addClass("added");
 
     var el = $(this);
+	var cart_id=el.parent().parent().attr('cart-id');
+	$.get('/add_to_cart/'+cart_id+'/1');
     window.setTimeout(function () {el.parent().children(".full-price").removeClass("added");changeVal(el);}, 150);
   });
 
@@ -603,16 +732,64 @@ $(document).ready(function () {
     $(this).parent().children(".full-price").addClass("minused");
 
     var el = $(this);
+	var cart_id=el.parent().parent().attr('cart-id');
+	$.get('/remove_from_cart/'+cart_id+'/1');
     window.setTimeout(function () {el.parent().children(".full-price").removeClass("minused");changeVal(el);}, 150);
   });
 
   window.setTimeout(function () {$(".is-open").removeClass("is-open");}, 1200);
 
-  $(".btn").click(function () {
+  $(".btn-checkout").click(function () {
+	  @if(is_null($user))
+	  return UIkit.modal('#modal-signin').show();
+	  @endif
+   if($(".total span").text()>0){
+		UIkit.modal('#modal-choosecontact').show();
+		
+   }else{
+	   $.alert('please login');
+   }
+    
+  });
+   $(".btn-clearcart").click(function () {
     check = true;
     $(".remove").click();
   });
 });
-      //# sourceURL=pen.js
+     function saveContactAddress(){
+		 	payWithPaystack();
+	 }
+
     </script>
+<script src="https://js.paystack.co/v1/inline.js"></script>
+	<script>
+		function payWithPaystack(){
+			var handler = PaystackPop.setup({
+				key: "pk_test_907a3707c9dd8db6c4ee95572a363aa501e7f1f6",
+				email: "{{ $user->email ?? 'Unidentified user' }}",
+				amount: $(".total span").text()+"00",
+				ref: Date.now(),
+				currency: "NGN",
+				metadata: {
+					custom_fields: [
+					{ display_name: "Full Names", variable_name: "full_names", value: "{{ $user->display_name ?? 'Unidentified user' }}" },
+					{ display_name: "Email Address", variable_name: "email_address", value: "{{ $user->email ?? 'Unidentified user' }}" },
+					{ display_name: "Phone Number", variable_name: "phone_number", value: "{{ $user->phone ?? 'Unidentified user' }}" },			
+					]
+				},
+				callback: function(response){
+					$.alert('Payment was successfull. transaction ref is ' + response.reference);
+					$.get('/verify-payment/'+response.reference).done(function($response){
+						console.log($response);
+					});
+					$(".remove").click();
+				},
+				onClose: function(){
+					$.alert('Transaction Cancelled');
+					
+				}
+			});
+			handler.openIframe();
+		}
+	</script>
 @endsection
