@@ -50,11 +50,11 @@
               <div class="block-price clearfix">
                     @if(isset($addons->discount) && is_int($addons->discount) && $addons->discount>0)
                     <div class="price-new clearfix">
-                        <span class="price-new-dollar">{{$currency}}{{$product->price-$addons->discount}}</span>
+                        <span class="price-new-dollar">{{$currency}}{{$product->priceWithCommission()}}</span>
                         <span class="price-new-cent"></span>
                     </div>
                     <div class="price-old clearfix">
-                      <span class="price-old-dollar">{{$currency}}{{$product->price}}</span>
+                      <span class="price-old-dollar">{{$currency}}{{$product->priceWithCommission(false)}}</span>
                       <span class="price-old-cent"></span>
                     </div>
                   @else

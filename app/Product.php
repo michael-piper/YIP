@@ -84,6 +84,80 @@ class Product extends Model
         }
         return false;
     }
+    static public function cal_commission($price=0){
+        $commission=0;
+        if($price>500000){
+            $commission=50000;
+        }
+        else if($price>400000){
+            $commission=45000;
+        }
+        else if($price>350000){
+            $commission=35000;
+        } 
+        else if($price>35000){
+            $commission=30000;
+        } 
+        else if($price>300000){
+            $commission=30000;
+        } 
+        else if($price>250000){
+            $commission=25000;
+        } 
+        else if($price>200000){
+            $commission=20000;
+        } 
+        else if($price>150000){
+            $commission=15000;
+        } 
+        else if($price>100000){
+            $commission=10000;
+        } 
+        else if($price>80000){
+            $commission=8000;
+        } 
+        else if($price>70000){
+            $commission=7000;
+        } 
+        else if($price>50000){
+            $commission=5000;
+        } 
+        else if($price>20000){
+            $commission=2000;
+        } 
+        else if($price>10000){
+            $commission=3000;
+        } 
+        else if($price>10000){
+            $commission=3000;
+        }  
+        else if($price>5000){
+            $commission=2000;
+        }
+        else if($price>1500){
+            $commission=1500;
+        }
+        else{
+            $commission=500;
+        }
+        return $commission;
+    }
+    public function price($discount=true){
+        $addons=$this->addons();
+        $price=$this->price;
+        if($discount && isset($addons->discount) && is_int($addons->discount) && $addons->discount>0){
+            $price=$price-$addons->discount;
+         
+        }
+        return $price;
+    }
+    public function priceWithCommission($discount=true,$array=false){
+        $price=$this->price($discount);
+        if($array){
+            return['price'=>$price,'commission'=>$this->commission];
+        }
+       return $price+$this->commission;
+    }
     public function defaultImage($image){
         $dir='images/products/';
         $dir_url='/images/products/';

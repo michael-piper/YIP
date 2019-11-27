@@ -3,6 +3,8 @@ src="https://code.jquery.com/jquery-3.4.1.min.js"
 integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo="
 crossorigin="anonymous"></script>
 <link rel='stylesheet' href='https://fonts.googleapis.com/css?family=Open+Sans:400,300,600,700,800'>
+<!-- Latest compiled and minified CSS -->
+{{-- <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous"> --}}
 <!-- UIkit CSS -->
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/uikit@3.2.2/dist/css/uikit.min.css" />
 <link rel="stylesheet" href="https://www.w3schools.com/lib/w3-theme-red.css">
@@ -22,6 +24,22 @@ body{
 }
 .radius-small{
     border-radius:3px;
+}
+.radius-top{
+    border-top-left-radius:5px;
+    border-top-right-radius:5px;
+}
+.radius-bottom{
+    border-bottom-left-radius:5px;
+    border-bottom-right-radius:5px;
+}
+.radius-top-small{
+    border-top-left-radius:3px;
+    border-top-right-radius:3px;
+}
+.radius-bottom-small{
+    border-bottom-left-radius:3px;
+    border-bottom-right-radius:3px;
 }
 .w3-light{
 color:#000;

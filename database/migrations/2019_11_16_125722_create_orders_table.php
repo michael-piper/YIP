@@ -18,12 +18,14 @@ class CreateOrdersTable extends Migration
             $table->unsignedBigInteger('user_id')->nullable(false);
             $table->unsignedBigInteger('product_id')->nullable(false);
             $table->string('tracking_id',22)->nullable(false);
-            $table->unsignedBigInteger('quantity')->nullable(false)->default(0);
+            $table->unsignedBigInteger('quantity')->nullable(false)->default(1);
+            $table->unsignedBigInteger('price')->nullable(false);
+            $table->unsignedBigInteger('shipping_fee')->nullable(false)->default(0);
+            $table->unsignedBigInteger('total_price')->nullable(false)->default(0);
             $table->json('contact')->nullable(false);
             $table->unsignedBigInteger('order_status')->default(0);
             $table->unsignedBigInteger('payment_status')->default(0);
             $table->boolean('active')->nullable(false)->default(true);
-
             $table->foreign('user_id')->references('id')->on('users')->onDelete("cascade");
             $table->foreign('product_id')->references('id')->on('products');
             $table->foreign('order_status')->references('id')->on('order_status');

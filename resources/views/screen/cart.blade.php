@@ -1,5 +1,8 @@
 @php($user=Auth::user())
 @php($currency=App\Product::currency())
+@isset($user)
+@php($userdetails=App\UserDetail::where(['user_id'=>$user->id])->first())
+@endisset
 @extends('layouts.main')
 
 @section("title","")
@@ -468,9 +471,9 @@ a:hover {
 <span class="qt">{{$bag->quantity}}</span>
 <span class="qt-plus">+</span>
 <h2 class="full-price">
-{{$currency}}{{($product->price - $product->addons()->discount) * $bag->quantity}}
+{{$currency}}{{($product->priceWithCommission()) * $bag->quantity}}
 <h2 class="price">
-{{$currency}}{{$product->price - $product->addons()->discount}}
+{{$currency}}{{$product->priceWithCommission()}}
 </h2>
 </footer>
 </article>
@@ -481,7 +484,6 @@ a:hover {
 <div class="container clearfix">
 <div class="left">
 <h2 class="subtotal">Subtotal: {{$currency}}<span></span></h2>
-<h3 class="tax">Taxes (5%): {{$currency}}<span></span></h3>
 <h3 class="shipping">Shipping: {{$currency}}<span>5.00</span></h3>
 </div>
 <div class="right">
@@ -513,55 +515,35 @@ a:hover {
         </div>
 
         <div class="uk-modal-body" uk-overflow-auto>
-		<ul uk-tab>
+		<ul uk-tab id="contact-switcher-tab">
     		<li><a href="#">Contact</a></li>
 			<li><a href="#">Add New</a></li>
 		</ul>
 
-		<ul class="uk-switcher uk-margin">
+		<ul id="contact-switcher" class="uk-switcher uk-margin">
 			<li>
-			<ul class="uk-list uk-list-striped">
-				<li>
-				<div onclick="pickContact(this)" contact-id="2" class="uk-card-default uk-card-body contact-picker">
-					<span>Name:</span> Michael Piper<br/>
-					<span>Phone:</span> 2349031704764<br/>
-					<span>Address:</span> Ogba lagos ...<br/>
-					</div>
-				</li>
-				<li>
-					<div onclick="pickContact(this)" contact-id="2" class="uk-card-default uk-card-body contact-picker">
-					<span>Name:</span> Michael Piper<br/>
-					<span>Phone:</span> 2349031704764<br/>
-					<span>Address:</span> Ogba lagos ...<br/>
-					</div>
-				</li>
-				<li><div onclick="pickContact(this)" contact-id="2" class="uk-card-default uk-card-body contact-picker">
-					<span>Name:</span> Michael Piper<br/>
-					<span>Phone:</span> 2349031704764<br/>
-					<span>Address:</span> Ogba lagos ...<br/>
-					</div>
-				</li>
+			<ul class="uk-list uk-list-striped " id="shipping-contact-list">
+				
 			</ul>
 			</li>
 			<li>
-			 	<form action="" method="POST">
-                                    @csrf
+			 	<form id="shipping-contact" action="" method="POST">
 									 <div class="uk-margin">
                                         <div class="uk-inline uk-width-1-1">
-                                            <span class="uk-form-icon" uk-icon="icon: mail"></span>
-                                            <input class="uk-input uk-form-large" name="shipping_name" placeholder="Shipping Name" type="text">
+                                            <span class="uk-form-icon" uk-icon="icon: user"></span>
+                                            <input class="uk-input uk-form-large" name="shipping_name" value="{{isset($user->display_name)?$user->display_name:''}}" placeholder="Shipping Name" type="text">
                                         </div>
                                     </div>
                                     <div class="uk-margin">
                                         <div class="uk-inline uk-width-1-1">
                                             <span class="uk-form-icon" uk-icon="icon: mail"></span>
-                                            <input class="uk-input uk-form-large" name="shipping_email" placeholder="Email" type="email">
+                                            <input class="uk-input uk-form-large" name="shipping_email" value="{{isset($user->email)?$user->email:''}}" placeholder="Email" type="email">
                                         </div>
                                     </div>
                                     <div class="uk-margin">
                                         <div class="uk-inline uk-width-1-1">
                                             <span class="uk-form-icon" uk-icon="icon: receiver"></span>
-                                            <input class="uk-input uk-form-large" name="shipping_phone" placeholder="Phone" type="text">
+                                            <input class="uk-input uk-form-large" name="shipping_phone" value="{{isset($user->phone)?$user->phone:''}}" placeholder="Phone" type="text">
                                         </div>
                                     </div>
 									<div class="uk-margin">
@@ -612,19 +594,17 @@ a:hover {
 									 <div class="uk-margin">
                                         <div class="uk-inline uk-width-1-1">
                                             <span class="uk-form-icon" uk-icon="icon: location"></span>
-                                            <input class="uk-input uk-form-large" name="shipping_Address" placeholder="Address" type="text">
+                                            <input class="uk-input uk-form-large" name="shipping_address" placeholder="Address" type="text">
                                         </div>
                                     </div>
+									 <p class="uk-text-right">
+										<button class="uk-button uk-button-primary" onclick="saveShippingContact();" type="button">Save</button>
+									</p>
 
                          </form>
 			</li>
 		</ul>
    		</div>
-
-        <div class="uk-modal-footer uk-text-right">
-            <button class="uk-button uk-button-default uk-modal-close" type="button">Cancel</button>
-            <button class="uk-button uk-button-primary" onclick="saveContactAddress()" type="button">Save</button>
-        </div>
 
     </div>
 </div>
@@ -633,10 +613,93 @@ a:hover {
 
 @section('js')
 <script id="rendered-js">
-      var check = true;
+$.ajaxSetup({
+    headers: {
+        'X-Csrf-Token': $('meta[name="csrf-token"]').attr('content')||""
+    }
+});
+function getFormData($form){
+    var unindexed_array = $form.serializeArray();
+    var indexed_array = {};
+
+    $.map(unindexed_array, function(n, i){
+        indexed_array[n['name']] = n['value'];
+    });
+
+    return indexed_array;
+}
+var check = true;
+var user={};
+window.shipping={};
+function loadContact(){
+	$.get('/account/contacts').done(function($response){
+		if($response.data){
+			$response.data=$response.data.reverse();
+		user.contacts=$response.data;
+		var html='';
+			for(var i in $response.data){
+				html+=`<li>
+					<div onclick="pickContact(this)" contact-id="${i}" class="uk-card-default uk-card-body contact-picker">
+						<span>Name:</span> ${$response.data[i].shipping_name}<br/>
+						<span>Phone:</span> ${$response.data[i].shipping_phone}<br/>
+						<span>State:</span>${$response.data[i].shipping_state}<br/>
+						<span>Address:</span>${$response.data[i].shipping_address}<br/>
+						</div>
+						<button onclick="removeContact(this)" class="uk-button uk-button-danger uk-float-right">Remove</button>
+					</li>`;
+			}
+			if(html==''){
+				html="Please add Contact";
+			}
+			$('#shipping-contact-list').html(html);
+		}
+	});
+}
+loadContact();
 function pickContact($this){
+	shipping=user.contacts[$($this).attr('contact-id')];
 	$('.contact-picker').attr('style','');
-	$($this).attr('style','background:green;color:white;')
+	$($this).attr('style','background:green;color:white;');
+	// console.log(shipping);
+	$.post('/cart/checkout?from=ajax',shipping).done(function($response){
+		if($response.data){
+			shipping.tracking_id=$response.data.tracking_id;
+			shipping.total_price=$response.data.total_price;
+			payWithPaystack(shipping);
+		}
+		console.log($response);
+	
+	})
+	
+}
+function removeContact($this){
+	 $.ajax({url: '/account/contacts/'+$($this).parent().find('div').attr('contact-id'),
+	 method:'DELETE',headers:{'X-Csrf-Token':"{{csrf_token()}}"},
+	 success: function(result){
+		loadContact();
+	}});
+}
+function saveShippingContact(){
+	var $form=$('#shipping-contact');
+	var data=$form.serialize();
+	var formdata=getFormData($form);
+	if(formdata.shipping_name ==null || formdata.shipping_name==''){
+		return $.alert({title:'Error!',content:'Shipping name can\'t be empty',type:'red'});
+	}
+	if(formdata.shipping_phone ==null || formdata.shipping_phone==''){
+		return $.alert({title:'Error!',content:'Shipping phone number can\'t be empty',type:'red'});
+	}
+	if(formdata.shipping_state ==null || formdata.shipping_state==''){
+		return $.alert({title:'Error!',content:'Shipping state can\'t be empty',type:'red'});
+	}
+	if(formdata.shipping_address ==null || formdata.shipping_address==''){
+		return $.alert({title:'Error!',content:'Shipping address can\'t be empty',type:'red'});
+	}
+	$.post('/account/contacts',data).done(function($response){
+		loadContact();
+		UIkit.switcher('#contact-switcher').show();
+		$('div').scrollTop(1);
+	});
 }
 function changeVal(el) {
   var qt = parseFloat(el.parent().children(".qt").html());
@@ -650,16 +713,17 @@ function changeVal(el) {
 
 function changeTotal() {
 
-  var price = 0;
-
+  var price = 0,shipping_total=0;
+ var shipping = parseFloat($(".shipping span").html());
   $(".full-price").each(function (index) {
     price += parseFloat($(".full-price").eq(index).html().replace(/[{{$currency}}]/gi,''));
+	shipping_total=shipping_total+shipping;
   });
 
   price = Math.round(price * 100) / 100;
   var tax = Math.round(price * 0.05 * 100) / 100;
-  var shipping = parseFloat($(".shipping span").html());
-  var fullPrice = Math.round((price + tax + shipping) * 100) / 100;
+ 
+  var fullPrice = Math.round((price + shipping_total) * 100) / 100;
 
   if (price == 0) {
     fullPrice = 0;
@@ -756,31 +820,36 @@ changeTotal();
     $(".remove").click();
   });
 });
-     function saveContactAddress(){
-		 	payWithPaystack();
-	 }
 
     </script>
 <script src="https://js.paystack.co/v1/inline.js"></script>
 	<script>
-		function payWithPaystack(){
+	function shippingMetadata(shipping){
+		var data=[];
+		for(var n in shipping){
+			var display_name=n.replace(/[\_]/gi,' ');
+			var variable_name=n.replace(/[\s\.\-\+\=\!\*\&\%\$\#\@\~\`]/gi,'_').toLowerCase();
+			data.push({ display_name: display_name, variable_name: variable_name, value: shipping[n] });
+		}
+		return data;
+	}
+		function payWithPaystack(shipping){
 			var handler = PaystackPop.setup({
 				key: "pk_test_907a3707c9dd8db6c4ee95572a363aa501e7f1f6",
 				email: "{{ $user->email ?? 'Unidentified user' }}",
-				amount: $(".total span").text()+"00",
-				ref: Date.now(),
+				amount: shipping.total_price +"00",
+				ref: shipping.tracking_id,
 				currency: "NGN",
 				metadata: {
-					custom_fields: [
-					{ display_name: "Full Names", variable_name: "full_names", value: "{{ $user->display_name ?? 'Unidentified user' }}" },
-					{ display_name: "Email Address", variable_name: "email_address", value: "{{ $user->email ?? 'Unidentified user' }}" },
-					{ display_name: "Phone Number", variable_name: "phone_number", value: "{{ $user->phone ?? 'Unidentified user' }}" },			
-					]
+					custom_fields:  shippingMetadata(shipping)
 				},
 				callback: function(response){
 					$.alert('Payment was successfull. transaction ref is ' + response.reference);
-					$.get('/verify-payment/'+response.reference).done(function($response){
-						console.log($response);
+					$.get('/verify-payment?from=ajax&reference='+response.reference).done(function($response){
+						if($response.error){
+							return console.log($response);
+						}
+						window.location.href="/orders";
 					});
 					$(".remove").click();
 				},

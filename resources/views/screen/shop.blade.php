@@ -170,13 +170,10 @@ span.soldout{
 @section('content')
 
 <div class="uk-text-center uk-grid-small" uk-grid>
-        <div class="uk-width-expand@s">
+        <div class="uk-width-1-1@s">
             @include( "main.searchbar")
             @include( "main.items")
             @includeIf("main.frequentbuyitems")
-        </div>
-        <div class="uk-width-1-3@s" id="searchfilter" style="display:none;">
-            @includeIf("main.searchfilter")
-        </div>
+        </div> 
     </div>
 @endsection

@@ -15,8 +15,10 @@ Route::get('/','ScreenController@home');
 Route::get('/home', 'ScreenController@home');
 Route::get('/contactus', 'ScreenController@contactus');
 Route::get('/cart', 'ScreenController@cart');
+Route::post('/cart/checkout', 'ScreenController@cartCheckout');
 Route::get('/orders','ScreenController@orders');
 Route::get('/orders/{order_id}','ScreenController@order');
+Route::get('/verify-payment','ScreenController@verifyPayment');
 Route::get('/dashboard','ScreenController@dashboard');
 Route::get('/add_to_cart/{product_id}', 'ScreenController@addCartItem');
 Route::get('/add_to_cart/{product_id}/{quantity}', 'ScreenController@addToCart');
@@ -33,7 +35,7 @@ Route::get('/signup_vendor', 'ScreenController@signupVendor');
 Route::post('/signup_vendor', 'ScreenController@doSignupVendor');
 Route::get('/forgetpassword', 'ScreenController@forgetPassword');
 Route::post('/forgetpassword', 'ScreenController@doForgetPassword');
-
+Route::apiResource('account/contacts', 'AccountContactController'); 
 Route::group(['prefix' => 'dashboard','middleware' => ['auth.admin']], function(){
     Route::get('/products', 'AdminController@products');
     Route::get('/add_product', 'AdminController@addProduct');

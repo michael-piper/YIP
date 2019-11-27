@@ -5,9 +5,11 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Str;
 use App\Http\Controllers\ActionController;
 use App\Product;
 use App\Cart;
+use App\Order;
 class ScreenController extends Controller
 {
     //
@@ -20,6 +22,121 @@ class ScreenController extends Controller
     }
     function cart() {
         return view('screen.cart');
+    }
+    function cartCheckout(Request $request){
+        $user=Auth::user();
+        $name=$request->input('shipping_name');
+        $phone=$request->input('shipping_phone');
+        $email=$request->input('shipping_email');
+        $state=$request->input('shipping_state');
+        $address=$request->input('shipping_address');
+        $shipping_fee=$request->input('shipping_fee');
+        if($request->query('from')=="ajax"){
+            if(is_null($user))
+            return response()->json(['error'=>true,'message'=>'user not logedIn']);
+           
+            if(is_null($name) || is_null($phone) || is_null($address) || is_null($state)){
+                return response()->json(['error'=>true,'message'=>'Shipping address, state, phone, name can\'t be empty']);
+            }
+            $tracking_id='trk-'.time().'-'.mt_rand(10000,99999);
+            $carts = Cart::where(['user_id'=>$user->id])->get();
+            $total=0;
+            foreach($carts as $cart){
+                $product=Product::where(['id'=>$cart->product_id])->first();
+                $new_order= new Order;
+                $new_order->contact($request->input(),true);
+                $new_order->user_id=$user->id;
+                $new_order->product_id=$cart->product_id;
+                $new_order->tracking_id=$tracking_id;
+                $new_order->quantity=$cart->quantity;
+                $new_order->price=$product->priceWithCommission();
+                $new_order->total_price=$new_order->price * $new_order->quantity;
+                if($shipping_fee){
+                    $new_order->shipping_fee=(int) $shipping_fee;
+                }else{
+                    $new_order->shipping_fee= 5;
+                }
+                $new_order->order_status=1;
+                $new_order->payment_status=1;
+                $total=$total+$new_order->total_price+$new_order->shipping_fee;
+                $new_order->save();
+                $cart->delete();
+            }
+            return response()->json(['error'=>false,'data'=>['total_price'=>$total,'tracking_id'=>$tracking_id,'shipping'=>$request->input()]]);
+        }else{
+            if(is_null($user))
+            return redirect()->intended('login?m=please+login');
+            return redirect()->intended('orders');
+        }
+       
+    }
+    function verifyPayment(Request $request){
+        $user=Auth::user();
+        $reference=$request->query('reference');
+        $success=false;
+        if($request->query('from')=="ajax"){
+            if(is_null($user))
+            return response()->json(['error'=>true,'message'=>'user not logedIn']);
+           
+            if( is_null($reference)){
+                return response()->json(['error'=>true,'message'=>'reference cannot be null']);
+            }
+            $orders=Order::where(['user_id'=>$user->id,'tracking_id'=>$reference])->get();
+            $total=0;
+            foreach($orders as $order){
+                $total=$total+ (int)$order->total_price + (int)$order->shipping_fee;
+            }
+            $total=(int)($total."00");
+            $result = array();
+            //The parameter after verify/ is the transaction reference to be verified
+            $url = 'https://api.paystack.co/transaction/verify/'.$reference;
+
+            $ch = curl_init();
+            curl_setopt($ch, CURLOPT_URL, $url);
+            curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+            curl_setopt(
+            $ch, CURLOPT_HTTPHEADER, [
+                'Authorization: Bearer sk_test_17b11b55e732817698903279c2a92ff2331d853e']
+            );
+            $request = curl_exec($ch);
+            curl_close($ch);
+
+            if ($request) {
+                $result = json_decode($request, true);
+                // print_r($result);
+                if($result){
+                    if($result['data']){
+                        //something came in
+                        if($result['data']['status'] == 'success' && $result['data']['amount']== $total){    
+                            $success=true;                     
+                        }else{
+                            $success=false;
+                        }
+                    }else{
+                        $success=false;
+                    }
+
+                }else{
+                    $success=false;
+                }
+            }else{
+                $success=false;
+            }
+            if($success){
+                foreach($orders as $order){
+                    $order->payment_status=2;
+                    $order->save();
+                }
+                return response()->json(['error'=>false,'message'=>'Payment verified']);
+            }else{
+                return response()->json(['error'=>true,'message'=>'Payment couldn\'t be verified please try again','data'=>$result,'total'=> $total]);
+            }
+        }else{
+            if(is_null($user))
+            return redirect()->intended('login?m=please+login');
+
+            return redirect()->intended('orders');
+        }
     }
     function dashboard(){
         $user=Auth::user();

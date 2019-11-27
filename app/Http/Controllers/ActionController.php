@@ -117,6 +117,7 @@ class ActionController extends Controller
         $product= new Product();
         $product->name=$request->name;
         $product->price=$request->price;
+        $product->commission=Product::cal_commission((int)$request->price);
         $product->available=0;
         $product->category_id=$request->category;
         $product->sub_category_id=$request->subcategory;
@@ -153,6 +154,7 @@ class ActionController extends Controller
         if(is_null($product)) return false;
         $product->name=$request->name;
         $product->price=$request->price;
+        $product->commission=Product::cal_commission((int)$request->price);
         $product->category_id=$request->category;
         $product->sub_category_id=$request->subcategory;
         $product->user_id=$user->id;

@@ -265,9 +265,10 @@ a:hover {
 .payment-status,.order-status{
     font-size: 19px;
 	line-height: 50px;
-	width: 70px;
-    max-width:100px;
-	text-align: center;
+	width: inherit;
+    min-width:60px;
+    max-width:130px;
+	text-align: left;
 }
 .payment-status{
 display: block;
@@ -435,17 +436,14 @@ display: block;
 @section('content')
 
 @if($user)
-@php($user_cart=App\Cart::where(['user_id'=>$user->id])->select('id')->get())
-@php($cart=[])
-@foreach($user_cart as $cart_data)
-@php($cart[]=$cart_data->id)
-@endforeach
+@php($orders=App\Order::where(['user_id'=>$user->id])->get())
+
 @else
-@php($cart=session('cart')??[])
+@php($orders=[])
 @endif
 <header id="site-header">
 <div class="container">
-<h1>Shopping Orders <span>[</span> <em><a href="" target="_blank">{{count($cart)}} </a></em> <span class="last-span is-open">]</span>
+<h1>Shopping Orders <span>[</span> <em><a href="" target="_blank">{{count($orders)}} </a></em> <span class="last-span is-open">]</span>
  <a href="/shop" class="continue">Continue Shopping</a>
 
 
@@ -455,17 +453,18 @@ display: block;
 </header>
 <div class="container">
 <section id="cart">
-@empty($cart)
+@empty($orders)
 <h1>No products Ordered!</h1>
 @endempty
 
 
-@foreach($cart as $cart_id)
-@php($bag=App\Cart::where(['id'=>$cart_id])->first())
-@php($product=App\Product::where(['id'=>$bag->product_id])->first())
-<article class="product" cart-id="{{$cart_id}}">
+@foreach($orders as $order)
+@php($product=App\Product::where(['id'=>$order->product_id])->first())
+@php($order_status=App\OrderStatus::where(['id'=>$order->order_status])->first())
+@php($payment_status=App\PaymentStatus::where(['id'=>$order->payment_status])->first())
+<article class="product" cart-id="{{$order->id}}">
 <header>
-<a class="remove">
+<a   href="/shop/product-{{$product->id}}/{{$product->name}}"class="remove">
 <img src="{{$product->display_image}}" alt="">
 <h3>view Product</h3>
 </a>
@@ -484,10 +483,10 @@ display: block;
 <tbody>
 <tr>
 
-<td>220321232-232-323</td>
-<td>trk-220321232-232-323</td>
-<td>Awaiting</td>
-<td>Paid</td>
+<td>{{$order->id}}</td>
+<td>{{$order->tracking_id}}</td>
+<td>{{$order_status->name ?? 'Awaiting'}}</td>
+<td>{{$payment_status->name ??'Not Paid'}}</td>
 
 </tr>
 </tbody>
@@ -495,13 +494,14 @@ display: block;
 <p>
 </div>
 <footer class="content">
-<span class="qt">qt:{{$bag->quantity}}</span>
-<span class="payment-status">Payment:</span>
-<span class="order-status">Paid</span>
+
+<span class="qt">qt:{{$order->quantity}}</span>
+<span class="order-status">Shipping fee:</span>
+<span class="payment-status">{{$currency}}{{$order->shipping_fee }}</span>
 <h2 class="full-price">
-{{$currency}}{{($product->price - $product->addons()->discount) * $bag->quantity}}
+{{$currency}}{{$order->total_price+ $order->shipping_fee}}
 <h2 class="price">
-{{$currency}}{{$product->price - $product->addons()->discount}}
+{{$currency}}{{$order->price}}
 </h2>
 </footer>
 </article>

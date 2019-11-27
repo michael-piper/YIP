@@ -1,15 +1,15 @@
 
-<section class="uk-card uk-card-body uk-card-hover">
-<form class="uk-form-stacked uk-text-left">
+<section class=" uk-section uk-card-primary w3-theme uk-card-body uk-card-hover">
+<form class="uk-form-stacked uk-child-width-1-3 uk-text-left" uk-grid>
 
-        <div class="uk-margin">
+        <div>
             <label class="uk-form-label" for="form-stacked-text">Part Number</label>
             <div class="uk-form-controls">
                 <input class="uk-input" id="form-stacked-text" type="text" placeholder="Part number...">
             </div>
         </div>
 
-        <div class="uk-margin">
+        <div >
             <label class="uk-form-label" for="form-stacked-select">Make</label>
             <div class="uk-form-controls">
                         <select name="make" class="uk-select make" data-placeholder="Select a year">
@@ -17,7 +17,7 @@
                         </select>
             </div>
         </div>
-         <div class="uk-margin">
+         <div >
             <label class="uk-form-label" for="form-stacked-select">Model</label>
             <div class="uk-form-controls">
                         <select name="model" class="uk-select model"  data-placeholder="Select a year">
@@ -26,7 +26,7 @@
                         </select>
             </div>
         </div>
-        <div class="uk-margin">
+        <div>
             <label class="uk-form-label" for="form-stacked-select">Year</label>
             <div class="uk-form-controls">
                         <select name="year[]" class="uk-select year"  multiple="multiple"  data-placeholder="Select a year">
