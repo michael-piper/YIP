@@ -434,7 +434,7 @@ a:hover {
 
 
   </h1>
- 
+
 </div>
 </header>
 <div class="container">
@@ -523,7 +523,7 @@ a:hover {
 		<ul id="contact-switcher" class="uk-switcher uk-margin">
 			<li>
 			<ul class="uk-list uk-list-striped " id="shipping-contact-list">
-				
+
 			</ul>
 			</li>
 			<li>
@@ -668,9 +668,9 @@ function pickContact($this){
 			payWithPaystack(shipping);
 		}
 		console.log($response);
-	
+
 	})
-	
+
 }
 function removeContact($this){
 	 $.ajax({url: '/account/contacts/'+$($this).parent().find('div').attr('contact-id'),
@@ -714,15 +714,17 @@ function changeVal(el) {
 function changeTotal() {
 
   var price = 0,shipping_total=0;
- var shipping = parseFloat($(".shipping span").html());
+ var shipping = parseFloat(5);
   $(".full-price").each(function (index) {
-    price += parseFloat($(".full-price").eq(index).html().replace(/[{{$currency}}]/gi,''));
-	shipping_total=shipping_total+shipping;
+      var map=$(".full-price").eq(index),qt=1;
+    price += parseFloat(map.html().replace(/[{{$currency}}]/gi,''));
+    qt=parseFloat(map.parent().find('.qt').html());
+	shipping_total=shipping_total+(shipping*qt);
   });
 
   price = Math.round(price * 100) / 100;
   var tax = Math.round(price * 0.05 * 100) / 100;
- 
+
   var fullPrice = Math.round((price + shipping_total) * 100) / 100;
 
   if (price == 0) {
@@ -732,11 +734,12 @@ function changeTotal() {
   $(".subtotal span").html(price);
   $(".tax span").html(tax);
   $(".total span").html(fullPrice);
+  $(".shipping span").html(shipping_total);
 }
 
 
 $(document).ready(function () {
-changeTotal();
+    changeTotal();
   $(".remove").click(function () {
     var el = $(this);
     el.parent().parent().addClass("removed");
@@ -809,11 +812,11 @@ changeTotal();
 	  @endif
    if($(".total span").text()>0){
 		UIkit.modal('#modal-choosecontact').show();
-		
+
    }else{
 	   $.alert('please login');
    }
-    
+
   });
    $(".btn-clearcart").click(function () {
     check = true;
@@ -822,7 +825,7 @@ changeTotal();
 });
 
     </script>
-<script src="https://js.paystack.co/v1/inline.js"></script>
+    <script src="https://js.paystack.co/v1/inline.js"></script>
 	<script>
 	function shippingMetadata(shipping){
 		var data=[];
@@ -844,7 +847,7 @@ changeTotal();
 					custom_fields:  shippingMetadata(shipping)
 				},
 				callback: function(response){
-					$.alert('Payment was successfull. transaction ref is ' + response.reference);
+					$.alert('Payment was successful. transaction ref is ' + response.reference);
 					$.get('/verify-payment?from=ajax&reference='+response.reference).done(function($response){
 						if($response.error){
 							return console.log($response);
@@ -854,8 +857,13 @@ changeTotal();
 					$(".remove").click();
 				},
 				onClose: function(){
-					$.alert('Transaction Cancelled');
-					
+                    $.alert('Transaction Cancelled');
+                    $.get('/verify-payment?from=ajax&reference='+shipping.tracking_id).done(function($response){
+                        if($response.error){
+							 console.log($response);
+						}
+                        window.location.href="/orders";
+					});
 				}
 			});
 			handler.openIframe();

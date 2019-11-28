@@ -125,7 +125,7 @@ span.soldout{
 }
 </style>
 <style>
-        .bd-example .pagination {
+    .pagination {
         margin-top: .5rem;
         margin-bottom: .5rem;
     }
@@ -174,6 +174,6 @@ span.soldout{
             @include( "main.searchbar")
             @include( "main.items")
             @includeIf("main.frequentbuyitems")
-        </div> 
+        </div>
     </div>
 @endsection

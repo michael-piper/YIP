@@ -35,7 +35,8 @@ Route::get('/signup_vendor', 'ScreenController@signupVendor');
 Route::post('/signup_vendor', 'ScreenController@doSignupVendor');
 Route::get('/forgetpassword', 'ScreenController@forgetPassword');
 Route::post('/forgetpassword', 'ScreenController@doForgetPassword');
-Route::apiResource('account/contacts', 'AccountContactController'); 
+Route::apiResource('account/contacts', 'AccountContactController');
+
 Route::group(['prefix' => 'dashboard','middleware' => ['auth.admin']], function(){
     Route::get('/products', 'AdminController@products');
     Route::get('/add_product', 'AdminController@addProduct');
@@ -48,6 +49,7 @@ Route::group(['prefix' => 'dashboard','middleware' => ['auth.admin']], function(
 
 Route::group(['prefix' => 'dashboard','middleware' => ['auth.vendor']], function(){
     Route::get('/products', 'VendorController@products');
+    Route::get('/orders', 'VendorController@orders');
     Route::get('/add_product', 'VendorController@addProduct');
     Route::post('/add_product', 'VendorController@doAddProduct');
     Route::get('/product/{product_id}', 'VendorController@product');

@@ -54,7 +54,7 @@ class User extends Authenticatable
         $headers=getallheaders ();
         $session=$headers['Authorization'] ?? null;
         $session_data=explode(' ',$session);
-        $api_token= $hearders['X-Api-Token'] ?? null;
+        $api_token= $headers['X-Api-Token'] ?? null;
         if(isset($session_data[0]) && isset($session_data[1])){
             $session_data[0]=trim($session_data[0]);
             if($session_data[0]=="Basic"){
@@ -100,7 +100,7 @@ class User extends Authenticatable
         $headers=getallheaders ();
         $session=$headers['Authorization'] ?? null;
         $session_data=explode(' ',$session);
-        $api_token= $hearders['X-Api-Token'] ?? null;
+        $api_token= $headers['X-Api-Token'] ?? null;
         if(isset($session_data[0]) && isset($session_data[1])){
             $session_data[0]=trim($session_data[0]);
             if($session_data[0]=="Basic"){

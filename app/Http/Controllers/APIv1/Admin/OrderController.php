@@ -4,28 +4,28 @@ namespace App\Http\Controllers\APIv1\Admin;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
-use App\User;
-use App\Product;
-use App\ProductAvailable;
-use App\ProductCategory;
 use App\ProductSubCategory;
-class ProductController extends Controller
+use App\ProductCategory;
+use App\Product;
+use App\Order;
+use App\User;
+class OrderController extends Controller
 {
     //
-    public function index()
+    public function index(Request $request)
     {
         $user=User::from_api_token();
-        $products=Product::all();
-        if(count($products)>0){
-            foreach($products as $key=>$product){
-                $products[$key]->owner=User::where('id',$product->user_id)->first();
-                $products[$key]->category=ProductCategory::where('id',$product->category_id)->first();
-                $products[$key]->sub_category=ProductSubCategory::where('id',$product->sub_category_id)->first();
+        $orders= Order::all();
+        if(count($orders)>0){
+            foreach($orders as $key=>$order){
+                $orders[$key]->product=Product::where('id',$order->product_id)->first();
+                $orders[$key]->product->category=ProductCategory::where('id',$orders[$key]->product->category_id)->first();
+                $orders[$key]->product->sub_category=ProductSubCategory::where('id',$orders[$key]->product->sub_category_id)->first();
             }
         }
         return response()->json([
             'error' => false,
-            'data'  => $products,
+            'data'  =>$orders,
         ], 200);
     }
     public function store(Request $request)
@@ -95,7 +95,7 @@ class ProductController extends Controller
     public function show($id)
     {
         $user=User::from_api_token();
-        $product=Product::where(['id'=>$id])->get();
+        $product=Product::where(['user_id'=>$user->id,'id'=>$id])->get();
         if(is_null($product)){
             return response()->json([
                 'error' => true,

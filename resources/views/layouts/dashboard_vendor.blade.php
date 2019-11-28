@@ -8,7 +8,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta http-equiv="x-ua-compatible" content="ie=edge">
   <meta name="csrf_token" content="{{csrf_token()}}">
-  <meta name="X-API-TOKEN" content="{{$user->api_token}}">
+  <meta name="X-Api-Token" content="{{$user->api_token}}">
   <title>{{$user->display_name }} | Motoparts Arena | Dashboard 3</title>
 
   <!-- Font Awesome Icons -->
@@ -50,10 +50,16 @@ to get the desired effect
         <a class="nav-link" data-widget="pushmenu" href="#"><i class="fas fa-bars"></i></a>
       </li>
       <li class="nav-item d-none d-sm-inline-block">
-        <a href="index3.html" class="nav-link">Home</a>
+        <a href="/" class="nav-link">Home</a>
       </li>
       <li class="nav-item d-none d-sm-inline-block">
         <a href="#" class="nav-link">Contact</a>
+      </li>
+      <li class="nav-item d-none d-sm-inline-block">
+            <a href="/shop" class="nav-link">Shop</a>
+          </li>
+      <li class="nav-item d-none d-sm-inline-block">
+        <a href="/logout" class="nav-link">Logout</a>
       </li>
     </ul>
 
@@ -303,8 +309,8 @@ to get the desired effect
     window.API_URL=location.protocol+'//'+location.host+'/api/';
     $.ajaxSetup({
     headers: {
-        'X-Csrf-Token': $('meta[name="csrf-token"]').attr('content')||"",
-        'X-Api-Token' : $("meta[name='X-API-TOKEN']").attr("content")||''
+        'X-Csrf-Token': $("meta[name='csrf-token']").attr('content')||"",
+        'X-Api-Token' : $("meta[name='X-Api-Token']").attr("content")||''
     }
 });
 </script>

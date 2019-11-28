@@ -7,7 +7,7 @@
           <div class="container-fluid">
                 <div class="card">
         <div class="card-header">
-          <h3 class="card-title">DataTable For Products</h3>
+          <h3 class="card-title">DataTable For Orders</h3>
         </div>
         <!-- /.card-header -->
         <div class="card-body">
@@ -15,12 +15,14 @@
             <thead>
             <tr>
               <th>#</th>
-              <th>name</th>
+              <th>product name</th>
               <th>price</th>
-              <th>condition</th>
-              <th>commission</th>
-              <th>available</th>
-              <th>sold</th>
+              <th>quantitiy</th>
+              <th>total price</th>
+              <th>shipping fee</th>
+              <th>shipping name</th>
+              <th>shipping state</th>
+              <th>shipping address</th>
               <th>action</th>
             </tr>
             </thead>
@@ -35,12 +37,14 @@
             <tfoot>
                 <tr>
                     <th>#</th>
-                    <th>name</th>
+                    <th>product name</th>
                     <th>price</th>
-                    <th>condition</th>
-                    <th>commission</th>
-                    <th>available</th>
-                    <th>sold</th>
+                    <th>quantitiy</th>
+                    <th>total price</th>
+                    <th>shipping fee</th>
+                    <th>shipping name</th>
+                    <th>shipping state</th>
+                    <th>shipping address</th>
                     <th>action</th>
                 </tr>
             </tfoot>
@@ -86,27 +90,28 @@
 
 
  $(function () {
-     loadProduct();
+     loadOrder();
 });
-  function loadProduct(){
-    $.getJSON(API_URL+'v1/products').then(function(res){
+  function loadOrder(){
+    $.getJSON(API_URL+'v1/orders').then(function(res){
     console.log(res.data);
     if(res.error)return;
     $('#products-table tbody').html('');
      for(var i in res.data){
-        var html=`<tr title="${res.data[i].description}">
+        var contact=JSON.parse(res.data[i].contact);
+        var html=`<tr>
               <th>${res.data[i].id}</th>
-              <th>${res.data[i].name}</th>
+              <th>${res.data[i].product.name}</th>
               <th>${res.data[i].price}</th>
-              <th>${res.data[i].condition}</th>
-              <th>${res.data[i].commission}</th>
-              <th>${res.data[i].available}</th>
-              <th>${res.data[i].sold}</th>
-              <th>
-                    <button onclick="removeProduct(${res.data[i].id})" class="btn btn-danger btn-sm d-inline" title="delete"><span class="fas fa-trash"></span></button>
+              <th>${res.data[i].quantity}</th>
+              <th>${res.data[i].total_price}</th>
+              <th>${res.data[i].shipping_fee}</th>
+              <th>${contact.shipping_name}</th>
+              <th>${contact.shipping_state}</th>
+              <th>${contact.shipping_address}</th>
 
-                <a href="/dashboard/edit_product/${res.data[i].id}" class="btn btn-info btn-sm" title="edit"><span class="fas fa-edit"></span></a>
-                <a href="/dashboard/product/${res.data[i].id}" class="btn btn-success btn-sm" title="view"><span class="fas fa-eye"></span></a>
+              <th>
+                <button onclick="orderStatus(${res.data[i].id})" class="btn btn-danger btn-sm d-inline" title="move"><span class="fas fa-spin fa-bus"></span></button>
               </th>
             </tr>`;
         $('#products-table tbody').append(html);
@@ -114,10 +119,10 @@
     $("#products-table").DataTable();
 });
   }
-    function removeProduct(productid){
+    function removeOrder(productid){
         $.ajax({
             method: "DELETE",
-            url:API_URL+'v1/products/'+productid
+            url:API_URL+'v1/orders/'+productid
         })
         .done(function( res ) {
             if(res.error){
@@ -130,7 +135,7 @@
                     type: 'success',
                     title: res.message
                 })
-                loadProduct();
+                loadOrder();
             }
         }).fail(function(res){
 

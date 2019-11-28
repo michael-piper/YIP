@@ -38,14 +38,6 @@ Route::group(['prefix' => 'v1','namespace' => 'APIv1'], function(){
     Route::post('otp/{username}', 'OTPController@create');
     Route::apiResource('otp', 'OTPController');
 });
-Route::group(['prefix' => 'v1','namespace' => 'APIv1\Admin','middleware' => ['auth.api','auth.admin']], function(){
-    Route::apiResource('users', 'UserController');
-    Route::apiResource('pages', 'PageController');
-    Route::apiResource('websites', 'WebsiteController');
-    Route::apiResource('components', 'ComponentController');
-    Route::apiResource('articles', 'ArticleController');
-    Route::apiResource('webplugins', 'WebPluginController');
-});
 Route::group(['prefix' => 'v1','namespace' => 'APIv1\Vendor','middleware' => ['auth.api','auth.vendor']], function(){
     Route::apiResource('products', 'ProductController');
     Route::apiResource('orders', 'OrderController');
@@ -54,3 +46,12 @@ Route::group(['prefix' => 'v1','namespace' => 'APIv1\Vendor','middleware' => ['a
     Route::apiResource('articles', 'ArticleController');
     Route::apiResource('webplugins', 'WebPluginController');
 });
+Route::group(['prefix' => 'v1','namespace' => 'APIv1\Admin','middleware' => ['auth.api','auth.admin']], function(){
+    Route::apiResource('products', 'ProductController');
+    Route::apiResource('orders', 'OrderController');
+    Route::apiResource('websites', 'WebsiteController');
+    Route::apiResource('components', 'ComponentController');
+    Route::apiResource('articles', 'ArticleController');
+    Route::apiResource('webplugins', 'WebPluginController');
+});
+

@@ -16,6 +16,9 @@ class VendorController extends Controller
     function products(){
         return view('dashboard.vendor.products');
     }
+    function orders(){
+        return view('dashboard.vendor.orders');
+    }
     function product(Request $request, $product_id){
         $user=User::from_api_token();
         if(is_null($user))

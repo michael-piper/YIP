@@ -426,29 +426,63 @@ display: block;
 .text-black{
     color:#000;
 }
+    .pagination {
+        margin-top: .5rem;
+        margin-bottom: .5rem;
+    }
+    .pagination {
+        display: -webkit-box;
+        display: -ms-flexbox;
+        display: flex;
+        padding-left: 0;
+        list-style: none;
+        border-radius: .25rem;
+    }
+    dl, ol, ul {
+        margin-top: 0;
+        margin-bottom: 1rem;
+    }
+        .page-item:first-child .page-link {
+        margin-left: 0;
+        border-top-left-radius: .25rem;
+        border-bottom-left-radius: .25rem;
+    }
+
+    .page-link:not(:disabled):not(.disabled) {
+        cursor: pointer;
+    }
+    .page-link {
+        position: relative;
+        display: block;
+        padding: .5rem .75rem;
+        margin-left: -1px;
+        line-height: 1.25;
+        color: #007bff;
+        background-color: #fff;
+        border: 1px solid #dee2e6;
+    }
 </style>
-@endsection
-
-@section('js')
-
 @endsection
 
 @section('content')
 
+<header id="site-header">
+<div class="container">
+
 @if($user)
-@php($orders=App\Order::where(['user_id'=>$user->id])->get())
+@php($orders=App\Order::where(['user_id'=>$user->id])->orderBy('updated_at','DESC')->paginate(6))
+<h1>Shopping Orders <span>[</span> <em><a href="" target="_blank">{{$orders->total()}} </a></em> <span class="last-span is-open">]</span>
 
 @else
 @php($orders=[])
-@endif
-<header id="site-header">
-<div class="container">
 <h1>Shopping Orders <span>[</span> <em><a href="" target="_blank">{{count($orders)}} </a></em> <span class="last-span is-open">]</span>
+
+@endif
  <a href="/shop" class="continue">Continue Shopping</a>
 
 
   </h1>
- 
+
 </div>
 </header>
 <div class="container">
@@ -471,6 +505,15 @@ display: block;
 </header>
 <div class="content">
 <h1 class="uk-h3 uk-margin-remove">{{$product->name}}</h1>
+@if($order->payment_status == 0)
+<div style="top:35px;margin-left:-15px;width:auto;" class="type small red">
+    <a href="JavaScript:retryPayment('{{$order->id}}');" class="text-white">Retry Payment</a>
+</div>
+@elseif($order->payment_status == 1)
+<div style="top:35px;margin-left:-15px;width:auto;" class="type small yellow">
+    <a href="JavaScript:verifyPayment('{{$order->tracking_id}}','{{$order->id}}');" class="text-white">Confirm Payment</a>
+</div>
+@endif
 <table class="uk-table uk-margin-remove uk-table-small uk-table-striped">
 <thead>
 <tr>
@@ -483,7 +526,7 @@ display: block;
 <tbody>
 <tr>
 
-<td>{{$order->id}}</td>
+<td>order-{{$order->id}}</td>
 <td>{{$order->tracking_id}}</td>
 <td>{{$order_status->name ?? 'Awaiting'}}</td>
 <td>{{$payment_status->name ??'Not Paid'}}</td>
@@ -506,6 +549,97 @@ display: block;
 </footer>
 </article>
 @endforeach
+
 </section>
+@auth
+<section class="uk-padding uk-margin-top">
+    <span class="uk-float-left">
+        page {{$orders->currentPage()?? 0}} of {{$orders->lastPage()?? 0}}
+    </span>
+        <span class="uk-float-right">{{$orders->links()}}<span>
+</section>
+@endauth
 </div>
+@endsection
+@section('js')
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-loading-overlay/2.1.6/loadingoverlay.js"></script>
+<script>
+$.ajaxSetup({
+    headers: {
+        'X-Csrf-Token': $('meta[name="csrf-token"]').attr('content')||""
+    }
+});
+function retryPayment($id){
+    $.LoadingOverlay("show");
+    $.post('/cart/checkout?from=ajax',{id:$id}).done(function($response){
+        $.LoadingOverlay("hide");
+		if($response.data){
+            shipping=$response.data.shipping;
+			shipping.tracking_id=$response.data.tracking_id;
+			shipping.total_price=$response.data.total_price;
+			payWithPaystack(shipping);
+		}
+	}).fail(function(){
+        $.LoadingOverlay("hide");
+    });
+}
+function verifyPayment(reference,$id){
+    $.LoadingOverlay("show");
+    $.get('/verify-payment?from=ajax&reference='+reference).done(function($response){
+        $.LoadingOverlay("hide");
+        if($response.error){
+            retryPayment($id);
+            return console.log($response);
+        }
+        window.location.reload();
+
+    }).fail(function(){
+        $.LoadingOverlay("hide");
+    });
+}
+</script>
+<script src="https://js.paystack.co/v1/inline.js"></script>
+<script>
+  function shippingMetadata(shipping){
+      var data=[];
+      for(var n in shipping){
+          var display_name=n.replace(/[\_]/gi,' ');
+          var variable_name=n.replace(/[\s\.\-\+\=\!\*\&\%\$\#\@\~\`]/gi,'_').toLowerCase();
+          data.push({ display_name: display_name, variable_name: variable_name, value: shipping[n] });
+      }
+      return data;
+  }
+      function payWithPaystack(shipping){
+          var handler = PaystackPop.setup({
+              key: "pk_test_907a3707c9dd8db6c4ee95572a363aa501e7f1f6",
+              email: "{{ $user->email ?? 'Unidentified user' }}",
+              amount: shipping.total_price +"00",
+              ref: shipping.tracking_id,
+              currency: "NGN",
+              metadata: {
+                  custom_fields:  shippingMetadata(shipping)
+              },
+              callback: function(response){
+                  $.alert('Payment was successfull. transaction ref is ' + response.reference);
+                  $.get('/verify-payment?from=ajax&reference='+response.reference).done(function($response){
+                      if($response.error){
+                          return console.log($response);
+                      }
+                      window.location.reload();
+                  });
+              },
+              onClose: function(){
+
+                  $.get('/verify-payment?from=ajax&reference='+shipping.tracking_id).done(function($response){
+                      if($response.error){
+                        return console.log($response);
+                        $.alert($response.message);
+                      }
+                      window.location.reload();
+                  });
+              }
+          });
+          handler.openIframe();
+      }
+  </script>
 @endsection

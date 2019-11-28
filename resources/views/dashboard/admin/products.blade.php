@@ -15,6 +15,7 @@
             <thead>
             <tr>
               <th>#</th>
+              <th>vendor name</th>
               <th>name</th>
               <th>price</th>
               <th>condition</th>
@@ -35,6 +36,7 @@
             <tfoot>
                 <tr>
                     <th>#</th>
+                    <th>vendor name</th>
                     <th>name</th>
                     <th>price</th>
                     <th>condition</th>
@@ -91,11 +93,12 @@
   function loadProduct(){
     $.getJSON(API_URL+'v1/products').then(function(res){
     console.log(res.data);
-    if(res.error)return;
+    // if(res.error)return;
     $('#products-table tbody').html('');
      for(var i in res.data){
         var html=`<tr title="${res.data[i].description}">
               <th>${res.data[i].id}</th>
+              <th>${res.data[i].owner.display_name}</th>
               <th>${res.data[i].name}</th>
               <th>${res.data[i].price}</th>
               <th>${res.data[i].condition}</th>
@@ -103,7 +106,7 @@
               <th>${res.data[i].available}</th>
               <th>${res.data[i].sold}</th>
               <th>
-                    <button onclick="removeProduct(${res.data[i].id})" class="btn btn-danger btn-sm d-inline" title="delete"><span class="fas fa-trash"></span></button>
+                <button onclick="removeProduct(${res.data[i].id})" class="btn btn-danger btn-sm d-inline" title="delete"><span class="fas fa-trash"></span></button>
 
                 <a href="/dashboard/edit_product/${res.data[i].id}" class="btn btn-info btn-sm" title="edit"><span class="fas fa-edit"></span></a>
                 <a href="/dashboard/product/${res.data[i].id}" class="btn btn-success btn-sm" title="view"><span class="fas fa-eye"></span></a>

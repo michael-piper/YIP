@@ -34,11 +34,22 @@ class ScreenController extends Controller
         if($request->query('from')=="ajax"){
             if(is_null($user))
             return response()->json(['error'=>true,'message'=>'user not logedIn']);
-           
-            if(is_null($name) || is_null($phone) || is_null($address) || is_null($state)){
+            $tracking_id='trk-'.time().'-'.mt_rand(10000,99999);
+
+            if($request->input('id') != null){
+                $order= Order::where(['id'=>$request->input('id')])->first();
+                if(is_null($order)){
+                    return response()->json(['error'=>true,'message'=>'order id not found']);
+                }
+                $order->tracking_id=$tracking_id;
+                $order->save();
+                $total=$order->total_price+$order->shipping_fee;
+                return response()->json(['error'=>false,'data'=>['total_price'=>$total,'tracking_id'=>$tracking_id,'shipping'=>$order->contact()]]);
+            }
+            elseif(is_null($name) || is_null($phone) || is_null($address) || is_null($state)){
                 return response()->json(['error'=>true,'message'=>'Shipping address, state, phone, name can\'t be empty']);
             }
-            $tracking_id='trk-'.time().'-'.mt_rand(10000,99999);
+
             $carts = Cart::where(['user_id'=>$user->id])->get();
             $total=0;
             foreach($carts as $cart){
@@ -54,7 +65,7 @@ class ScreenController extends Controller
                 if($shipping_fee){
                     $new_order->shipping_fee=(int) $shipping_fee;
                 }else{
-                    $new_order->shipping_fee= 5;
+                    $new_order->shipping_fee= 5 * $new_order->quantity;
                 }
                 $new_order->order_status=1;
                 $new_order->payment_status=1;
@@ -68,7 +79,7 @@ class ScreenController extends Controller
             return redirect()->intended('login?m=please+login');
             return redirect()->intended('orders');
         }
-       
+
     }
     function verifyPayment(Request $request){
         $user=Auth::user();
@@ -77,7 +88,7 @@ class ScreenController extends Controller
         if($request->query('from')=="ajax"){
             if(is_null($user))
             return response()->json(['error'=>true,'message'=>'user not logedIn']);
-           
+
             if( is_null($reference)){
                 return response()->json(['error'=>true,'message'=>'reference cannot be null']);
             }
@@ -105,14 +116,26 @@ class ScreenController extends Controller
                 $result = json_decode($request, true);
                 // print_r($result);
                 if($result){
-                    if($result['data']){
+                    if(isset($result['data'])){
                         //something came in
-                        if($result['data']['status'] == 'success' && $result['data']['amount']== $total){    
-                            $success=true;                     
+                        if($result['data']['status'] == 'success' && $result['data']['amount']== $total){
+                            $success=true;
+                            foreach($orders as $order){
+                                $order->payment_status=2;
+                                $order->save();
+                            }
                         }else{
+                            foreach($orders as $order){
+                                $order->payment_status=1;
+                                $order->save();
+                            }
                             $success=false;
                         }
                     }else{
+                        foreach($orders as $order){
+                            $order->payment_status=0;
+                            $order->save();
+                        }
                         $success=false;
                     }
 
@@ -123,10 +146,6 @@ class ScreenController extends Controller
                 $success=false;
             }
             if($success){
-                foreach($orders as $order){
-                    $order->payment_status=2;
-                    $order->save();
-                }
                 return response()->json(['error'=>false,'message'=>'Payment verified']);
             }else{
                 return response()->json(['error'=>true,'message'=>'Payment couldn\'t be verified please try again','data'=>$result,'total'=> $total]);
@@ -150,7 +169,7 @@ class ScreenController extends Controller
         }
         else{
             if(is_null($user))
-            return redirect()->intended('login?m=please+login')->with('error', 'user not loged in!');
+            return redirect()->intended('login?m=please+login');
             return "not autorized";
         }
     }
@@ -158,7 +177,7 @@ class ScreenController extends Controller
         $user=null;
         if(Auth::check()){
             $user=Auth::user();
-            $cart = Cart::where(['user_id'=>$user->id,'id'=>$cart_id])->first();  
+            $cart = Cart::where(['user_id'=>$user->id,'id'=>$cart_id])->first();
         }else{
             $cart = Cart::where(['user_id'=>0,'id'=>$cart_id])->first();
         }
@@ -174,7 +193,7 @@ class ScreenController extends Controller
         $user=null;
         if(Auth::check()){
             $user=Auth::user();
-            $cart = Cart::where(['user_id'=>$user->id,'id'=>$cart_id])->first();  
+            $cart = Cart::where(['user_id'=>$user->id,'id'=>$cart_id])->first();
         }else{
             $cart = Cart::where(['user_id'=>0,'id'=>$cart_id])->first();
         }
@@ -234,7 +253,7 @@ class ScreenController extends Controller
         $user=null;
         if(Auth::check()){
             $user=Auth::user();
-            $cart = Cart::where(['user_id'=>$user->id,'id'=>$cart_id])->first();  
+            $cart = Cart::where(['user_id'=>$user->id,'id'=>$cart_id])->first();
         }else{
             $cart = Cart::where(['user_id'=>0,'id'=>$cart_id])->first();
         }
@@ -254,17 +273,23 @@ class ScreenController extends Controller
                 }else{
                     session(['cart'=>[]]);
                 }
-               
+
             }
             $cart->delete();
         }
         return redirect()->intended('cart?m='.urlencode('item removed from cart'));
     }
     function order() {
+        if(Auth::check())
         return view('screen.order');
+        return redirect()->intended('login?r=/order&m='.urlencode('please login to view orders'));
+
     }
     function orders() {
+        if(Auth::check())
         return view('screen.order');
+        return  redirect()->intended('login?r=/orders&m='.urlencode('please login to view orders'));
+
     }
     function shop() {
         return view('screen.shop');
@@ -315,7 +340,7 @@ class ScreenController extends Controller
                                 $check_cart->save();
                                 $cart->delete();
                             }
-                           
+
                         }
                     }
                     session(['cart'=>[]]);
@@ -368,6 +393,7 @@ class ScreenController extends Controller
             if($wait){
                 $message_type="success";
                 $message="your account have been created";
+                return redirect()->intended('login?m='.urlencode($message));
             }
             else{
                 $message_type='error';
@@ -377,7 +403,7 @@ class ScreenController extends Controller
         }
         return view('screen.signup')->with([$message_type=>$message,'body'=>$credentials]);
     }
-    function signupVendor(Request $request){
+    function doSignupVendor(Request $request){
         $message_type='error';
         $message='Email or Password Invalid!';
         $credentials = $request->only('name', 'contact_name', 'email', 'phone', 'address', 'state', 'id_card_type', 'id_card_number', 'password', 'confirm_password');
@@ -408,6 +434,7 @@ class ScreenController extends Controller
             if($wait){
                 $message_type="success";
                 $message="your account have been created";
+                return redirect()->intended('login?m='.urlencode($message));
             }
             else{
                 $message_type='error';
@@ -417,7 +444,7 @@ class ScreenController extends Controller
         }
         return view('screen.signup_vendor')->with([$message_type=>$message,'body'=>$credentials]);
     }
-    function doSignupVendor(){
+    function signupVendor(){
         return view('screen.signup_vendor');
     }
     function forgetPassword(){
