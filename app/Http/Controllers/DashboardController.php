@@ -1,36 +1,91 @@
 <?php
 
-namespace App\Http\Controllers\APIv1\Vendor;
+namespace App\Http\Controllers;
 
-use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
-use App\User;
 use App\Product;
-use App\ProductStatus;
-use App\ProductAvailable;
-use App\ProductCategory;
-use App\ProductSubCategory;
-class ProductController extends Controller
+use App\User;
+use App\Http\Controllers\ActionController;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\View;
+class DashboardController extends Controller
 {
     //
-    public function index()
-    {
-        $user=User::from_api_token();
-        $products=Product::where(['user_id'=>$user->id])->get();
-        if(count($products)>0){
-            foreach($products as $key=>$product){
-                $products[$key]->condition=ProductStatus::where('id',$product->condition)->first();
-                $products[$key]->category=ProductCategory::where('id',$product->category_id)->first();
-                $products[$key]->sub_category=ProductSubCategory::where('id',$product->sub_category_id)->first();
-            }
-        }
-        return response()->json([
-            'error' => false,
-            'data'  => $products,
-        ], 200);
+    protected $user=null;
+    function __construct() {
+        // parent::__construct();
+        $this->user=Auth::user();
+
     }
-    public function store(Request $request)
-    {
+    function isAdmin(){
+        if($this->user){
+            return ($this->user->type==3);
+        }
+        return false;
+    }
+    function isVendor(){
+        if($this->user){
+           return ($this->user->type==2);
+        }
+        return false;
+    }
+    function view($view){
+        if($this->isVendor()){
+            $view=(string)'dashboard.vendor.'.$view;
+        }
+        elseif($this->isAdmin()){
+            $view=(string)'dashboard.admin.'.$view;
+        }else{
+            $view=false;
+        }
+
+        if ($view && View::exists($view)) {
+            return view($view);
+        }
+        return abort('404','page not found');
+    }
+    //
+    function orders(){
+        $this->__construct();
+        return $this->view('orders');
+    }
+    function categories(){
+        $this->__construct();
+        return $this->view('categories');
+    }
+    function subCategories(){
+        $this->__construct();
+        return $this->view('sub_categories');
+    }
+    function carsMakeAndModel(){
+        $this->__construct();
+        return $this->view('cars-make-model');
+    }
+    function products(){
+        $this->__construct();
+        return $this->view('products');
+    }
+    function addProduct(){
+        $this->__construct();
+        if(is_null($this->user))
+        return redirect()->intended('login?m=please+login');
+        return $this->view('addproduct');
+    }
+    function editProduct($product_id){
+        $this->__construct();
+        $user=$this->user;
+        if(!Auth::check())
+            return redirect()->intended('login?m=please+login')->with('error', 'user not loged in!');
+        $product=Product::where(['user_id'=>$user->id,'id'=>$product_id])->first();
+        if(is_null($product))
+            return redirect()->intended('dashboard/products?m='.urlencode('product with #'.$product_id.' not available on your list'))->with('error', 'user not loged in!');
+        return $this->view('editproduct')->with(['body'=>$product]);
+    }
+    function doAddProduct(Request $request){
+        $this->__construct();
+        $user=$this->user;
+        if(!Auth::check())
+        return redirect()->intended('login?m=please+login');
         $message_type='error';
         $message='Email or Password Invalid!';
         $credentials = $request->only(
@@ -87,35 +142,17 @@ class ProductController extends Controller
             }
 
         }
-        return response()->json([
-            $message_type => true,
-            'message'  => $message,
-        ], 404);
+        return $this->view('addproduct')->with([$message_type=>$message,'body'=>$credentials]);
     }
-
-    public function show($id)
-    {
-        $user=User::from_api_token();
-        $product=Product::where(['user_id'=>$user->id,'id'=>$id])->get();
-        if(is_null($product)){
-            return response()->json([
-                'error' => true,
-                'data'  =>$product,
-            ], 200);
-        }
-        return response()->json([
-            'error' => false,
-            'data'  =>$product,
-        ], 200);
-    }
-    public function update(Request $request, $id)
-    {
+    function doEditProduct(Request $request){
+        $this->__construct();
+        $user=$this->user;
+        if(!Auth::check())
+        return redirect()->intended('login?m=please+login');
         $message_type='error';
         $message='Email or Password Invalid!';
-        $request->product_id=$id;
         $credentials = $request->only(
-            'product_id',
-            'name',
+            'product_id','name',
             'price',
             'discount',
             'category',
@@ -124,8 +161,7 @@ class ProductController extends Controller
             'model',
             'year',
             'condition',
-            'description',
-            'image');
+            'description','image');
         $validation = Validator::make($credentials,[
             'product_id'=>'required',
             'name'=>'required',
@@ -156,25 +192,6 @@ class ProductController extends Controller
             }
 
         }
-        return response()->json([
-            $message_type => true,
-            'message'  => $message,
-        ], 404);
-    }
-    public function destroy($id)
-    {
-        $user=User::from_api_token();
-        $product = Product::where(['user_id'=>$user->id,'id'=>$id])->first();
-        if(is_null($product)){
-            return response()->json([
-                'error' => true,
-                'message'  => "Product with id # $id not found",
-            ], 404);
-        }
-        $product->delete();
-        return response()->json([
-            'error' => false,
-            'message'  => "Product successfully deleted id # $id",
-        ], 200);
+        return $this->view('editproduct')->with([$message_type=>$message,'body'=>$credentials]);
     }
 }

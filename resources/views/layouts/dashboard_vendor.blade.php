@@ -305,6 +305,8 @@ to get the desired effect
 
 <!-- jQuery -->
 <script src="/plugins/jquery/jquery.min.js"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jquery-confirm/3.3.2/jquery-confirm.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-confirm/3.3.2/jquery-confirm.min.js" type="text/javascript"></script>
 <script>
     window.API_URL=location.protocol+'//'+location.host+'/api/';
     $.ajaxSetup({

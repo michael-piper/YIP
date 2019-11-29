@@ -5,7 +5,7 @@ namespace App\Http\Middleware;
 use Closure;
 use App\User;
 use Illuminate\Support\Facades\Auth;
-class AdminAuth
+class CustomerAuth
 {
     /**
      * Handle an incoming request.
@@ -19,12 +19,11 @@ class AdminAuth
         if (Auth::check()) {
             $user=Auth::user();
         }else{
-            return abort("401", "user not a admin");
+            return abort("401", "User not a Customer");
         }
-        if (!is_null($user) && $user->type == 3) {
+        if (!is_null($user) && $user->type == 1) {
             return $next($request);
         }
-        // return $next(new \Illuminate\Http\Request);
-        return abort("401", "User not a admin");
+        return abort("401", "User not a Customer");
     }
 }

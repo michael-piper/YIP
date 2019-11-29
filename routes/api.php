@@ -38,20 +38,41 @@ Route::group(['prefix' => 'v1','namespace' => 'APIv1'], function(){
     Route::post('otp/{username}', 'OTPController@create');
     Route::apiResource('otp', 'OTPController');
 });
-Route::group(['prefix' => 'v1','namespace' => 'APIv1\Vendor','middleware' => ['auth.api','auth.vendor']], function(){
-    Route::apiResource('products', 'ProductController');
-    Route::apiResource('orders', 'OrderController');
-    Route::apiResource('websites', 'WebsiteController');
-    Route::apiResource('components', 'ComponentController');
-    Route::apiResource('articles', 'ArticleController');
-    Route::apiResource('webplugins', 'WebPluginController');
+Route::middleware(['auth.api'])->group(function () {
+    //
+    static $user;
+    $user=User::from_api_token();
+    if($user && $user->type==3 ){
+        Route::group(['prefix' => 'v1','namespace' => 'APIv1\Admin'], function(){
+            Route::apiResource('products', 'ProductController');
+            Route::apiResource('categories', 'CategoryController');
+            Route::apiResource('sub_categories', 'SubCategoryController');
+            Route::apiResource('cars-make-model', 'CarsMakeAndModelController');
+            Route::apiResource('orders', 'OrderController');
+            Route::apiResource('websites', 'WebsiteController');
+            Route::apiResource('components', 'ComponentController');
+            Route::apiResource('articles', 'ArticleController');
+            Route::apiResource('webplugins', 'WebPluginController');
+        });
+    }
+    elseif( $user && $user->type==2){
+        Route::group(['prefix' => 'v1','namespace' => 'APIv1\Vendor'], function(){
+            Route::apiResource('products', 'ProductController');
+
+            Route::apiResource('orders', 'OrderController');
+            Route::apiResource('websites', 'WebsiteController');
+            Route::apiResource('components', 'ComponentController');
+            Route::apiResource('articles', 'ArticleController');
+            Route::apiResource('webplugins', 'WebPluginController');
+        });
+    }
+    else{
+        Route::get('{a22}',function() use($user){
+            return response()->json([$user]);
+        });
+    }
+
+
 });
-Route::group(['prefix' => 'v1','namespace' => 'APIv1\Admin','middleware' => ['auth.api','auth.admin']], function(){
-    Route::apiResource('products', 'ProductController');
-    Route::apiResource('orders', 'OrderController');
-    Route::apiResource('websites', 'WebsiteController');
-    Route::apiResource('components', 'ComponentController');
-    Route::apiResource('articles', 'ArticleController');
-    Route::apiResource('webplugins', 'WebPluginController');
-});
+
 

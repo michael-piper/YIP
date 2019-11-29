@@ -1,4 +1,4 @@
-@extends('layouts.dashboard_vendor')
+@extends('layouts.dashboard_admin')
 @section('main_content')
   <!-- Content Wrapper. Contains page content -->
   <div class="content-wrapper">

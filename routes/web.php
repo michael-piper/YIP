@@ -37,22 +37,15 @@ Route::get('/forgetpassword', 'ScreenController@forgetPassword');
 Route::post('/forgetpassword', 'ScreenController@doForgetPassword');
 Route::apiResource('account/contacts', 'AccountContactController');
 
-Route::group(['prefix' => 'dashboard','middleware' => ['auth.admin']], function(){
-    Route::get('/products', 'AdminController@products');
-    Route::get('/add_product', 'AdminController@addProduct');
-    Route::post('/add_product', 'AdminController@doAddProduct');
-    Route::get('/product/{product_id}', 'AdminController@product');
-    Route::get('/edit_product/{product_id}', 'AdminController@editProduct');
-    Route::post('/edit_product/{product_id}', 'AdminController@doEditProduct');
-
-});
-
-Route::group(['prefix' => 'dashboard','middleware' => ['auth.vendor']], function(){
-    Route::get('/products', 'VendorController@products');
-    Route::get('/orders', 'VendorController@orders');
-    Route::get('/add_product', 'VendorController@addProduct');
-    Route::post('/add_product', 'VendorController@doAddProduct');
-    Route::get('/product/{product_id}', 'VendorController@product');
-    Route::get('/edit_product/{product_id}', 'VendorController@editProduct');
-    Route::post('/edit_product/{product_id}', 'VendorController@doEditProduct');
+Route::group(['prefix' => 'dashboard','middleware' => ['auth.vendor-admin']], function(){
+    Route::get('/products', 'DashboardController@products');
+    Route::get('/orders', 'DashboardController@orders');
+    Route::get('/categories', 'DashboardController@categories');
+    Route::get('/cars-make-model', 'DashboardController@carsMakeAndModel');
+    Route::get('/sub_categories', 'DashboardController@subCategories');
+    Route::get('/add_product', 'DashboardController@addProduct');
+    Route::post('/add_product', 'DashboardController@doAddProduct');
+    Route::get('/product/{product_id}', 'DashboardController@product');
+    Route::get('/edit_product/{product_id}', 'DashboardController@editProduct');
+    Route::post('/edit_product/{product_id}', 'DashboardController@doEditProduct');
 });

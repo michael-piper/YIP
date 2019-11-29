@@ -1,4 +1,4 @@
-@extends('layouts.dashboard_vendor')
+@extends('layouts.dashboard_admin')
 @section('main_content')
    <!-- Content Wrapper. Contains page content -->
    <div class="content-wrapper">
@@ -95,13 +95,16 @@
     console.log(res.data);
     // if(res.error)return;
     $('#products-table tbody').html('');
+    $("#products-table").DataTable();
+    $("#products-table").DataTable().destroy();
+    $('#products-table tbody').html('');
      for(var i in res.data){
         var html=`<tr title="${res.data[i].description}">
               <th>${res.data[i].id}</th>
               <th>${res.data[i].owner.display_name}</th>
               <th>${res.data[i].name}</th>
               <th>${res.data[i].price}</th>
-              <th>${res.data[i].condition}</th>
+              <th>${res.data[i].condition.name}</th>
               <th>${res.data[i].commission}</th>
               <th>${res.data[i].available}</th>
               <th>${res.data[i].sold}</th>

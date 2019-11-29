@@ -51,7 +51,12 @@ class User extends Authenticatable
         return $this->hasOne('App\Order');
     }
     public static function verify_api_token(){
-        $headers=getallheaders ();
+        if(function_exists('getallheaders')){
+            $headers=getallheaders();
+        }
+        else{
+            $headers=[];
+        }
         $session=$headers['Authorization'] ?? null;
         $session_data=explode(' ',$session);
         $api_token= $headers['X-Api-Token'] ?? null;
@@ -97,7 +102,12 @@ class User extends Authenticatable
     }
     public static function from_api_token(){
         if(Auth::check()) return Auth::user();
-        $headers=getallheaders ();
+        if(function_exists('getallheaders')){
+            $headers=getallheaders();
+        }
+        else{
+            $headers=[];
+        }
         $session=$headers['Authorization'] ?? null;
         $session_data=explode(' ',$session);
         $api_token= $headers['X-Api-Token'] ?? null;

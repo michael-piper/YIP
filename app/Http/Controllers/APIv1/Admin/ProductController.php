@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\User;
 use App\Product;
+use App\ProductStatus;
 use App\ProductAvailable;
 use App\ProductCategory;
 use App\ProductSubCategory;
@@ -19,6 +20,7 @@ class ProductController extends Controller
         if(count($products)>0){
             foreach($products as $key=>$product){
                 $products[$key]->owner=User::where('id',$product->user_id)->first();
+                $products[$key]->condition=ProductStatus::where('id',$product->condition)->first();
                 $products[$key]->category=ProductCategory::where('id',$product->category_id)->first();
                 $products[$key]->sub_category=ProductSubCategory::where('id',$product->sub_category_id)->first();
             }

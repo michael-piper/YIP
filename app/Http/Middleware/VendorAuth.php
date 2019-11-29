@@ -21,9 +21,10 @@ class VendorAuth
         }else{
             return abort("401", "user not a vendor");
         }
-        if (!is_null($user) && $user->type > 1) {
+        if (!is_null($user) && $user->type == 2) {
             return $next($request);
         }
+        // return $next(new \Illuminate\Http\Request);
         return abort("401", "user not a vendor");
     }
 }
