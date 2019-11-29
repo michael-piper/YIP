@@ -196,7 +196,5 @@ addSubCategory=function(){
 
         });
     }
-
-
 </script>
 @endsection
