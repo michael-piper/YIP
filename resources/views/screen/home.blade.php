@@ -176,17 +176,21 @@ dl, ol, ul {
     url();
     background-size:cover;
 }
-body{
-    background-color:#000;
-}
 </style>
-<div class="uk-text-center uk-grid-small" uk-grid>
-   
+<div class="uk-text-center uk-grid-small uk-margin-left uk-margin-right" uk-grid>
+
+    <div class="uk-width-1-1@m" style="margin-top:-50px;">
+        @includeIf("main.topsellingitems")
+    </div>
+
     <div class="uk-width-1-1@m">
-        @includeIf("main.frequentbuyitems")
+        @includeIf("main.newinstock")
     </div>
     <div class="uk-width-1-1@m">
-        @includeIf("main.featuredproducts")
+        @includeIf("main.dealsoftheday")
+    </div>
+    <div class="uk-width-1-1@m">
+        @includeIf("main.dealsoftheday")
     </div>
 </div>
 @endsection

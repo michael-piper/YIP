@@ -1,31 +1,22 @@
-<div class="uk-height-large uk-background-cover uk-light uk-flex uk-bg-red" uk-parallax="bgy: -200" style="background-image: url('images/sliders/7.jpg');" uk-grid>
-    <h1 class="uk-width-1 uk-text-center uk-margin-auto uk-margin-auto-vertical">Your number 1 online motopart mart</h1>
-    <div class="uk-width-1-3 uk-text-center uk-margin-auto uk-margin-auto-vertical">
-    <div class=" uk-card w3-theme uk-card-hover uk-padding-small">
-         Find motoparts in 
-         <span class="uk-icon" href="#" uk-icon="icon: location"></span>
-           <span class="uk-badge">All Nigeria</span>
-        <form class="uk-grid-small" uk-grid>
-                <div class="uk-width-1-1">
-                    <div class="uk-inline uk-width-1-1">
-                        <a class="uk-form-icon" href="#" uk-icon="icon: pencil"></a>
-                        <input class="uk-input" type="text">
-                    </div>
-                </div>
-                <div class="uk-width-1-2@s">
-                    <input class="uk-input" type="text" placeholder="make">
-                </div>
-                <div class="uk-width-1-2@s">
-                    <input class="uk-input" type="text" placeholder="25">
-                </div>
-                <div class="uk-width-1-2@s">
-                    <input class="uk-input" type="text" placeholder="25">
-                </div>
-                <div class="uk-width-1-2@s">
-                    <input class="uk-input" type="text" placeholder="50">
-                </div>
-            </form>
+<div  uk-slideshow="animation: fade;autoplay: true;">
+
+<div class="uk-position-relative uk-visible-toggle uk-light" tabindex="-1" style="max-height:430px;">
+<ul class="uk-slideshow-items">
+        <li>
+            <img src="/images/backgrounds/bg-01.png" alt="" uk-cove>
+        </li>
+        <li>
+            <img src="/images/backgrounds/bg-02.png" alt="" uk-cove>
+        </li>
+    </ul>
+
+    <a class="uk-position-center-left uk-position-small uk-hidden-hover" href="#" uk-slidenav-previous uk-slideshow-item="previous"></a>
+    <a class="uk-position-center-right uk-position-small uk-hidden-hover" href="#" uk-slidenav-next uk-slideshow-item="next"></a>
+    <div class="uk-position-bottom uk-position-small uk-text-center">
+        <ul class="uk-slideshow-nav uk-padding uk-dotnav uk-flex-center uk-margin" style=""></ul>
+
     </div>
-       
-    </div>
+</div>
+
+
 </div>
