@@ -19,7 +19,10 @@ class VendorAdminAuth
         if (Auth::check()) {
             $user=Auth::user();
         }else{
+            if($request->expectsJson())
             return abort("401", "User not valid");
+            else
+            return redirect()->intended('login?r='.$request->url().'&m='.urlencode('please login'));
         }
         if (!is_null($user) && $user->type > 1) {
             return $next($request);

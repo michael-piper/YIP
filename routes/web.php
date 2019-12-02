@@ -44,6 +44,8 @@ Route::group(['prefix' => 'dashboard','middleware' => ['auth.vendor-admin']], fu
     Route::get('/cars-make-model', 'DashboardController@carsMakeAndModel');
     Route::get('/sub_categories', 'DashboardController@subCategories');
     Route::get('/add_product', 'DashboardController@addProduct');
+    Route::get('/product_status', 'DashboardController@productStatus');
+    Route::get('/order_status', 'DashboardController@orderStatus');
     Route::post('/add_product', 'DashboardController@doAddProduct');
     Route::get('/product/{product_id}', 'DashboardController@product');
     Route::get('/edit_product/{product_id}', 'DashboardController@editProduct');

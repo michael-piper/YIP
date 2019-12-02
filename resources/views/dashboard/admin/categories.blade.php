@@ -77,7 +77,70 @@
     @endif
 
     });
-
+    editCategory=function($id){
+    $.getJSON(API_URL+'v1/categories/'+$id).then(function(res){
+        console.log(res);
+        screen(res.data);
+    });
+    var screen=function(data){
+        $.confirm({
+            title: 'Edit Sub Category!',
+            content: '' +
+            '<form action="" class="formName">' +
+            '<div class="form-group">' +
+            '<label>Category Name</label>' +
+            '<input class="name form-control" value="'+data.name+'" required>' +
+            '</div>' +
+            '<div class="form-group">' +
+            '<label>Category Description</label>' +
+            '<textarea class="description form-control" required>'+data.description+'</textarea>' +
+            '</div>' +
+            '</form>',
+            buttons: {
+                formSubmit: {
+                    text: 'Submit',
+                    btnClass: 'btn-blue',
+                    action: function () {
+                        var meta={};
+                        meta.name = this.$content.find('.name').val();
+                        meta.description=this.$content.find('.description').val();
+                        $.ajax({
+                            method: "PUT",
+                            url:API_URL+'v1/categories/'+data.id,
+                            data:meta
+                        })
+                        .done(function(res){
+                            if(res.error){
+                                Toast.fire({
+                                    type: 'error',
+                                    title: res.message
+                                })
+                            }else{
+                                Toast.fire({
+                                    type: 'success',
+                                    title: res.message
+                                })
+                                loadOrder();
+                            }
+                        });
+                    }
+                },
+                cancel: function () {
+                    //close
+                },
+            },
+            onContentReady: function () {
+                // bind to events
+                var jc = this;
+                this.$content.find('form').on('submit', function (e) {
+                    // if the user submits the form by pressing enter in the field.
+                    e.preventDefault();
+                    jc.$$formSubmit.trigger('click'); // reference the button and click it
+                });
+            }
+        });
+    }
+  };
 addCategory=function(){
     $.confirm({
       title: 'Add Category!',
@@ -152,6 +215,7 @@ addCategory=function(){
               <th>${res.data[i].active?'true':'false'}</th>
               <th>
                 <button onclick="removeCategory(${res.data[i].id})" class="btn btn-danger btn-sm d-inline" title="move"><span class="fas fa-spin fa-times"></span></button>
+                <button onclick="editCategory(${res.data[i].id})" class="btn btn-success btn-sm d-inline" title="move"><span class="fas fa-edit"></span></button>
               </th>
             </tr>`;
         $('#products-table tbody').append(html);

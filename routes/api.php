@@ -44,13 +44,13 @@ Route::middleware(['auth.api'])->group(function () {
     $user=User::from_api_token();
     if($user && $user->type==3 ){
         Route::group(['prefix' => 'v1','namespace' => 'APIv1\Admin'], function(){
+            Route::apiResource('order-status', 'OrderStatusController');
+            Route::apiResource('product-status', 'ProductStatusController');
+            Route::apiResource('orders', 'OrderController');
             Route::apiResource('products', 'ProductController');
             Route::apiResource('categories', 'CategoryController');
             Route::apiResource('sub_categories', 'SubCategoryController');
             Route::apiResource('cars-make-model', 'CarsMakeAndModelController');
-            Route::apiResource('orders', 'OrderController');
-            Route::apiResource('websites', 'WebsiteController');
-            Route::apiResource('components', 'ComponentController');
             Route::apiResource('articles', 'ArticleController');
             Route::apiResource('webplugins', 'WebPluginController');
         });
@@ -58,12 +58,8 @@ Route::middleware(['auth.api'])->group(function () {
     elseif( $user && $user->type==2){
         Route::group(['prefix' => 'v1','namespace' => 'APIv1\Vendor'], function(){
             Route::apiResource('products', 'ProductController');
-
             Route::apiResource('orders', 'OrderController');
             Route::apiResource('websites', 'WebsiteController');
-            Route::apiResource('components', 'ComponentController');
-            Route::apiResource('articles', 'ArticleController');
-            Route::apiResource('webplugins', 'WebPluginController');
         });
     }
     else{

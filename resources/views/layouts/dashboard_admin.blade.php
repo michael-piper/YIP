@@ -283,7 +283,19 @@ to get the desired effect
             <li class="nav-item">
                 <a href="/dashboard/sub_categories" class="nav-link">
                     <i class="nav-icon far fa-file"></i>
-                    <p class="text">Sub Cateogry</p>
+                    <p class="text">Sub Category</p>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="/dashboard/product_status" class="nav-link">
+                    <i class="nav-icon far fa-file"></i>
+                    <p class="text">Product Status</p>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="/dashboard/order_status" class="nav-link">
+                    <i class="nav-icon far fa-file"></i>
+                    <p class="text">Order Status</p>
                 </a>
             </li>
           <li class="nav-header">LABELS</li>

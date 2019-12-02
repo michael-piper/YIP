@@ -35,6 +35,74 @@ class CategoryController extends Controller
             'message'  => "Category successfully created",
         ], 200);
     }
+    public function show($id)
+    {
+        $category= ProductCategory::where('id',$id)->first();
+        if(is_null($category)){
+            return response()->json([
+                'error' => true,
+                'message'  => "Category with id not found",
+            ], 200);
+        }
+        return response()->json([
+            'error' => false,
+            'data'  => $category,
+        ], 200);
+    }
+    public function update(Request $request, $id){
+        if($request->method()=='PATCH'){
+            $category= ProductCategory::where('id',$id)->first();
+            if(is_null($category)){
+                return response()->json([
+                    'error' => true,
+                    'message'  => "Category with id not found",
+                ], 200);
+            }
+            $patch=false;
+            $msg='';
+            $whitelist=['active'];
+            foreach($request->input() as $key=>$data){
+                if(array_key_exists($key,$whitelist)){
+                    $category->{$key}=$data;
+                    $patch=true;
+                    $msg.=$key.', ';
+                }
+            }
+
+            if($patch==true){
+                $category->save();
+                return response()->json([
+                    'error' => false,
+                    'message'  => "Category {$msg} successfully updated",
+                ], 200);
+            }
+            return response()->json([
+                'error' => true,
+                'message'  => "Nothing to update",
+            ], 200);
+        }
+        $values=$request->only('name','description');
+        if(is_null($values['name'])){
+            return response()->json([
+                'error' => true,
+                'message'  => "Category name required",
+            ], 200);
+        }
+        $category= ProductCategory::where('id',$id)->first();
+        if(is_null($category)){
+            return response()->json([
+                'error' => true,
+                'message'  => "Category with id not found",
+            ], 200);
+        }
+        $category->name=$request->name;
+        $category->description=$request->description;
+        $category->save();
+        return response()->json([
+            'error' => false,
+            'message'  => "Category successfully updated",
+        ], 200);
+    }
     public function destroy($id)
     {
         $category = ProductCategory::where(['id'=>$id])->first();

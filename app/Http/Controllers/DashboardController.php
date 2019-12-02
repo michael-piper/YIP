@@ -57,6 +57,14 @@ class DashboardController extends Controller
         $this->__construct();
         return $this->view('sub_categories');
     }
+    function productStatus(){
+        $this->__construct();
+        return $this->view('product_status');
+    }
+    function orderStatus(){
+        $this->__construct();
+        return $this->view('order_status');
+    }
     function carsMakeAndModel(){
         $this->__construct();
         return $this->view('cars-make-model');
@@ -64,6 +72,24 @@ class DashboardController extends Controller
     function products(){
         $this->__construct();
         return $this->view('products');
+    }
+    function product(Request $request, $product_id){
+        $this->__construct();
+        if(is_null($this->user))
+            return redirect()->intended('login?m=please+login')->with('error', 'user not loged in!');
+        if($this->isAdmin())
+        $product=Product::where(['id'=>$product_id])->first();
+        else
+        $product=Product::where(['user_id'=>$user->id,'id'=>$product_id])->first();
+
+        if(is_null($product))
+            return redirect()->intended('dashboard/products?m='.urlencode('product with #'.$product_id.' not available on your list'))->with('error', 'user not loged in!');
+        if($request->query('action')=='add_quantity' && $request->query('quantity')){
+            if(ActionController::tryAddProductQuantity($product_id,$request->query('quantity'))){
+                return redirect()->intended('dashboard/product/'.$product_id);
+            }
+        }
+        return $this->view('product')->with(['product'=>$product,'currency'=>Product::currency()]);
     }
     function addProduct(){
         $this->__construct();
@@ -74,9 +100,12 @@ class DashboardController extends Controller
     function editProduct($product_id){
         $this->__construct();
         $user=$this->user;
-        if(!Auth::check())
+        if(is_null($this->user))
             return redirect()->intended('login?m=please+login')->with('error', 'user not loged in!');
-        $product=Product::where(['user_id'=>$user->id,'id'=>$product_id])->first();
+        if($this->isAdmin())
+            $product=Product::where(['id'=>$product_id])->first();
+        else
+            $product=Product::where(['user_id'=>$user->id,'id'=>$product_id])->first();
         if(is_null($product))
             return redirect()->intended('dashboard/products?m='.urlencode('product with #'.$product_id.' not available on your list'))->with('error', 'user not loged in!');
         return $this->view('editproduct')->with(['body'=>$product]);

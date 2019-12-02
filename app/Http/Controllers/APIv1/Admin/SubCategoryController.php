@@ -49,6 +49,75 @@ class SubCategoryController extends Controller
             'message'  => "Sub Category successfully created",
         ], 200);
     }
+    public function show($id)
+    {
+        if($request->method()=='PATCH'){
+            $sub_category= ProductSubCategory::where('id',$id)->first();
+            if(is_null($category)){
+                return response()->json([
+                    'error' => true,
+                    'message'  => "Sub Category with id not found",
+                ], 200);
+            }
+            $patch=false;
+            $msg='';
+            $whitelist=['active'];
+            foreach($request->input() as $key=>$data){
+                if(array_key_exists($key,$whitelist)){
+                    $sub_category->{$key}=$data;
+                    $patch=true;
+                    $msg.=$key.', ';
+                }
+            }
+
+            if($patch==true){
+                $sub_category->save();
+                return response()->json([
+                    'error' => false,
+                    'message'  => "Sub Category {$msg} successfully updated",
+                ], 200);
+            }
+            return response()->json([
+                'error' => true,
+                'message'  => "Nothing to update",
+            ], 200);
+        }
+        $sub_category= ProductSubCategory::where('id',$id)->first();
+        if(is_null($sub_category)){
+            return response()->json([
+                'error' => true,
+                'message'  => "Sub Category with id not found",
+            ], 200);
+        }
+        $sub_category->category=ProductCategory::where('id',$sub_category->category_id)->first();
+        return response()->json([
+            'error' => false,
+            'data'  => $sub_category,
+        ], 200);
+    }
+    public function update(Request $request, $id){
+        $values=$request->only('name','description');
+        if(is_null($values['name'])){
+            return response()->json([
+                'error' => true,
+                'message'  => "Sub Category name required",
+            ], 200);
+        }
+        $sub_category= ProductSubCategory::where('id',$id)->first();
+        if(is_null($sub_category)){
+            return response()->json([
+                'error' => true,
+                'message'  => "Sub Category with id not found",
+            ], 200);
+        }
+        $sub_category->name=$request->name;
+        $sub_category->description=$request->description;
+        $sub_category->save();
+        return response()->json([
+            'error' => false,
+            'message'  => "Sub Category successfully updated",
+        ], 200);
+    }
     public function destroy($id)
     {
         $sub_category = ProductSubCategory::where(['id'=>$id])->first();
