@@ -1,20 +1,57 @@
 @php($currency=App\Product::currency())
-
+@php($products=App\Product::query())
 @isset($_GET['q'])
-@php($products=App\Product::where(['active'=>1,['name','LIKE','%'.$_GET['q'].'%']]))
-@php($array=explode(' ',$_GET['q']))
- @foreach($array as $q)
+ @if(strlen($_GET['q'])>4)
+  @php($where=[])
+  @php($where[]=['active','=',1])
+  @php($where[]=['name','LIKE',"%{$_GET['q']}%"])
+  @php($products=$products->where($where))
+ @endif
+ @php($array=explode(' ',$_GET['q']))
+ @if(count($array)>5)
+  @foreach($array as $q)
+    @if(strlen($q)>4)
+     @php($where=[])
+     @php($where[]=['active','=',1])
+     @php($where[]=['name','LIKE',"%$q%"])
+     @php($products=$products->orWhere($where))
+    @endif
+  @endforeach
+ @endif
+@endisset
+@if(isset($_GET['category']) && $_GET['category']!='')
  @php($where=[])
  @php($where[]=['active','=',1])
- @php($where[]=['name','=',$q])
- @php($products=$products->orWhere($where))
- @endforeach
-@else
-@php($products=App\Product::where(['active'=>1]))
-@endisset
+ @php($where[]=['category_id','=',$_GET['category']])
+ @php($products=$products->where($where))
+@endif
+@if(isset($_GET['subcategory']) && $_GET['subcategory']!='')
+ @php($where=[])
+ @php($where[]=['active','=',1])
+ @php($where[]=['sub_category_id','=',$_GET['subcategory']])
+ @php($products=$products->where($where))
+@endif
+@if(isset($_GET['make']) && $_GET['make']!='')
+ @php($where=[])
+ @php($where[]=['active','=',1])
+ @php($where[]=['make','=',$_GET['make']])
+ @php($products=$products->where($where))
+@endif
+@if(isset($_GET['model']) && $_GET['model']!='')
+ @php($where=[])
+ @php($where[]=['active','=',1])
+ @php($where[]=['model','=',$_GET['model']])
+ @php($products=$products->where($where))
+@endif
+@if(isset($_GET['year']))
+ @php($where=[])
+ @php($where[]=['active','=',1])
+ @php($where[]=['year','LIKE','%'.$_GET['year'].'%'])
+ @php($products=$products->where($where))
+@endif
 @php($products=$products->paginate(16))
 <section class="uk-text-center uk-padding-small">
-        <div class="uk-grid-small uk-child-width-1-4@s uk-text-center" uk-grid>
+        <div class="uk-grid-small uk-child-width-1-5@s uk-text-center" uk-grid>
                 @forelse($products as $product)
                 <div>
                         <li class="product">

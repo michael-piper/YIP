@@ -13,7 +13,21 @@
         @includeIf("main.navbar")
         @yield('content')
         @includeIf("main.footer")
-
+        <script>
+                window.API_URL=location.protocol+'//'+location.host+'/api/';
+                $.ajaxSetup({
+                headers: {
+                    'X-Csrf-Token': $("meta[name='csrf-token']").attr('content')||"",
+                    'X-Api-Token' : $("meta[name='X-Api-Token']").attr("content")||''
+                }
+            });
+        </script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/wow/1.1.2/wow.min.js"></script>
         @yield('js')
+
+        @stack('scripts')
+        <script>
+                new WOW().init();
+        </script>
     </body>
 </html>

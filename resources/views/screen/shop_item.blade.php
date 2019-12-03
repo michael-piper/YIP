@@ -206,7 +206,7 @@ select.color, select.size {
   letter-spacing: .3px;
 }
 /*BUTTON*/
-.btn {
+.btn-item {
   margin: 10px auto;
   text-align: center;
   font-size: 14px;
@@ -220,7 +220,7 @@ select.color, select.size {
   cursor: pointer;
   background: #fd7064;
 }
-.btn:hover {
+.btn-item:hover {
   background: #fc796f;
 }
 /*LINKS*/
@@ -391,7 +391,7 @@ span.soldout{
 
 @section('content')
 <div class="uk-text-center uk-grid-small" uk-grid>
-   
+
     <div class="uk-width-1-1@m">
       @include( "main.item")
     </div>

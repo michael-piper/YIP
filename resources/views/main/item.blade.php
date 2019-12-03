@@ -4,9 +4,9 @@
 @php($addons=$product->addons())
 <section>
 <div class="uk-text-center uk-grid-small" uk-grid>
-   
+
   <div class="uk-width-1-1@m">
- 
+
   <div class="uk-margin-left uk-margin-right uk-card-default uk-card-body radius-small uk-margin-top">
      <!--GALLERY-->
           <div class="pics">
@@ -87,14 +87,14 @@
            <div class="block-select">
             <form>
               <div class="uk-grid-small uk-width-1-1" uk-grid>
-                
+
                     <div class="uk-width-1-2">
                         <!--BUTTON-->
-                        <a href="/add_to_cart/{{$product->id}}" class="btn uk-button" style="color:white;">Add to Cart</a>
+                        <a href="/add_to_cart/{{$product->id}}" class="btn-item uk-button" style="color:white;">Add to Cart</a>
                     </div>
                     <div class="uk-width-1-2">
                         <!--BUTTON-->
-                        <button class="btn uk-button">Check Out</button>
+                        <button class="btn-item uk-button">Check Out</button>
                     </div>
                 </div>
              </form>

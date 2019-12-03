@@ -169,9 +169,8 @@ span.soldout{
 
 @section('content')
 
-<div class="uk-text-center uk-grid-small" uk-grid>
+<div class="uk-text-center uk-grid-small uk-margin-top" uk-grid>
         <div class="uk-width-1-1@s">
-            @include( "main.searchbar")
             @include( "main.items")
             @includeIf("main.frequentbuyitems")
         </div>
