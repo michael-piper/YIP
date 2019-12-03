@@ -396,7 +396,7 @@ span.soldout{
       @include( "main.item")
     </div>
     <div class="uk-width-1-1@m">
-      @includeIf("main.featuredproducts")
+      @includeIf("main.topsellingitems")
     </div>
 </div>
 @endsection
