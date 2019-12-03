@@ -8,7 +8,7 @@
  */
 
 define('LARAVEL_START', microtime(true));
-
+setlocale(LC_MONETARY,"en_US","");
 /*
 |--------------------------------------------------------------------------
 | Register The Auto Loader

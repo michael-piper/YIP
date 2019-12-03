@@ -18,7 +18,7 @@
             <div style="max-height:80px;" class="uk-card-footer uk-hover">
             <p class="uk-text-truncate uk-padding-remove uk-margin-remove text-dark"><small>{{$product->name}}</small></p>
             <span class="price uk-padding-remove uk-margin-remove text-muted">
-                <span class="amount"><span class="currencySymbol">{{$currency}}</span>{{$product->priceWithCommission()}}</span>
+                <span class="amount"><small><span class="currencySymbol">{{$currency}}</span>{{number_format($product->priceWithCommission(),'2','.',',')}}</small></span>
             </span>
             </div>
         </div>
@@ -27,7 +27,7 @@
         @empty
         <li>
         </div>
-            no frequent buy items
+            No frequent buy items
         </div>
         </li>
         @endforelse

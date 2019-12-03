@@ -77,7 +77,7 @@
                 </div>
                 @empty
                 </div>
-                     no items valid to your search
+                     No items valid to your search
                 </div>
                 @endforelse
         </div>
