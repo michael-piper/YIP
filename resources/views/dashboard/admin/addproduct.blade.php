@@ -39,8 +39,8 @@
                                             max-height: 400px;
                                         }
                                     </style>
-                                    <img src="" class="product_image img-preview">
-                                    <span class="img-preview-label" style="color:green;">choose display image</span>
+                                    <img src="/images/products/placeholder.png" class="product_image img-preview">
+                                    <span class="img-preview-label" style="color:green;">Choose display image</span>
                                     <div class="input-group mb-3">
                                             <div class="input-group-prepend">
                                             <span class="input-group-text"><i class="fas fa-picture"></i></span>
@@ -72,7 +72,7 @@
                                         <span class="input-group-text">.00</span>
                                         </div>
                                     </div>
-                                    <span class="text-success float-right mt-4 pb-1">do product runs on discount?</span>
+                                    <span class="text-success float-right mt-4 pb-1">Do product runs on discount?</span>
                                     <div class="input-group mb-3">
                                         <div class="input-group-prepend">
                                             <span class="input-group-text">-</span>
@@ -149,7 +149,7 @@
                                             <span class="input-group-text"><i class="fas fa-clock"></i></span>
                                             </div>
                                             <div class="form-control border-0 p-0 m-0">
-                                                <select name="condition" class="form-control select2 condition load" data-placeholder="choose product condition">
+                                                <select name="condition" class="form-control select2 condition load" data-placeholder="Choose product condition">
                                                     <option value="2">New</option>
                                                     <option value="1">Used</option>
                                                 </select>
@@ -309,7 +309,7 @@ function readURL(input) {
 
         $('.img-preview-label')
           .attr('style',"display:initial;color:red;")
-          .text("file format not supported");
+          .text("File format not supported");
         $('.img-preview')
           .attr('style',"display:none;")
       }

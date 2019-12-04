@@ -224,26 +224,44 @@ addProductStatus=function(){
 });
   }
     function removeProductStatus(productStatusid){
-        $.ajax({
-            method: "DELETE",
-            url:API_URL+'v1/product-status/'+productStatusid
-        })
-        .done(function( res ) {
-            if(res.error){
-                Toast.fire({
-                    type: 'error',
-                    title: res.message
-                })
-            }else{
-                Toast.fire({
-                    type: 'success',
-                    title: res.message
-                })
-                loadProductStatus();
-            }
-        }).fail(function(res){
+        var action=function(){
+            $.ajax({
+                method: "DELETE",
+                url:API_URL+'v1/product-status/'+productStatusid
+            })
+            .done(function( res ) {
+                if(res.error){
+                    Toast.fire({
+                        type: 'error',
+                        title: res.message
+                    })
+                }else{
+                    Toast.fire({
+                        type: 'success',
+                        title: res.message
+                    })
+                    loadProductStatus();
+                }
+            }).fail(function(res){
 
+            });
+        }
+        $.confirm({
+            title: 'Remove Product Status!',
+            content: 'Are you sure you want to remove product status?',
+            type:'orange',
+            buttons: {
+                formSubmit: {
+                    text: 'Yes',
+                    btnClass: 'btn-blue',
+                    action:action
+                },
+                cancel: function () {
+                    //close
+                }
+            }
         });
+
     }
 
 

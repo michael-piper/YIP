@@ -21,15 +21,11 @@
               <th>total price</th>
               <th>shipping fee</th>
               <th>shipping name</th>
-              <th>shipping state</th>
               <th>shipping address</th>
               <th>action</th>
             </tr>
             </thead>
             <tbody>
-
-
-
 
 
 
@@ -43,7 +39,7 @@
                     <th>total price</th>
                     <th>shipping fee</th>
                     <th>shipping name</th>
-                    <th>shipping state</th>
+
                     <th>shipping address</th>
                     <th>action</th>
                 </tr>
@@ -110,11 +106,12 @@
               <th>${res.data[i].total_price}</th>
               <th>${res.data[i].shipping_fee}</th>
               <th>${contact.shipping_name}</th>
-              <th>${contact.shipping_state}</th>
-              <th>${contact.shipping_address}</th>
+              <th>${contact.shipping_state}, ${contact.shipping_address}</th>
 
               <th>
-                <button onclick="orderStatus(${res.data[i].id})" class="btn btn-danger btn-sm d-inline" title="move"><span class="fas fa-spin fa-bus"></span></button>
+                    <button onclick="removeOrder(${res.data[i].id})" class="btn btn-danger btn-sm d-inline" title="move"><small><span class="fas fa-trash"></span></small></button>
+
+                    <button onclick="orderStatus(${res.data[i].id})" class="btn btn-warning btn-sm d-inline" title="move"><small><span class="fas fa-bus"></span> change status</small></button>
               </th>
             </tr>`;
         $('#products-table tbody').append(html);
@@ -123,28 +120,107 @@
 });
   }
     function removeOrder(productid){
-        $.ajax({
-            method: "DELETE",
-            url:API_URL+'v1/orders/'+productid
-        })
-        .done(function( res ) {
-            if(res.error){
-                Toast.fire({
-                    type: 'error',
-                    title: res.message
-                })
-            }else{
-                Toast.fire({
-                    type: 'success',
-                    title: res.message
-                })
-                loadOrder();
+        var action = function () {
+            $.ajax({
+                method: "DELETE",
+                url:API_URL+'v1/orders/'+productid
+            })
+            .done(function( res ) {
+                if(res.error){
+                    Toast.fire({
+                        type: 'error',
+                        title: res.message
+                    })
+                }else{
+                    Toast.fire({
+                        type: 'success',
+                        title: res.message
+                    })
+                    loadOrder();
+                }
+            }).fail(function(res){
+                console.log(res)
+            });
+        }
+        $.confirm({
+            title: 'Remove Order!',
+            content: 'are you sure you want to remove order?',
+            type:'orange',
+            buttons: {
+                formSubmit: {
+                    text: 'Yes',
+                    btnClass: 'btn-blue',
+                    action: action
+                },
+                cancel: function () {
+                    //close
+                }
             }
-        }).fail(function(res){
-
         });
     }
 
+orderStatus=function($id){
+    $.confirm({
+        title: 'Change Order Status!',
+        content: '' +
+        '<form action="" class="formName">' +
+        '<div class="form-group">' +
+        '<label>Select Status</label>' +
+        '<select  class="order-status form-control" required>' +
+        '</select>'+
+        '</div>' +
+        '</form>',
+        buttons: {
+            formSubmit: {
+                text: 'Submit',
+                btnClass: 'btn-blue',
+                action: function () {
+                    var meta={};
+                    meta.order_status=this.$content.find('.order-status').val();
+                    $.ajax({
+                            method: "PATCH",
+                            url:API_URL+'v1/orders/'+data.id,
+                            data:meta
+                        })
+                    .then(function(res){
+                        if(res.error){
+                            Toast.fire({
+                                type: 'error',
+                                title: res.message
+                            })
+                        }else{
+                            Toast.fire({
+                                type: 'success',
+                                title: res.message
+                            })
+                            loadOrder();
+                        }
+                    });
+                }
+            },
+            cancel: function () {
+                //close
+            },
+        },
+        onContentReady: function () {
+            // bind to events
+            var jc = this;
+            $.getJSON(API_URL+'v1/order-status/').then(function(res){
+            var html='';
+            for(var i in res.data){
+                html+='<option value="'+res.data[i].id+'">'+res.data[i].name+'</option>';
+            }
+            jc.$content.find('.order-status').html(html);
+            });
+
+            this.$content.find('form').on('submit', function (e) {
+                // if the user submits the form by pressing enter in the field.
+                e.preventDefault();
+                jc.$$formSubmit.trigger('click'); // reference the button and click it
+            });
+        }
+    });
+  };
 
 </script>
 @endsection

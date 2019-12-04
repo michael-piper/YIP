@@ -15,7 +15,6 @@ class ProductController extends Controller
     //
     public function index()
     {
-        $user=User::from_api_token();
         $products=Product::all();
         if(count($products)>0){
             foreach($products as $key=>$product){
@@ -164,8 +163,7 @@ class ProductController extends Controller
     }
     public function destroy($id)
     {
-        $user=User::from_api_token();
-        $product = Product::where(['user_id'=>$user->id,'id'=>$id])->first();
+        $product = Product::where(['id'=>$id])->first();
         if(is_null($product)){
             return response()->json([
                 'error' => true,

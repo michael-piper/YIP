@@ -14,7 +14,6 @@ class OrderController extends Controller
     //
     public function index(Request $request)
     {
-        $user=User::from_api_token();
         $orders= Order::all();
         if(count($orders)>0){
             foreach($orders as $key=>$order){
@@ -30,147 +29,68 @@ class OrderController extends Controller
     }
     public function store(Request $request)
     {
-        $message_type='error';
-        $message='Email or Password Invalid!';
-        $credentials = $request->only(
-            'name',
-            'price',
-            'discount',
-            'quantity',
-            'category',
-            'subcategory',
-            'make',
-            'model',
-            'year',
-            'condition',
-            'description','image');
-        $validation = Validator::make($credentials,[
-            'name'=>'required',
-            'price'=>'required',
-            'quantity'=>'required',
-            'category' => 'required',
-            'subcategory' => 'required',
-            'make'=>'required',
-            'model'=>'required',
-            'year'=>'required',
-            'condition'=>'required',
-            'image'=>'required'
-        ]);
 
-        if($validation->fails()){
-            $errors=$validation->errors();
-            foreach ($errors->all() as $message) {
-                break;
-            }
-
-        }else{
-            $wait=ActionController::tryAddProduct($request);
-            if($wait){
-                $message_type="success";
-                $message="product added";
-                if($request->quantity){
-                    $wait=ActionController::tryAddProductQuantity($wait->id,$request->quantity);
-                    if($wait){
-                        $message_type="success";
-                        $message="product added with ".$request->quantity." in stock";
-                    }else{
-                        $message_type="warning";
-                        $message="product quantity not added";
-                    }
-                }
-
-            }
-            else{
-                $message_type='error';
-                $message='your product couldn\'t be added at the moment';
-            }
-
-        }
         return response()->json([
-            $message_type => true,
-            'message'  => $message,
+            'error' => true,
+            'message'  => '',
         ], 404);
     }
 
     public function show($id)
     {
-        $user=User::from_api_token();
-        $product=Product::where(['user_id'=>$user->id,'id'=>$id])->get();
-        if(is_null($product)){
+        $order=Order::where(['id'=>$id])->first();
+        if(is_null($order)){
             return response()->json([
                 'error' => true,
-                'data'  =>$product,
-            ], 200);
+                'message'  => "Order with id not found",
+            ], 404);
         }
         return response()->json([
             'error' => false,
-            'data'  =>$product,
+            'data'  =>$order,
         ], 200);
     }
     public function update(Request $request, $id)
     {
-        $message_type='error';
-        $message='Email or Password Invalid!';
-        $request->product_id=$id;
-        $credentials = $request->only(
-            'product_id',
-            'name',
-            'price',
-            'discount',
-            'category',
-            'subcategory',
-            'make',
-            'model',
-            'year',
-            'condition',
-            'description',
-            'image');
-        $validation = Validator::make($credentials,[
-            'product_id'=>'required',
-            'name'=>'required',
-            'price'=>'required',
-            'category' => 'required',
-            'subcategory' => 'required',
-            'make'=>'required',
-            'model'=>'required',
-            'year'=>'required',
-            'condition'=>'required'
-        ]);
-
-        if($validation->fails()){
-            $errors=$validation->errors();
-            foreach ($errors->all() as $message) {
-                break;
+        if($request->method()=='PATCH'){
+            $order = Order::where(['id'=>$id])->first();
+            $touch=false;
+            if(is_null($order)){
+                return response()->json([
+                    'error' => true,
+                    'message'  => "Order with id # $id not found",
+                ], 404);
             }
-
-        }else{
-            $wait=ActionController::tryEditProduct($request);
-            if($wait){
-                $message_type="success";
-                $message="product edit";
+            $whitelist=['order-status'];
+            foreach($request->input() as $name=>$input){
+                if(in_array($name,$whitelist)){
+                    $order->{$name}=$input;
+                    $touch=true;
+                }
             }
-            else{
-                $message_type='error';
-                $message='your product couldn\'t be edited at the moment';
+            if($touch == false){
+                return response()->json([
+                    'error' => true,
+                    'message'  => "Nothing to update in Order data",
+                ], 200);
             }
-
+            $order->save();
+            return response()->json([
+                'error' => false,
+                'message'  => 'Order Updated',
+            ], 404);
         }
-        return response()->json([
-            $message_type => true,
-            'message'  => $message,
-        ], 404);
     }
     public function destroy($id)
     {
-        $user=User::from_api_token();
-        $product = Product::where(['user_id'=>$user->id,'id'=>$id])->first();
-        if(is_null($product)){
+        $order = Order::where(['id'=>$id])->first();
+        if(is_null($order)){
             return response()->json([
                 'error' => true,
-                'message'  => "Product with id # $id not found",
+                'message'  => "Order with id # $id not found",
             ], 404);
         }
-        $product->delete();
+        $order->delete();
         return response()->json([
             'error' => false,
             'message'  => "Product successfully deleted id # $id",

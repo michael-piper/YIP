@@ -63,7 +63,7 @@
                             <span class="onsale yellow">Sale!</span>
                             @endif
                             <a href="/shop/product-{{$product->id}}/{{$product->name}}" class="woocommerce-LoopProduct-link woocommerce-loop-product__link">
-                            <img class="product-image" width="300" height="300" src="{{ $product->display_image ??'/images/product/placeholder.jpg'}}" sizes="(max-width: 300px) 100vw, 300px">
+                            <img class="product-image" width="300" height="300" src="{{ url($product->display_image ??'/images/product/placeholder.jpg')}}" sizes="(max-width: 300px) 100vw, 300px">
                             <h2 class="product-title">{{$product->name}}</h2>
                             <div class="star-rating" role="img" aria-label="Rated 4.00 out of 5">
                                 {!!App\Product::rating($product->id)!!}

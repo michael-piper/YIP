@@ -247,26 +247,44 @@ addSubCategory=function(){
     });
   }
     function removeSubCategory(categoryid){
-        $.ajax({
-            method: "DELETE",
-            url:API_URL+'v1/sub_categories/'+categoryid
-        })
-        .done(function( res ) {
-            if(res.error){
-                Toast.fire({
-                    type: 'error',
-                    title: res.message
-                })
-            }else{
-                Toast.fire({
-                    type: 'success',
-                    title: res.message
-                })
-                loadOrder();
-            }
-        }).fail(function(res){
+        var action=function(){
+            $.ajax({
+                method: "DELETE",
+                url:API_URL+'v1/sub_categories/'+categoryid
+            })
+            .done(function( res ) {
+                if(res.error){
+                    Toast.fire({
+                        type: 'error',
+                        title: res.message
+                    })
+                }else{
+                    Toast.fire({
+                        type: 'success',
+                        title: res.message
+                    })
+                    loadOrder();
+                }
+            }).fail(function(res){
 
+            });
+        }
+        $.confirm({
+            title: 'Remove Sub Category!',
+            content: 'Are you sure you want to remove sub category',
+            type:'orange',
+            buttons: {
+                formSubmit: {
+                    text: 'Yes',
+                    btnClass: 'btn-blue',
+                    action:action
+                },
+                cancel: function () {
+                    //close
+                }
+            }
         });
+
     }
 </script>
 @endsection

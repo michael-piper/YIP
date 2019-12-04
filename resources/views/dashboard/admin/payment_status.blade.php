@@ -7,19 +7,19 @@
           <div class="container-fluid">
                 <div class="card">
         <div class="card-header">
-                <button onclick="addCategory();" class="btn btn-primary btn-sm float-right">Add</button>
+                <button onclick="addPaymentStatus();" class="btn btn-primary btn-sm float-right">Add</button>
 
-          <h3 class="card-title">DataTable For Cars Make And Model</h3>
+          <h3 class="card-title">DataTable For Payment Status</h3>
         </div>
         <!-- /.card-header -->
         <div class="card-body">
-          <table id='products-table' class="table table-bordered table-striped">
+          <table id='payments-table' class="table table-bordered table-striped">
             <thead>
             <tr>
               <th>#</th>
-              <th>Make</th>
-              <th>Model</th>
-              <th>action</th>
+              <th>name</th>
+              <th>Description</th>
+              <th>Action</th>
             </tr>
             </thead>
             <tbody>
@@ -33,8 +33,8 @@
             <tfoot>
                 <tr>
                     <th>#</th>
-                    <th>Make</th>
-                    <th>Model</th>
+                    <th>Name</th>
+                    <th>Description</th>
                     <th>Action</th>
                 </tr>
             </tfoot>
@@ -77,26 +77,23 @@
     @endif
 
     });
-    editCategory=function($id){
-    $.getJSON(API_URL+'v1/cars-make-model/'+$id).then(function(res){
+    editPaymentStatus=function($id){
+    $.getJSON(API_URL+'v1/payment-status/'+$id).then(function(res){
         console.log(res);
-        if(res.data){
-            res.data.id=$id;
-            screen(res.data);
-        }
+        screen(res.data);
     });
     var screen=function(data){
         $.confirm({
-            title: 'Edit Make & Model!',
+            title: 'Edit Payment Status!',
             content: '' +
             '<form action="" class="formName">' +
             '<div class="form-group">' +
-            '<label>Make</label>' +
-            '<input class="make form-control" value="'+data.make+'" required>' +
+            '<label>Payment Status Name</label>' +
+            '<input class="name form-control" value="'+data.name+'" required>' +
             '</div>' +
             '<div class="form-group">' +
-            '<label>Model</label>' +
-            '<input class="model form-control" value="'+data.model+'" required>' +
+            '<label>Payment Status Description</label>' +
+            '<textarea class="description form-control" required>'+data.description+'</textarea>' +
             '</div>' +
             '</form>',
             buttons: {
@@ -105,11 +102,11 @@
                     btnClass: 'btn-blue',
                     action: function () {
                         var meta={};
-                        meta.make = this.$content.find('.make').val();
-                        meta.model=this.$content.find('.model').val();
+                        meta.name = this.$content.find('.name').val();
+                        meta.description=this.$content.find('.description').val();
                         $.ajax({
                             method: "PUT",
-                            url:API_URL+'v1/cars-make-model/'+data.id,
+                            url:API_URL+'v1/payment-status/'+data.id,
                             data:meta
                         })
                         .done(function(res){
@@ -123,7 +120,7 @@
                                     type: 'success',
                                     title: res.message
                                 })
-                                loadOrder();
+                                loadPaymentStatus();
                             }
                         });
                     }
@@ -144,20 +141,20 @@
         });
     }
   };
-addCategory=function(){
+addPaymentStatus=function(){
     $.confirm({
-      title: 'Add Make and Model!',
+      title: 'Add Payment Status!',
       content: '' +
       '<form action="" class="formName">' +
       '<div class="form-group">' +
 
       '<div class="form-group">' +
-      '<label>Make</label>' +
-      '<input  class="make form-control" required>' +
+      '<label>Payment Status Name</label>' +
+      '<input  class="name form-control" required>' +
       '</div>' +
       '<div class="form-group">' +
-      '<label>Model</label>' +
-      '<input  class="model form-control" required>' +
+      '<label>Payment Status Description</label>' +
+      '<textarea class="description form-control" required></textarea>' +
       '</div>' +
       '</form>',
       buttons: {
@@ -166,9 +163,9 @@ addCategory=function(){
               btnClass: 'btn-blue',
               action: function () {
                   var meta={};
-                meta.make = this.$content.find('.make').val();
-                meta.model=this.$content.find('.model').val();
-                $.post(API_URL+'v1/cars-make-model',meta)
+                meta.name = this.$content.find('.name').val();
+                meta.description=this.$content.find('.description').val();
+                $.post(API_URL+'v1/payment-status',meta)
                 .then(function(res){
                     if(res.error){
                         Toast.fire({
@@ -180,7 +177,7 @@ addCategory=function(){
                             type: 'success',
                             title: res.message
                         })
-                        loadOrder();
+                        loadPaymentStatus();
                     }
                 });
               }
@@ -201,35 +198,36 @@ addCategory=function(){
   });
   };
  $(function () {
-     loadOrder();
+     loadPaymentStatus();
 });
-  function loadOrder(){
-    $.getJSON(API_URL+'v1/cars-make-model').then(function(res){
-    if(res.data.error)return;
-    $('#products-table tbody').html('');
-    $("#products-table").DataTable();
-    $("#products-table").DataTable().destroy();
-    $('#products-table tbody').html('');
+  function loadPaymentStatus(){
+    $.getJSON(API_URL+'v1/payment-status').then(function(res){
+    console.log(res.data);
+    if(res.error)return;
+    $('#payments-table tbody').html('');
+    $("#payments-table").DataTable();
+    $("#payments-table").DataTable().destroy();
+    $('#payments-table tbody').html('');
      for(var i in res.data){
         var html=`<tr>
-              <th>${i}</th>
-              <th>${res.data[i].make}</th>
-              <th>${res.data[i].model}</th>
+              <th>${res.data[i].id}</th>
+              <th>${res.data[i].name}</th>
+              <th>${res.data[i].description}</th>
               <th>
-                <button onclick="removeCategory(${i})" class="btn btn-danger btn-sm d-inline" title="move"><span class="fas fa-spin fa-times"></span></button>
-                <button onclick="editCategory(${i})" class="btn btn-success btn-sm d-inline" title="move"><span class="fas fa-edit"></span></button>
+                <button onclick="removePaymentStatus(${res.data[i].id})" class="btn btn-danger btn-sm d-inline" title="move"><span class="fas fa-spin fa-times"></span></button>
+                <button onclick="editPaymentStatus(${res.data[i].id})" class="btn btn-success btn-sm d-inline" title="move"><span class="fas fa-edit"></span></button>
               </th>
             </tr>`;
-        $('#products-table tbody').append(html);
+        $('#payments-table tbody').append(html);
     }
-    $("#products-table").DataTable();
+    $("#payments-table").DataTable();
 });
   }
-    function removeCategory(categoryid){
+    function removePaymentStatus(paymentStatusid){
         var action=function(){
             $.ajax({
                 method: "DELETE",
-                url:API_URL+'v1/cars-make-model/'+categoryid
+                url:API_URL+'v1/payment-status/'+paymentStatusid
             })
             .done(function( res ) {
                 if(res.error){
@@ -242,15 +240,15 @@ addCategory=function(){
                         type: 'success',
                         title: res.message
                     })
-                    loadOrder();
+                    loadPaymentStatus();
                 }
             }).fail(function(res){
 
             });
         }
         $.confirm({
-            title: 'Remove Make & Model!',
-            content: 'Are you sure you want to remove make & model?',
+            title: 'Remove Payment Status!',
+            content: 'Are you sure you want to remove payment status?',
             type:'orange',
             buttons: {
                 formSubmit: {

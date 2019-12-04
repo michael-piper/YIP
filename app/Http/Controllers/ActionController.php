@@ -157,7 +157,6 @@ class ActionController extends Controller
         $product->commission=Product::cal_commission((int)$request->price);
         $product->category_id=$request->category;
         $product->sub_category_id=$request->subcategory;
-        $product->user_id=$user->id;
         $product->condition=$request->condition;
         $product->description=$request->description;
         $year=$request->input("year");

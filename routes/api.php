@@ -45,7 +45,11 @@ Route::middleware(['auth.api'])->group(function () {
     if($user && $user->type==3 ){
         Route::group(['prefix' => 'v1','namespace' => 'APIv1\Admin'], function(){
             Route::apiResource('order-status', 'OrderStatusController');
+            Route::apiResource('product.images', 'ProductImageController')->only([
+                'index', 'store', 'show', 'destroy'
+            ]);
             Route::apiResource('product-status', 'ProductStatusController');
+            Route::apiResource('payment-status', 'PaymentStatusController');
             Route::apiResource('orders', 'OrderController');
             Route::apiResource('products', 'ProductController');
             Route::apiResource('categories', 'CategoryController');
@@ -57,6 +61,9 @@ Route::middleware(['auth.api'])->group(function () {
     }
     elseif( $user && $user->type==2){
         Route::group(['prefix' => 'v1','namespace' => 'APIv1\Vendor'], function(){
+            Route::apiResource('product.images', 'ProductImageController')->only([
+                'index', 'store', 'show', 'destroy'
+            ]);
             Route::apiResource('products', 'ProductController');
             Route::apiResource('orders', 'OrderController');
             Route::apiResource('websites', 'WebsiteController');

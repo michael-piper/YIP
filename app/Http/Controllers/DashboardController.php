@@ -2,12 +2,16 @@
 
 namespace App\Http\Controllers;
 
+
+use App\Http\Controllers\ActionController;
+use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\View;
 use Illuminate\Http\Request;
 use App\Product;
 use App\User;
-use App\Http\Controllers\ActionController;
-use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\View;
+
+
 class DashboardController extends Controller
 {
     //
@@ -60,6 +64,10 @@ class DashboardController extends Controller
     function productStatus(){
         $this->__construct();
         return $this->view('product_status');
+    }
+    function paymentStatus(){
+        $this->__construct();
+        return $this->view('payment_status');
     }
     function orderStatus(){
         $this->__construct();

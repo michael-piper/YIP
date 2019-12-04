@@ -33,13 +33,13 @@ class ScreenController extends Controller
         $shipping_fee=$request->input('shipping_fee');
         if($request->query('from')=="ajax"){
             if(is_null($user))
-            return response()->json(['error'=>true,'message'=>'user not logedIn']);
+            return response()->json(['error'=>true,'message'=>'User not logedIn']);
             $tracking_id='trk-'.time().'-'.mt_rand(10000,99999);
 
             if($request->input('id') != null){
                 $order= Order::where(['id'=>$request->input('id')])->first();
                 if(is_null($order)){
-                    return response()->json(['error'=>true,'message'=>'order id not found']);
+                    return response()->json(['error'=>true,'message'=>'Order id not found']);
                 }
                 $order->tracking_id=$tracking_id;
                 $order->save();
@@ -76,7 +76,7 @@ class ScreenController extends Controller
             return response()->json(['error'=>false,'data'=>['total_price'=>$total,'tracking_id'=>$tracking_id,'shipping'=>$request->input()]]);
         }else{
             if(is_null($user))
-            return redirect()->intended('login?m=please+login');
+            return redirect()->intended('login?m=Please+login');
             return redirect()->intended('orders');
         }
 
@@ -90,7 +90,7 @@ class ScreenController extends Controller
             return response()->json(['error'=>true,'message'=>'user not logedIn']);
 
             if( is_null($reference)){
-                return response()->json(['error'=>true,'message'=>'reference cannot be null']);
+                return response()->json(['error'=>true,'message'=>'Reference cannot be null']);
             }
             $orders=Order::where(['user_id'=>$user->id,'tracking_id'=>$reference])->get();
             $total=0;
@@ -152,7 +152,7 @@ class ScreenController extends Controller
             }
         }else{
             if(is_null($user))
-            return redirect()->intended('login?m=please+login');
+            return redirect()->intended('login?m=Please+login');
 
             return redirect()->intended('orders');
         }
@@ -160,12 +160,12 @@ class ScreenController extends Controller
     function dashboard(){
         $user=Auth::user();
         if(!is_null($user) && $user->type==1){
-            return redirect()->intended('orders')->with('success', 'user valid!');
+            return redirect()->intended('orders')->with('success', 'User valid!');
         }
         else if(!is_null($user) && $user->type==2){
-            return view('dashboard.vendor.main')->with('success', 'user valid!');
+            return view('dashboard.vendor.main')->with('success', 'User valid!');
         }else if(!is_null($user) && $user->type==3){
-            return view('dashboard.admin.main')->with('success', 'user valid!');
+            return view('dashboard.admin.main')->with('success', 'User valid!');
         }
         else{
             if(is_null($user))
@@ -182,12 +182,12 @@ class ScreenController extends Controller
             $cart = Cart::where(['user_id'=>0,'id'=>$cart_id])->first();
         }
         if(is_null($cart)){
-            return redirect()->intended('cart?m='.urlencode('item not added to cart'));
+            return redirect()->intended('cart?m='.urlencode('Item not added to cart'));
         }else{
             $cart->quantity= $cart->quantity + $quantity;
             $cart->save();
         }
-        return redirect()->intended('cart?m='.urlencode('item added'));
+        return redirect()->intended('cart?m='.urlencode('Item added'));
     }
     function removeFromCart($cart_id,$quantity) {
         $user=null;
@@ -198,12 +198,12 @@ class ScreenController extends Controller
             $cart = Cart::where(['user_id'=>0,'id'=>$cart_id])->first();
         }
         if(is_null($cart)){
-            return redirect()->intended('cart?m='.urlencode('item not added to cart'));
+            return redirect()->intended('cart?m='.urlencode('Item not added to cart'));
         }else{
             $cart->quantity= $cart->quantity - $quantity;
             $cart->save();
         }
-        return redirect()->intended('cart?m='.urlencode('item removed'));
+        return redirect()->intended('cart?m='.urlencode('Item removed'));
     }
     function addCartItem($product_id){
         $product=Product::where(['id'=>$product_id,'active'=>1])->first();
@@ -221,7 +221,7 @@ class ScreenController extends Controller
                     $check_cart->quantity=$check_cart->quantity+1;
                     $check_cart->save();
                 }
-                return redirect()->intended('cart?m=item+added+to+cart');
+                return redirect()->intended('cart?m=Item+added+to+cart');
             }else{
                 $cart = new Cart;
                 $cart->user_id=0;
@@ -242,7 +242,7 @@ class ScreenController extends Controller
                 }
                 return redirect()->intended('cart?m=item+added+to+cart+<br>+login+to+save+product+to+account');
             }
-            return redirect()->intended('cart?m='.urlencode('unable to add item to cart'));
+            return redirect()->intended('cart?m='.urlencode('Unable to add item to cart'));
         }
         if(!is_null($product))
             return redirect()->intended('shop/product-'.$product->id.'/'.$product->name);
@@ -258,7 +258,7 @@ class ScreenController extends Controller
             $cart = Cart::where(['user_id'=>0,'id'=>$cart_id])->first();
         }
         if(is_null($cart)){
-            return redirect()->intended('cart?m='.urlencode('item not added to cart'));
+            return redirect()->intended('cart?m='.urlencode('Item not added to cart'));
         }else{
             if(is_null($user)){
                 $session_cart=session('cart');
@@ -277,18 +277,18 @@ class ScreenController extends Controller
             }
             $cart->delete();
         }
-        return redirect()->intended('cart?m='.urlencode('item removed from cart'));
+        return redirect()->intended('cart?m='.urlencode('Item removed from cart'));
     }
     function order() {
         if(Auth::check())
         return view('screen.order');
-        return redirect()->intended('login?r=/order&m='.urlencode('please login to view orders'));
+        return redirect()->intended('login?r=/order&m='.urlencode('Please login to view orders'));
 
     }
     function orders() {
         if(Auth::check())
         return view('screen.order');
-        return  redirect()->intended('login?r=/orders&m='.urlencode('please login to view orders'));
+        return  redirect()->intended('login?r=/orders&m='.urlencode('Please login to view orders'));
 
     }
     function shop() {
@@ -392,12 +392,12 @@ class ScreenController extends Controller
             $wait=ActionController::tryRegisterCustomer($request);
             if($wait){
                 $message_type="success";
-                $message="your account have been created";
+                $message="Your account have been created";
                 return redirect()->intended('login?m='.urlencode($message));
             }
             else{
                 $message_type='error';
-                $message='your account couldn\'t be created at the moment';
+                $message='Your account couldn\'t be created at the moment';
             }
 
         }
@@ -433,12 +433,12 @@ class ScreenController extends Controller
             $wait=ActionController::tryRegisterVendor($request);
             if($wait){
                 $message_type="success";
-                $message="your account have been created";
+                $message="Your account have been created";
                 return redirect()->intended('login?m='.urlencode($message));
             }
             else{
                 $message_type='error';
-                $message='your account couldn\'t be created at the moment';
+                $message='Your account couldn\'t be created at the moment';
             }
 
         }

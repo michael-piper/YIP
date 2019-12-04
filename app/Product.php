@@ -3,7 +3,7 @@
 namespace App;
 
 use Illuminate\Database\Eloquent\Model;
-
+use App\ProductPhoto;
 class Product extends Model
 {
     //
@@ -24,8 +24,8 @@ class Product extends Model
         $this->addons=json_encode($addons,JSON_NUMERIC_CHECK | JSON_UNESCAPED_SLASHES | JSON_PRETTY_PRINT);
         return json_decode($this->addons);
     }
-    static function addImage($image){
-
+    function images(){
+        return ProductPhoto::where('product_id',$this->id)->get();
     }
     static function currency($name=null){
         $currency=[];
@@ -94,43 +94,43 @@ class Product extends Model
         }
         else if($price>350000){
             $commission=35000;
-        } 
+        }
         else if($price>35000){
             $commission=30000;
-        } 
+        }
         else if($price>300000){
             $commission=30000;
-        } 
+        }
         else if($price>250000){
             $commission=25000;
-        } 
+        }
         else if($price>200000){
             $commission=20000;
-        } 
+        }
         else if($price>150000){
             $commission=15000;
-        } 
+        }
         else if($price>100000){
             $commission=10000;
-        } 
+        }
         else if($price>80000){
             $commission=8000;
-        } 
+        }
         else if($price>70000){
             $commission=7000;
-        } 
+        }
         else if($price>50000){
             $commission=5000;
-        } 
+        }
         else if($price>20000){
             $commission=2000;
-        } 
+        }
         else if($price>10000){
             $commission=3000;
-        } 
+        }
         else if($price>10000){
             $commission=3000;
-        }  
+        }
         else if($price>5000){
             $commission=2000;
         }
@@ -147,7 +147,7 @@ class Product extends Model
         $price=$this->price;
         if($discount && isset($addons->discount) && is_int($addons->discount) && $addons->discount>0){
             $price=$price-$addons->discount;
-         
+
         }
         return $price;
     }
@@ -172,7 +172,7 @@ class Product extends Model
             if(isset($this->display_image) && is_file($this->display_image)){
                 unlink($this->display_image);
             }
-            $this->display_image = url('/').$dir_url. $image_name;
+            $this->display_image = $dir_url. $image_name;
             return true;
         }else{
             return false;

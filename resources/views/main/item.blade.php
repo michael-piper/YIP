@@ -11,20 +11,18 @@
      <!--GALLERY-->
           <div class="pics">
           <span class="main-img">
-            <img class="product-image" style="max-height:500px;" src="{{$product->display_image??'/images/products/placeholder.png'}}"></span>
+            <img class="product-image" style="max-height:500px;" src="{{url($product->display_image??'/images/products/placeholder.png')}}"></span>
             <div class="additional-img" uk-lightbox>
-              <a href="{{$product->display_image??'/images/products/placeholder.png'}}">
-              <img src="{{$product->display_image??'/images/products/placeholder.png'}}">
+
+              <a href="{{url($product->display_image??'/images/products/placeholder.png')}}">
+              <img src="{{url($product->display_image??'/images/products/placeholder.png')}}">
               </a>
-               <a href="{{$product->display_image??'/images/products/placeholder.png'}}">
-              <img src="https://images-na.ssl-images-amazon.com/images/I/81PVFwDiEqL._UX500_.jpg">
+              @foreach($product->images() as $other_image)
+              @php($img=$other_image->filename??'/images/products/placeholder.png')
+               <a href="{{url($img)}}">
+                <img src="{{url($img)}}">
               </a>
-               <a href="{{$product->display_image??'/images/products/placeholder.png'}}">
-              <img src="https://images-na.ssl-images-amazon.com/images/I/81u04RfSYcL._UX500_.jpg">
-              </a>
-               <a href="{{$product->display_image??'/images/products/placeholder.png'}}">
-              <img src="https://images-na.ssl-images-amazon.com/images/I/81nuwkilZSL._UX500_.jpg">
-              </a>
+              @endforeach
             </div>
           </div>
           <!-- PRODUCT INFORMATION -->

@@ -293,6 +293,12 @@ to get the desired effect
                 </a>
             </li>
             <li class="nav-item">
+                <a href="/dashboard/payment_status" class="nav-link">
+                    <i class="nav-icon far fa-file"></i>
+                    <p class="text">Payment Status</p>
+                </a>
+            </li>
+            <li class="nav-item">
                 <a href="/dashboard/order_status" class="nav-link">
                     <i class="nav-icon far fa-file"></i>
                     <p class="text">Order Status</p>
@@ -366,6 +372,7 @@ to get the desired effect
 <script src="/plugins/adminlte-v3/js/pages/dashboard3.js"></script>
 <!-- Page script -->
 @yield('js')
+@stack('scripts')
 <script>
     $(function () {
       //Initialize Select2 Elements

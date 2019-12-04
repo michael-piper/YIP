@@ -173,9 +173,7 @@
 		<footer class="footer-distributed">
 
                 <div class="footer-left">
-    
-                    <h3>Motoparts<span> Arena</span></h3>
-    
+                    <img src="/images/logo/logo-light.png">
                     <p class="footer-links">
                         <a href="#">Home</a>
                         ·
@@ -185,47 +183,46 @@
                         ·
                         <a href="#">Contact</a>
                     </p>
-    
+
                     <p class="footer-company-name">Motoparts Arena &copy; 2019</p>
-					<p class="footer-company-name">Reliable and secure payment platform</p>
+					<p class="footer-company-name">Nigeria's Number 1 Auto Store</p>
                 </div>
-    
+
                 <div class="footer-center">
-    
+
                     <div>
                         <i class="fa fa-map-marker"></i>
-                        <p><span>21 Revolution Street</span> Lagos, Nigeria</p>
+                        <p><span>Unit 77 Block B, Tele Olukoya Shopping Complex 121,<br/> Okota Road, opposite UBA By Cele B/Stop,</span>  Okota Lagos, Nigeria</p>
                     </div>
-    
+
                     <div>
                         <i class="fa fa-phone"></i>
-                        <p>+1 555 123456</p>
+                        <p>+234 (0)81 7190 2411</p>
                     </div>
-    
+
                     <div>
                         <i class="fa fa-envelope"></i>
                         <p><a href="mailto:info@motopartsarena.com"><span >info@motopartsarena.com</span></a></p>
                     </div>
-    
+
                 </div>
-    
+
                 <div class="footer-right">
-    
+
                     <p class="footer-company-about">
                         <span>About Motorparts Arena</span>
 					At Motorparts Arena, You get to see the best price, most demanded brand and feedback about each brand from buyers. These helps you make the best decision with regards to quality and price.
                     </p>
-    
+
                     <div class="footer-icons">
-    
-                        <a href="#"><i class="fa fa-facebook"></i></a>
-                        <a href="#"><i class="fa fa-twitter"></i></a>
-                        <a href="#"><i class="fa fa-linkedin"></i></a>
-                        <a href="#"><i class="fa fa-github"></i></a>
-    
+
+                        <a href="https://www.facebook.com/motopartsarena"><i class="fa fa-facebook"></i></a>
+                        <a href="https://www.twitter.com/Motopartsarena"><i class="fa fa-twitter"></i></a>
+                        <a href="https://www.instagram.com/motopartsarena"><i class="fa fa-instagram"></i></a>
+
                     </div>
-    
+
                 </div>
-    
+
             </footer>
 </section>

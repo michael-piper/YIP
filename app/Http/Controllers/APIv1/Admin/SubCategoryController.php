@@ -32,12 +32,18 @@ class SubCategoryController extends Controller
                 'message'  => "Sub Category name required",
             ], 200);
         }
+        if(is_null($values['category_id'])){
+            return response()->json([
+                'error' => true,
+                'message'  => "Category Id required",
+            ], 200);
+        }
         $category=ProductCategory::where('id',$values['category_id'])->first();
         if(is_null($category)){
             return response()->json([
                 'error' => true,
                 'message'  => "Invalid Category id",
-            ], 200);
+            ], 404);
         }
         $sub_category= new ProductSubCategory;
         $sub_category->name=$request->name;
@@ -57,29 +63,30 @@ class SubCategoryController extends Controller
                 return response()->json([
                     'error' => true,
                     'message'  => "Sub Category with id not found",
-                ], 200);
+                ], 404);
             }
             $patch=false;
             $msg='';
             $whitelist=['active'];
             foreach($request->input() as $key=>$data){
-                if(array_key_exists($key,$whitelist)){
+                if(in_array($key,$whitelist)){
                     $sub_category->{$key}=$data;
                     $patch=true;
                     $msg.=$key.', ';
                 }
             }
 
-            if($patch==true){
-                $sub_category->save();
+            if($patch == false){
                 return response()->json([
-                    'error' => false,
-                    'message'  => "Sub Category {$msg} successfully updated",
+                    'error' => true,
+                    'message'  => "Nothing to update",
                 ], 200);
             }
+
+            $sub_category->save();
             return response()->json([
-                'error' => true,
-                'message'  => "Nothing to update",
+                'error' => false,
+                'message'  => "Sub Category {$msg} successfully updated",
             ], 200);
         }
         $sub_category= ProductSubCategory::where('id',$id)->first();
@@ -108,7 +115,7 @@ class SubCategoryController extends Controller
             return response()->json([
                 'error' => true,
                 'message'  => "Sub Category with id not found",
-            ], 200);
+            ], 404);
         }
         $sub_category->name=$request->name;
         $sub_category->description=$request->description;

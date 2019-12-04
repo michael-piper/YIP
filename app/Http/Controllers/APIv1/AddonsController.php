@@ -19,6 +19,7 @@ class AddonsController extends Controller
     function Documentation(){
         return response()->json([
             "version"=>"v1.0",
+            "url"=>url(''),
             "description"=>User::from_api_token(),
         ]);
     }

@@ -224,26 +224,44 @@ addOrderStatus=function(){
 });
   }
     function removeOrderStatus(orderStatusid){
-        $.ajax({
-            method: "DELETE",
-            url:API_URL+'v1/order-status/'+orderStatusid
-        })
-        .done(function( res ) {
-            if(res.error){
-                Toast.fire({
-                    type: 'error',
-                    title: res.message
-                })
-            }else{
-                Toast.fire({
-                    type: 'success',
-                    title: res.message
-                })
-                loadOrderStatus();
-            }
-        }).fail(function(res){
+        var action=function(){
+            $.ajax({
+                method: "DELETE",
+                url:API_URL+'v1/order-status/'+orderStatusid
+            })
+            .done(function( res ) {
+                if(res.error){
+                    Toast.fire({
+                        type: 'error',
+                        title: res.message
+                    })
+                }else{
+                    Toast.fire({
+                        type: 'success',
+                        title: res.message
+                    })
+                    loadOrderStatus();
+                }
+            }).fail(function(res){
 
+            });
+        }
+        $.confirm({
+            title: 'Remove Order Status!',
+            content: 'Are you sure you want to remove order status?',
+            type:'orange',
+            buttons: {
+                formSubmit: {
+                    text: 'Yes',
+                    btnClass: 'btn-blue',
+                    action:action
+                },
+                cancel: function () {
+                    //close
+                }
+            }
         });
+
     }
 
 

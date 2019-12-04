@@ -9,19 +9,27 @@
                         <div class="pop-up clearfix row">
                           <!--GALLERY-->
                           <div class="pics col-6 col-sm-6">
-                          <span class="main-img" >
-                              <img class="product-image" style="max-height:500px;" src="{{$product->display_image??'/images/products/placeholder.png'}}"></span>
+                            <span class="main-img">
+                            <img class="product-image" style="max-height:500px;" src="{{url($product->display_image??'/images/products/placeholder.png')}}"></span>
                             <div class="additional-img">
-                              <img src="https://images-na.ssl-images-amazon.com/images/I/81D8-r%2BiZgL._UX500_.jpg">
-                              <img src="https://images-na.ssl-images-amazon.com/images/I/81PVFwDiEqL._UX500_.jpg">
-                              <img src="https://images-na.ssl-images-amazon.com/images/I/81u04RfSYcL._UX500_.jpg">
-                              <img src="https://images-na.ssl-images-amazon.com/images/I/81nuwkilZSL._UX500_.jpg">
+                                <a href="{{url($product->display_image??'/images/products/placeholder.png')}}">
+                                    <img src="{{url($product->display_image??'/images/products/placeholder.png')}}">
+                                </a>
+                                @foreach($product->images() as $other_image)
+                                @php($img=url($other_image->filename??'/images/products/placeholder.png'))
+                            <a href="JavaScript:removeProductImage({{$product->id}},{{$other_image->id}},'{{$img}}');">
+                                    <img src="{{$img}}">
+                                </a>
+                                @endforeach
+                                <a href="JavaScript:addProductImage({{$product->id}});">
+                                    <img src="/images/products/placeholder.png">
+                                </a>
                             </div>
                           </div>
                           <!-- PRODUCT INFORMATION -->
                           <div class="product-item col-6 col-sm-6">
                             <!--category-breadcrumb-->
-                            @php($category=App\ProductCategory::where("id",$product->category_id)->first())
+                          @php($category=App\ProductCategory::where("id",$product->category_id)->first())
                           <span class="category">{{$category->name??'None'}}</span>
                             @if($product->available>$product->sold)
                                 <!--stock-label-->
@@ -86,7 +94,7 @@
                                 </select>
                               </div>
                               <!--BUTTON-->
-                              <button class="btn"><img src="">Add Item To Product</button>
+                              <button class="btn-product"><img src="">Add Item To Product</button>
                              </form>
                             </div>
                             <!--LINKS-->
@@ -172,8 +180,165 @@
 @endsection
 @section('js')
 <script>
+    $(function() {
+    const Toast = Swal.mixin({
+      toast: true,
+      position: 'top-end',
+      showConfirmButton: false,
+      timer: 3000
+    });
+    window.Toast=Toast;
+    });
+</script>
+<script>
     $('#product_available').DataTable();
     $('#product_sold').DataTable();
+</script>
+<script>
+    function addProductImage(id){
+        var action=function(data){
+            $.ajax({
+                method: "POST",
+                url:API_URL+'v1/product/'+id+'/images',
+                data : data,
+                processData: false,
+                contentType: false
+            })
+            .done(function( res ) {
+                if(res.error){
+                    Toast.fire({
+                        type: 'error',
+                        title: res.message
+                    })
+                }else{
+                    Toast.fire({
+                        type: 'success',
+                        title: res.message
+                    })
+                    window.location.reload();
+                }
+            }).fail(function(res){
+                Toast.fire({
+                        type: 'error',
+                        title: "Something went wrong"
+                })
+            });
+        }
+        $.confirm({
+            title: 'Add Product Image!',
+            content: '' +
+            '<img src="" style="display:none" class="product_image img-preview">'+
+            '<form action="" class="formName">' +
+            '<div class="form-group">' +
+            '<label>Choose Image</label>' +
+            '<input type="file" onchange="readURL(this);" name="image" class="image form-control" required>' +
+            '</div>' +
+            '</form>',
+            buttons: {
+                formSubmit: {
+                    text: 'Submit',
+                    btnClass: 'btn-blue',
+                    action: function () {
+                        var meta = new FormData(this.$content.find('form')[0]);
+                        action(meta);
+                    }
+                },
+                cancel: function () {
+                    //close
+                },
+            },
+            onContentReady: function () {
+                // bind to events
+                var jc = this;
+                this.$content.find('form').on('submit', function (e) {
+                    // if the user submits the form by pressing enter in the field.
+                    e.preventDefault();
+                    jc.$$formSubmit.trigger('click'); // reference the button and click it
+                });
+            }
+        });
+    }
+     function removeProductImage(product_id, id, filename){
+        var action=function(){
+            $.ajax({
+                method: "DELETE",
+                url:API_URL+'v1/product/'+product_id+'/images/'+id
+            })
+            .done(function( res ) {
+                if(res.error){
+                    Toast.fire({
+                        type: 'error',
+                        title: res.message
+                    })
+                }else{
+                    Toast.fire({
+                        type: 'success',
+                        title: res.message
+                    })
+                    window.location.reload();
+                }
+            }).fail(function(res){
+
+            });
+        }
+        $.confirm({
+            title: 'Warning!',
+            content:  'Are you sure you want to remove product image'+
+            '<img src="'+filename+'" width="100%">'
+           ,
+            type:'orange',
+            buttons: {
+                formSubmit: {
+                    text: 'Yes',
+                    btnClass: 'btn-blue',
+                    action:action
+                },
+                cancel: function () {
+                    //close
+                }
+            }
+        });
+
+    }
+    function readURL(input) {
+    $('.img-preview').attr('style',"display:none;");
+    $('.img-preview-label').attr('style',"display:none;");
+    if (input.files && input.files[0]) {
+      var reader = new FileReader();
+      const name=input.files[0].name;
+      const pixext=['png','jpeg','jpg','gif'];
+      const vidext=['mkv','mp4','flv','webm','ogg'];
+      const extension= name.substring(name.lastIndexOf('.')+1);
+      // console.log(input.files[0],"name="+name,"extension="+extension);
+      reader.onload = function (e) {
+        $('.img-preview')
+            .attr('src', e.target.result)
+            .width(150)
+            .attr('style',"display:initial;")
+            .height(200);
+      };
+
+      if(pixext.find(function(e){return e===extension.toLowerCase()})){
+        reader.readAsDataURL(input.files[0]);
+      }
+
+      else{
+
+        $('.img-preview-label')
+          .attr('style',"display:initial;color:red;")
+          .text("File format not supported");
+        $('.img-preview')
+          .attr('style',"display:none;")
+      }
+
+    }else{
+        $('.img-preview-label')
+            .attr('style',"display:initial;")
+            .text("Choose a file");
+        $('.img-preview')
+            .attr('style',"display:none;")
+    }
+  }
 </script>
 @endsection
 @section('style')
@@ -389,7 +554,7 @@ select.color, select.size {
   letter-spacing: .3px;
 }
 /*BUTTON*/
-.btn {
+.btn-product {
   margin: 10px auto;
   text-align: center;
   font-size: 14px;
@@ -403,7 +568,7 @@ select.color, select.size {
   cursor: pointer;
   background: #fd7064;
 }
-.btn:hover {
+.btn-product:hover {
   background: #fc796f;
 }
 /*LINKS*/

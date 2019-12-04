@@ -24,7 +24,7 @@ class CategoryController extends Controller
             return response()->json([
                 'error' => true,
                 'message'  => "Category name required",
-            ], 200);
+            ], 404);
         }
         $category= new ProductCategory;
         $category->name=$request->name;
@@ -42,7 +42,7 @@ class CategoryController extends Controller
             return response()->json([
                 'error' => true,
                 'message'  => "Category with id not found",
-            ], 200);
+            ], 404);
         }
         return response()->json([
             'error' => false,
@@ -62,23 +62,24 @@ class CategoryController extends Controller
             $msg='';
             $whitelist=['active'];
             foreach($request->input() as $key=>$data){
-                if(array_key_exists($key,$whitelist)){
+                if(in_array($key,$whitelist)){
                     $category->{$key}=$data;
                     $patch=true;
                     $msg.=$key.', ';
                 }
             }
 
-            if($patch==true){
-                $category->save();
+            if($patch == false){
                 return response()->json([
-                    'error' => false,
-                    'message'  => "Category {$msg} successfully updated",
+                    'error' => true,
+                    'message'  => "Nothing to update",
                 ], 200);
             }
+
+            $category->save();
             return response()->json([
-                'error' => true,
-                'message'  => "Nothing to update",
+                'error' => false,
+                'message'  => "Category {$msg} successfully updated",
             ], 200);
         }
         $values=$request->only('name','description');

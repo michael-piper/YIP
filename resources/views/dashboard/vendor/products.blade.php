@@ -98,7 +98,7 @@
               <th>${res.data[i].id}</th>
               <th>${res.data[i].name}</th>
               <th>${res.data[i].price}</th>
-              <th>${res.data[i].condition.name}</th>
+              <th>${res.data[i].condition.name? res.data[i].condition.name : 'Not available'}</th>
               <th>${res.data[i].commission}</th>
               <th>${res.data[i].available}</th>
               <th>${res.data[i].sold}</th>
@@ -115,28 +115,43 @@
 });
   }
     function removeProduct(productid){
-        $.ajax({
-            method: "DELETE",
-            url:API_URL+'v1/products/'+productid
-        })
-        .done(function( res ) {
-            if(res.error){
-                Toast.fire({
-                    type: 'error',
-                    title: res.message
-                })
-            }else{
-                Toast.fire({
-                    type: 'success',
-                    title: res.message
-                })
-                loadProduct();
-            }
-        }).fail(function(res){
+        var action=function(){
+            $.ajax({
+                method: "DELETE",
+                url:API_URL+'v1/products/'+productid
+            })
+            .done(function( res ) {
+                if(res.error){
+                    Toast.fire({
+                        type: 'error',
+                        title: res.message
+                    })
+                }else{
+                    Toast.fire({
+                        type: 'success',
+                        title: res.message
+                    })
+                    loadProduct();
+                }
+            }).fail(function(res){
 
+            });
+        }
+        $.confirm({
+            title: 'Remove Product!',
+            content: 'Are you sure you want to remove product?',
+            type:'orange',
+            buttons: {
+                formSubmit: {
+                    text: 'Yes',
+                    btnClass: 'btn-blue',
+                    action:action
+                },
+                cancel: function () {
+                    //close
+                }
+            }
         });
     }
-
-
 </script>
 @endsection
