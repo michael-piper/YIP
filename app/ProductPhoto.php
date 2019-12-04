@@ -28,10 +28,10 @@ class ProductPhoto extends Model
         }
     }
     function removeImage(){
-        if(isset($this->filename) && is_file($this->filename)){
+        if(isset($this->filename) && $this->filename != '/images/products/placeholder.png' && is_file($this->filename)){
             unlink($this->filename);
         }
-        $this->filename = null;
+        $this->filename = '/images/products/placeholder.png';
         return true;
     }
 }

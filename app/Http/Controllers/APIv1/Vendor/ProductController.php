@@ -171,6 +171,7 @@ class ProductController extends Controller
                 'message'  => "Product with id # $id not found",
             ], 404);
         }
+        $product->removeImage();
         $product->delete();
         return response()->json([
             'error' => false,

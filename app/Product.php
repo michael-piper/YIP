@@ -179,4 +179,11 @@ class Product extends Model
         }
 
     }
+    function removeImage(){
+        if(isset($this->display_image) && $this->display_image!='/images/products/placeholder.png' && is_file($this->display_image)){
+            unlink($this->display_image);
+        }
+        $this->display_image ='/images/products/placeholder.png';
+        return true;
+    }
 }
