@@ -141,7 +141,7 @@
                                             <span class="input-group-text"><i class="fas fa-clock"></i></span>
                                             </div>
                                             <div class="form-control border-0 p-0 m-0">
-                                                <select name="condition" class="form-control select2" data-placeholder="Choose product condition">
+                                                <select name="condition" class="form-control condition load select2" data-placeholder="Choose product condition">
                                                     <option value="2">New</option>
                                                     <option value="1">Used</option>
                                                 </select>
@@ -217,6 +217,19 @@ $.getJSON(API_URL+'v1/product/category?norepeat=name').then(function(data){
         $(".category option[value='"+category+"']").attr("selected", 'true');
         changeSubCategory(category);
         $('.subcategory').val(category);
+    }
+});
+$.getJSON(API_URL+'v1/product/status?norepeat=name').then(function(data){
+    // console.log(data);
+    $('.condition').html('');
+    for(var i in data){
+        $('.condition').append('<option value="'+data[i].id+'">'+data[i].name+'</option>')
+    }
+    var condition='{{$body['condition']??''}}';
+    if(condition!=''){
+        $(".condition option[value='"+condition+"']").attr("selected", true);
+        changeSubCategory(condition);
+        $('.condition').val(condition);
     }
 });
 @if(isset($body['year']) && is_array($body['year']))
