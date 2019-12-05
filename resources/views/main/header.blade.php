@@ -2,6 +2,14 @@
 src="https://code.jquery.com/jquery-3.4.1.min.js"
 integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo="
 crossorigin="anonymous"></script>
+<script>
+    jQuery.fn.scrollTo = function(elem, speed) {
+        $(this).animate({
+            scrollTop:  $(this).scrollTop() - $(this).offset().top + $(elem).offset().top
+        }, speed == undefined ? 1000 : speed);
+        return this;
+    };
+</script>
 <link rel='stylesheet' href='https://fonts.googleapis.com/css?family=Open+Sans:400,300,600,700,800'>
 <!-- Latest compiled and minified CSS -->
 <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">

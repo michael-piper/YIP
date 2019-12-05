@@ -16,7 +16,7 @@
 
     <div class="uk-navbar-left">
         <a class="uk-navbar-item uk-logo" href="#"><img src="/images/logo/logo-light.png" uk-img></a>
-        <a href="javascript:void(0);" onclick="$('#categorydata').toggle();" class="alink-nav"> <i class="uk-icon fa fa-bars"></i></a>
+        <a href="javascript:void(0);" onclick="$('#categorydata').toggle();$('#subcategory-holder').hide();" class="alink-nav"> <i class="uk-icon fa fa-bars"></i></a>
 
         <div class="uk-navbar-item">
 
@@ -133,22 +133,21 @@
 
 </nav>
 <hr class="uk-margin-remove">
-<div class="uk-width-2-3 uk-position-absolute wow bounceInLeft" id="categorydata" style="left:20px;display:none;z-index: 999999999;margin-top:1px;">
-
-
-        <div class="row"  >
-            <div class="col-6 col-sm-6 p-0" id="category-holder" >
+<div class="uk-width-1-1 uk-position-absolute wow bounceInLeft" id="categorydata" style="left:20px;display:none;z-index: 999999999;margin-top:1px;">
+        <div class="row">
+            <div class="col-5 col-sm-5 col-md-4 col-lg-3 p-0" id="category-holder" >
                 <div class="uk-card-default uk-card-body radius-large" style="height:340px;">
-                    <ul class="uk-list uk-list-divider">
+                    <span onclick="$('#mksds').scroll($('#mksds').height()-12)"></span>
+                    <ul id="mksds" class="uk-list uk-list-divider" style="overflow:hidden;">
                         @foreach(App\ProductCategory::all() as $category)
-                            <li class="change_sub" cat-id="{{$category->id}}"><small>{{ $category->name}} <span class="uk-icon float-right" uk-icon="icon: chevron-right"></span></small></li>
+                            <li class="change_sub" cat-id="{{$category->id}}"><small style="font-size:10px;">{{ $category->name}} <span class="uk-icon float-right" uk-icon="icon: chevron-right"></span></small></li>
                         @endforeach
                     </ul>
                 </div>
             </div>
-            <div class="col-6 col-sm-6 p-0 pl-1" id="subcategory-holder" style="display:none;">
+            <div class="col-5 col-sm-5 col-md-4 col-lg-3 p-0 pl-1" id="subcategory-holder" style="display:none;">
                 <div class="uk-card-default uk-card-body radius-large" style="height:340px;">
-                    <ul class="uk-list uk-list-divider">
+                    <ul id="ksdks" class="uk-list uk-list-divider" style="overflow:hidden;">
 
                     </ul>
                 </div>

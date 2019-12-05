@@ -104,7 +104,7 @@
               <th>${res.data[i].owner.display_name}</th>
               <th>${res.data[i].name}</th>
               <th>${res.data[i].price}</th>
-              <th>${res.data[i].condition.name? res.data[i].condition.name : 'Not available'}</th>
+              <th>${res.data[i].condition ? res.data[i].condition.name : 'Not available'}</th>
               <th>${res.data[i].commission}</th>
               <th>${res.data[i].available}</th>
               <th>${res.data[i].sold}</th>
