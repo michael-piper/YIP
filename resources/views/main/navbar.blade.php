@@ -139,8 +139,9 @@
                 <div class="uk-card-default uk-card-body radius-large" style="height:340px;">
                     <span onclick="$('#mksds').scroll($('#mksds').height()-12)"></span>
                     <ul id="mksds" class="uk-list uk-list-divider" style="overflow:hidden;">
-                        @foreach(App\ProductCategory::all() as $category)
-                            <li class="change_sub" cat-id="{{$category->id}}"><small style="font-size:10px;">{{ $category->name}} <span class="uk-icon float-right" uk-icon="icon: chevron-right"></span></small></li>
+                        @php($categories=App\ProductCategory::all())
+                        @foreach( $categories as $category)
+                            <li class="change_sub p-0 m-0 uk-padding-remove uk-margin-remove" cat-id="{{$category->id}}"><small style="font-size:10px;">{{ $category->name}} <span class="uk-icon float-right" uk-icon="icon: chevron-right"></span></small></li>
                         @endforeach
                     </ul>
                 </div>
@@ -165,10 +166,11 @@
             $.getJSON(API_URL+'v1/product/subcategory/category='+sub+'?norepeat=model').then(function(data){
                 // console.log(data);
                 var html='';
+                data=data.sort(function(a, b){return a.name-b.name}) || [];
                 for(var i in data){
-                    html+=('<li id="subcat-'+data[i].id+'"><small><a href="/shop?category='+sub+'&subcategory='+data[i].id+'">'+data[i].name+'</a></small></li>')
+                    html+=('<li id="subcat-'+data[i].id+'" class="uk-padding-remove uk-margin-remove"><small style="font-size:10px;"><a href="/shop?category='+sub+'&subcategory='+data[i].id+'">'+data[i].name+'</a></small></li>')
                 }
-                if(html=='')html='<li><small>empty list</small></li>';
+                if(html=='')html='<li><small style="font-size:10px;">empty list</small></li>';
                 capture.html(html);
                 $('#subcategory-holder').show();
             });
@@ -178,7 +180,6 @@
 
             $( ".change_sub" ).on("click mouseenter", function() {
                 $this=$(this);
-
                 changeSubCategory($this.attr('cat-id'));
             });
             $('#category-holder').on('mouseleave',function(){
@@ -195,6 +196,7 @@
         $.getJSON(API_URL+'v1/product/autofill/car_makes?norepeat=make').then(function(data){
             // console.log(data);
             $('.make').html('<option  value=""> All</option>');
+            data=data.sort() || [];
             for(var i in data){
                 $('.make').append('<option value="'+data[i].make+'">'+data[i].make+'</option>')
             }
@@ -213,13 +215,13 @@
             }
             $.getJSON(API_URL+'v1/product/autofill/car_makes/make='+make+'?norepeat=model').then(function(data){
                 $('.model').removeAttr('disabled');
+                data=data.sort() || [];
                 for(var i in data){
                     $('.model').append('<option>'+data[i].model+'</option>')
                 }
                 var model=$('.model').attr('value');
                 if(model!=''){
                     $(".model option[value='"+model+"']").attr("selected", true);
-
                     $('.model').val(model);
                 }
             });
