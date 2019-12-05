@@ -9,7 +9,7 @@
     <div class="uk-position-relative uk-visible-toggle uk-light" tabindex="-1" uk-slider>
 
     <ul class="uk-slider-items uk-child-width-1-2 uk-child-width-1-3@s uk-child-width-1-6@m">
-        @forelse(App\Product::frequentBuy() as $product)
+        @forelse(App\Product::dealsOfTheDay() as $product)
         <li class="uk-padding-small">
         <a href="/shop/product-{{$product->id}}/{{$product->name}}" class="woocommerce-LoopProduct-link woocommerce-loop-product__link">
         <div class="uk-card radius">

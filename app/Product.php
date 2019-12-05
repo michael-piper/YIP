@@ -60,6 +60,16 @@ class Product extends Model
         ->skip(0)
         ->take($length)->get();
     }
+    static function dealsOfTheDay($length=8){
+        return Product::where(['active'=>1,['addons','LIKE','%dealoftheday%']])->orderBy('created_at','ASC')
+        ->skip(0)
+        ->take($length)->get();
+    }
+    static function newInStock($length=8){
+        return Product::where('active',1)->orderBy('created_at','ASC')
+        ->skip(0)
+        ->take($length)->get();
+    }
     static function available($product_id){
         if(isset($product_id)){
             $product=Product::where(['id'=>$product_id,'active'=>1])->first();
