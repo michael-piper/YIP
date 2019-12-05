@@ -8,14 +8,14 @@
         text-decoration: none;
     }
     .uk-border{
-        border:1px solid #555;
+        border:1px solid #999;
     }
 </style>
 <hr class="uk-margin-remove uk-padding-remove">
 <nav class="uk-navbar-container w3-light uk-dark" uk-navbar>
 
     <div class="uk-navbar-left">
-        <a class="uk-navbar-item uk-logo" href="#"><img src="/images/logo/logo-light.png" uk-img></a>
+        <a class="uk-navbar-item uk-logo" href="/"><img src="/images/logo/logo-light.png" uk-img></a>
         <a href="javascript:void(0);" onclick="$('#categorydata').toggle();$('#subcategory-holder').hide();" class="alink-nav"> <i class="uk-icon fa fa-bars"></i></a>
 
         <div class="uk-navbar-item">
@@ -23,8 +23,8 @@
             <form method="GET" action="/shop">
                 {{-- <div class="uk-search uk-search-default" > --}}
                 <div class="uk-inline" style="width:40vw;">
-                     <a onclick="$('#searchfilter').toggle();" href="javascript:void(0);" class="uk-form-icon uk-form-icon-flip uk-border radius" style="width:inherit;max-width:70px;">Filter &nbsp;&nbsp;&nbsp;<i class="fa fa-caret-down"></i></a>
-                    <input formtarget="dosearch" class="uk-input radius" name="q" value="{{$_GET['q']??''}}" type="search" placeholder="Search for products and Accessories">
+                     <button id="opensearchfilter" type="button" class="uk-form-icon uk-form-icon-flip uk-border radius" style="width:inherit;max-width:70px;"><span style="vertical-align: middle;line-height: 1px;">Filter &nbsp;&nbsp;&nbsp;</span><i class="fa fa-caret-down"></i></button>
+                    <input formtarget="dosearch" class="uk-input radius" name="q" value="{{$_GET['q']??''}}" type="search" placeholder="Search for Products and Accessories">
                 </div>
                 <button class="btn  btn-primary radius"> <i class="fa fa-search"></i></button>
                 <div class="uk-width-1-1 uk-position-absolute" id="searchfilter" style="left:0;display:none;z-index: 999999999;margin-top:23px;">
@@ -156,6 +156,9 @@
 </div>
 @push('scripts')
     <script>
+        $('#opensearchfilter').on('click',function(){
+            $('#searchfilter').toggle();
+        });
         function changeSubCategory(sub){
             var capture=$('#subcategory-holder ul');
             capture.html('');
