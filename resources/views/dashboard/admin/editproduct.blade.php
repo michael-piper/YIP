@@ -212,7 +212,7 @@ $.getJSON(API_URL+'v1/product/category?norepeat=name').then(function(data){
     for(var i in data){
         $('.category').append('<option value="'+data[i].id+'">'+data[i].name+'</option>')
     }
-    var category='{{isset($body['sub_category_id'])?$body['sub_category_id']:$body['subcategory']}}';
+    var category='{{isset($body['category_id'])?$body['category_id']:($body['category']??'')}}';
     if(category!=''){
         $(".category option[value='"+category+"']").attr("selected", 'true');
         changeSubCategory(category);
@@ -271,7 +271,7 @@ function changeSubCategory(sub){
         for(var i in data){
             $('.subcategory').append('<option value="'+data[i].id+'">'+data[i].name+'</option>')
         }
-        var subcategory='{{isset($body['sub_category_id'])? $body['sub_category_id']:$body['subcategory']}}';
+        var subcategory='{{isset($body['sub_category_id'])? $body['sub_category_id']:($body['subcategory']??'')}}';
         if(subcategory!=''){
             $('.subcategory').val(subcategory);
             $(".subcategory option[value='"+subcategory+"']").attr("selected", 'true');
