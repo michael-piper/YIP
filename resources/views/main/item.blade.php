@@ -12,17 +12,27 @@
           <div class="pics">
           <span class="main-img">
             <img class="product-image" style="max-height:500px;" src="{{url($product->display_image??'/images/products/placeholder.png')}}"></span>
-            <div class="additional-img" uk-lightbox>
+            <div class="uk-position-relative uk-visible-toggle uk-light additional-img" tabindex="-1" uk-slider>
 
-              <a href="{{url($product->display_image??'/images/products/placeholder.png')}}">
-              <img src="{{url($product->display_image??'/images/products/placeholder.png')}}">
-              </a>
-              @foreach($product->images() as $other_image)
-              @php($img=$other_image->filename??'/images/products/placeholder.png')
-               <a href="{{url($img)}}">
-                <img src="{{url($img)}}">
-              </a>
-              @endforeach
+                <ul class="uk-slider-items uk-child-width-1-2 uk-child-width-1-3@s uk-child-width-1-4@m">
+                    <li>
+
+                        <a href="{{url($product->display_image??'/images/products/placeholder.png')}}">
+                        <img src="{{url($product->display_image??'/images/products/placeholder.png')}}">
+                        </a>
+                    </li>
+                    @foreach($product->images() as $other_image)
+                    @php($img=$other_image->filename??'/images/products/placeholder.png')
+                    <li  uk-lightbox>
+                    <a href="{{url($img)}}">
+                        <img src="{{url($img)}}">
+                    </a>
+                    </li>
+                    @endforeach
+                </ul>
+                <a class="uk-position-center-left uk-position-small uk-hidden-hover w3-text-red" href="#" uk-slidenav-previous uk-slider-item="previous"></a>
+    <a class="uk-position-center-right p-5 uk-overlay uk-overlay-primary uk-position-small w3-theme-text w3-text-red" style="color:red;" href="#" uk-slidenav-next uk-slider-item="next"></a>
+
             </div>
           </div>
           <!-- PRODUCT INFORMATION -->
