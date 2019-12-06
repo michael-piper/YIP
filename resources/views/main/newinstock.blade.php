@@ -3,7 +3,7 @@
  <div class="uk-card radius-large uk-card-default uk-width-1-1@m">
     <div class="uk-card-body uk-padding-remove">
         <div class="uk-grid-small uk-flex-middle uk-padding-small" uk-grid>
-                <h4 class="uk-margin-remove-bottom">New in stock</h4>
+                <h4 class="uk-margin-remove-bottom">New in Stock</h4>
             </div>
             <div class="uk-position-relative uk-visible-toggle uk-light" tabindex="-1" uk-slider>
 

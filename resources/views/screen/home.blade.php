@@ -179,16 +179,18 @@ dl, ol, ul {
 </style>
 <div class="uk-text-center uk-grid-small uk-margin-left uk-margin-right" uk-grid>
 
+
     <div class="uk-width-1-1@m" style="margin-top:-50px;">
+        @includeIf("main.dealsoftheday")
+    </div>
+    <div class="uk-width-1-1@m">
         @includeIf("main.topsellingitems")
     </div>
 
     <div class="uk-width-1-1@m">
         @includeIf("main.newinstock")
     </div>
-    <div class="uk-width-1-1@m">
-        @includeIf("main.dealsoftheday")
-    </div>
+
     <div class="uk-width-1-1@m">
         @includeIf("main.dealsoftheday")
     </div>

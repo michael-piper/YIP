@@ -4,7 +4,7 @@
 
     <div class="uk-card-body uk-padding-remove">
             <div class="uk-grid-small uk-flex-middle uk-padding-small" uk-grid>
-                    <h4 class="uk-margin-remove-bottom">Deals of the day</h4>
+                    <h4 class="uk-margin-remove-bottom">Deals of the Day</h4>
                 </div>
     <div class="uk-position-relative uk-visible-toggle uk-light" tabindex="-1" uk-slider>
 

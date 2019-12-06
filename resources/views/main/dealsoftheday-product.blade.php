@@ -2,7 +2,7 @@
 <section class="uk-card radius-large uk-padding-remove uk-margin-right uk-card-default">
     <div class="uk-card-body uk-padding-remove">
         <div class="uk-grid-small uk-flex-middle uk-padding-small" uk-grid>
-            <h4 class="uk-margin-remove-bottom">Deals of the day</h4>
+            <h4 class="uk-margin-remove-bottom">Deals of the Day</h4>
         </div>
     <div class="uk-position-relative uk-visible-toggle uk-light" tabindex="-1" uk-slider>
     <ul class="uk-slider-items uk-child-width-1-1 uk-child-width-1-2@m">
