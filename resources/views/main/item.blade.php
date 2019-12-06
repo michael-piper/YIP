@@ -4,6 +4,7 @@
 @php($addons=$product->addons())
 @php($category=App\ProductCategory::where('id',$product->category_id)->first())
 @php($sub_category=App\ProductSubCategory::where('id',$product->sub_category_id)->first())
+@php($condition=App\ProductStatus::where('id',$product->condition)->first())
 <section>
 <div class="uk-text-center uk-grid-small" uk-grid>
 
@@ -161,6 +162,10 @@
                             <div class="uk-grid-small" uk-grid>
                                 <div class="uk-width-expand" uk-leader>Sub Category</div>
                                 <div>{{$sub_category->name}}</div>
+                            </div>
+                            <div class="uk-grid-small" uk-grid>
+                                <div class="uk-width-expand" uk-leader>Condition</div>
+                                <div>{{$condition->name}}</div>
                             </div>
                         </div>
                     </div>

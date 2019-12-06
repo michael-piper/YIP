@@ -75,9 +75,15 @@
                                                 </div>
                                             </div>
                                         <div>
-                                            <label class="uk-form-label" for="form-stacked-text">Part Number</label>
+                                            <label class="uk-form-label" for="form-stacked-text">Condition</label>
                                             <div class="uk-form-controls">
-                                                <input value="{{$_GET['partnumber']??''}}" class="uk-input radius-large" name="partnumber" id="form-stacked-text" type="text" placeholder="Part number...">
+                                                <select name="condition" class="uk-select condition radius-large" data-placeholder="Select a condition">
+                                                        <option  value="">All</option>
+
+                                                        @foreach(App\ProductStatus::all() as $condition)
+                                                            <option @if(isset($_GET['condition']) && $condition->id == $_GET['condition'] || isset($_GET['condition']) && $condition->name == $_GET['condition']) {{'selected="selected"'}}@endif value="{{$condition->id}}"> {!!$condition->name!!}</option>
+                                                        @endforeach
+                                                </select>
                                             </div>
                                         </div>
                                 <div>
@@ -146,10 +152,9 @@
 <div class="uk-width-1-1 uk-position-absolute wow bounceInLeft" id="categorydata" style="left:80px;display:none;z-index: 999999999;margin-top:1px;">
         <div class="row">
             <div class="col-5 col-sm-5 col-md-4 col-lg-3 p-0" id="category-holder" >
-                <div class="uk-card-default uk-card-body radius-medium p-1" style="height:340px;">
-                    {{-- <span onclick="$('#mksds').scroll($('#mksds').height()-12)"></span> --}}
+                <div class="uk-card-default uk-card-body radius-medium p-1" overflow="true" style="height:340px;">
                     <h5 class="px-3 pt-2"><b> Shop by Category</b></h5>
-                    <ul id="mksds" class="uk-list" style="overflow:hidden;">
+                    <ul id="mksds" class="uk-list">
                         @php($categories=App\ProductCategory::all())
                         @foreach( $categories as $category)
                             <li class="change_sub py-2" cat-id="{{$category->id}}">&nbsp;<small style="font-size:16px;">{{ $category->name}} <span class="uk-icon float-right" uk-icon="icon: chevron-right"></span></small></li>
@@ -158,9 +163,9 @@
                 </div>
             </div>
             <div class="col-5 col-sm-5 col-md-4 col-lg-3 p-0 pl-1" id="subcategory-holder" style="display:none;">
-                <div class="uk-card-default uk-card-body radius-medium p-1" style="height:340px;">
+                <div class="uk-card-default uk-card-body radius-medium p-1" overflow="true" style="height:340px;">
                     <h5 class="px-3 pt-2"><b> </b></h5>
-                    <ul id="ksdks" class="uk-list" style="overflow:hidden;">
+                    <ul id="ksdks" class="uk-list">
 
                     </ul>
                 </div>
@@ -172,6 +177,13 @@
         $('#opensearchfilter').on('click',function(){
             $('#searchfilter').toggle();
         });
+        $('[overflow]').on('mouseenter',function(){
+            $(this).css('overflow','scroll');
+        });
+        $('[overflow]').on('mouseleave',function(){
+            $(this).css('overflow','hidden');
+        });
+        $('[overflow]').css('overflow','hidden');
         function changeSubCategory(sub){
             var capture=$('#subcategory-holder ul');
             capture.html('');

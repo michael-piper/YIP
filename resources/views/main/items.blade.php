@@ -49,6 +49,12 @@
  @php($where[]=['year','LIKE','%'.$_GET['year'].'%'])
  @php($products=$products->where($where))
 @endif
+@if(isset($_GET['condition']))
+ @php($where=[])
+ @php($where[]=['active','=',1])
+ @php($where[]=['condition','=',$_GET['condition']])
+ @php($products=$products->where($where))
+@endif
 @php($products=$products->paginate(16))
 <section class="uk-text-center uk-padding-small">
         <div class="uk-grid-small uk-child-width-1-5@s uk-text-center" uk-grid>
