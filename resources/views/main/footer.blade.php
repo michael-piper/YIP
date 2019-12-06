@@ -185,7 +185,7 @@
                     </p>
 
                     <p class="footer-company-name">Motoparts Arena &copy; 2019</p>
-					<p class="footer-company-name">Nigeria's Number 1 Auto Store</p>
+					<p class="footer-company-name">Nigeria's Number 1 Auto Parts Store</p>
                 </div>
 
                 <div class="footer-center">
