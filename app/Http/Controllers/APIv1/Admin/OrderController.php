@@ -6,6 +6,8 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\ProductSubCategory;
 use App\ProductCategory;
+use App\PaymentStatus;
+use App\OrderStatus;
 use App\Product;
 use App\Order;
 use App\User;
@@ -17,6 +19,8 @@ class OrderController extends Controller
         $orders= Order::all();
         if(count($orders)>0){
             foreach($orders as $key=>$order){
+                $orders[$key]->order_status=OrderStatus::where('id',$order->order_status)->first();
+                $orders[$key]->payment_status=PaymentStatus::where('id',$order->payment_status)->first();
                 $orders[$key]->product=Product::where('id',$order->product_id)->first();
                 $orders[$key]->product->category=ProductCategory::where('id',$orders[$key]->product->category_id)->first();
                 $orders[$key]->product->sub_category=ProductSubCategory::where('id',$orders[$key]->product->sub_category_id)->first();

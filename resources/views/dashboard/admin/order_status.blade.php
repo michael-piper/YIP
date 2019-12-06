@@ -9,7 +9,7 @@
         <div class="card-header">
                 <button onclick="addOrderStatus();" class="btn btn-primary btn-sm float-right">Add</button>
 
-          <h3 class="card-title">DataTable For Order Status</h3>
+          <h3 class="card-title">Order Status</h3>
         </div>
         <!-- /.card-header -->
         <div class="card-body">

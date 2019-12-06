@@ -7,7 +7,7 @@
           <div class="container-fluid">
                 <div class="card">
         <div class="card-header">
-          <h3 class="card-title">DataTable For Orders</h3>
+          <h3 class="card-title">Orders</h3>
         </div>
         <!-- /.card-header -->
         <div class="card-body">
@@ -15,11 +15,12 @@
             <thead>
             <tr>
               <th>#</th>
-              <th>product name</th>
-              <th>price</th>
-              <th>quantitiy</th>
-              <th>total price</th>
-              <th>action</th>
+              <th>Product Name</th>
+              <th>Price</th>
+              <th>Quantitiy</th>
+              <th>Total Price</th>
+              <th>Order Status</th>
+              <th>Payment Status</th>
             </tr>
             </thead>
             <tbody>
@@ -33,11 +34,12 @@
             <tfoot>
                 <tr>
                     <th>#</th>
-                    <th>product name</th>
-                    <th>price</th>
-                    <th>quantitiy</th>
-                    <th>total price</th>
-                    <th>action</th>
+                    <th>Product Name</th>
+                    <th>Price</th>
+                    <th>Quantitiy</th>
+                    <th>Total Price</th>
+                    <th>Order Status</th>
+                    <th>Payment Status</th>
                 </tr>
             </tfoot>
           </table>
@@ -99,7 +101,10 @@
               <th>${res.data[i].total_price}</th>
 
               <th>
-                <button onclick="orderStatus(${res.data[i].id})" class="btn btn-danger btn-sm d-inline" title="move"><small><span class="fas fa-bus"></span> change status</small></button>
+                    ${res.data[i].order_status.name}
+              </th>
+              <th>
+                    ${res.data[i].payment_status.name}
               </th>
             </tr>`;
         $('#products-table tbody').append(html);

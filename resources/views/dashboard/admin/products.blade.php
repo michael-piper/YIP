@@ -7,7 +7,7 @@
           <div class="container-fluid">
                 <div class="card">
         <div class="card-header">
-          <h3 class="card-title">DataTable with default features</h3>
+          <h3 class="card-title">Products</h3>
         </div>
         <!-- /.card-header -->
         <div class="card-body">
@@ -15,14 +15,14 @@
             <thead>
             <tr>
               <th>#</th>
-              <th>vendor name</th>
-              <th>name</th>
-              <th>price</th>
-              <th>condition</th>
-              <th>commission</th>
-              <th>available</th>
-              <th>sold</th>
-              <th>action</th>
+              <th>Vendor name</th>
+              <th>Name</th>
+              <th>Price</th>
+              <th>Condition</th>
+              <th>Commission</th>
+              <th>Available</th>
+              <th>Sold</th>
+              <th>Action</th>
             </tr>
             </thead>
             <tbody>
@@ -36,14 +36,14 @@
             <tfoot>
                 <tr>
                     <th>#</th>
-                    <th>vendor name</th>
-                    <th>name</th>
-                    <th>price</th>
-                    <th>condition</th>
-                    <th>commission</th>
-                    <th>available</th>
-                    <th>sold</th>
-                    <th>action</th>
+                    <th>Vendor name</th>
+                    <th>Name</th>
+                    <th>Price</th>
+                    <th>Condition</th>
+                    <th>Commission</th>
+                    <th>Available</th>
+                    <th>Sold</th>
+                    <th>Action</th>
                 </tr>
             </tfoot>
           </table>

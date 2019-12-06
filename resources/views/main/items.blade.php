@@ -69,7 +69,7 @@
                                 {!!App\Product::rating($product->id)!!}
                             </div>
                             <span class="price">
-                            <span class="woocommerce-Price-amount amount"><span class="woocommerce-Price-currencySymbol">{{$currency}}</span>{{number_format($product->priceWithCommission(false),'2','.',',')}}</span>
+                                <span class="woocommerce-Price-amount amount"><span class="woocommerce-Price-currencySymbol">{{$currency}}</span>{{number_format($product->priceWithCommission(),'2','.',',')}}</span>
                             </span>
                         </a><br/>
                         <a href="/add_to_cart/{{$product->id}}" data-quantity="1" class="uk-cart-button product_type_variable add_to_cart_button" aria-label="Select options for “YOO Halftone”" rel="nofollow">Add to cart</a>

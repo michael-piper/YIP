@@ -8,7 +8,7 @@
                 <div class="card">
         <div class="card-header">
                 <button onclick="addSubCategory();" class="btn btn-primary btn-sm float-right">Add</button>
-          <h3 class="card-title">DataTable For Product Sub Categories </h3>
+          <h3 class="card-title">Product Sub Categories </h3>
         </div>
         <!-- /.card-header -->
         <div class="card-body">

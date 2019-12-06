@@ -12,7 +12,7 @@
                             <span class="main-img">
                             <img class="product-image" style="max-height:500px;" src="{{url($product->display_image??'/images/products/placeholder.png')}}"></span>
                             <div class="additional-img">
-                                <a href="{{url($product->display_image??'/images/products/placeholder.png')}}">
+                                <a href="">
                                     <img src="{{url($product->display_image??'/images/products/placeholder.png')}}">
                                 </a>
                                 @foreach($product->images() as $other_image)

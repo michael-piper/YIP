@@ -2,6 +2,8 @@
 @php($product=App\Product::where(['active'=>1,'id'=>$product_id])->first())
 @isset($product)
 @php($addons=$product->addons())
+@php($category=App\ProductCategory::where('id',$product->category_id)->first())
+@php($sub_category=App\ProductSubCategory::where('id',$product->sub_category_id)->first())
 <section>
 <div class="uk-text-center uk-grid-small" uk-grid>
 
@@ -131,6 +133,42 @@
  </div>
  </div>
  </div>
+    </section>
+    <section class="uk-margin-small-top">
+            <div class="uk-text-cente uk-grid-small" uk-grid>
+                <div class="uk-width-1-2@s">
+                    <div class="uk-card uk-card-default radius uk-margin-left">
+                            <div class="uk-card-header">
+                                <h5>Product Details</h5>
+                            </div>
+                        <div class="uk-card-body">
+                                <div class="uk-grid-small" uk-grid>
+                                    <div class="uk-width-expand" uk-leader>Name</div>
+                                    <div>{{$product->name}}</div>
+                                </div>
+                            <div class="uk-grid-small" uk-grid>
+                                <div class="uk-width-expand" uk-leader>Make</div>
+                                <div>{{$product->make}}</div>
+                            </div>
+                            <div class="uk-grid-small" uk-grid>
+                                <div class="uk-width-expand" uk-leader>Model</div>
+                                <div>{{$product->model}}</div>
+                            </div>
+                            <div class="uk-grid-small" uk-grid>
+                                <div class="uk-width-expand" uk-leader>Category</div>
+                                <div>{{$category->name}}</div>
+                            </div>
+                            <div class="uk-grid-small" uk-grid>
+                                <div class="uk-width-expand" uk-leader>Sub Category</div>
+                                <div>{{$sub_category->name}}</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="uk-width-1-2@s radius">
+                    @includeIf('main.dealsoftheday-product')
+                </div>
+            </div>
     </section>
     <div class="uk-margin-small-top">
         @includeIf("main.comments")
