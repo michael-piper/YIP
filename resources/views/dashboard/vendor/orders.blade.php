@@ -19,10 +19,6 @@
               <th>price</th>
               <th>quantitiy</th>
               <th>total price</th>
-              <th>shipping fee</th>
-              <th>shipping name</th>
-
-              <th>shipping address</th>
               <th>action</th>
             </tr>
             </thead>

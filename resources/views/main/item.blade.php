@@ -30,8 +30,8 @@
                     </li>
                     @endforeach
                 </ul>
-                <a class="uk-position-center-left uk-position-small uk-hidden-hover w3-text-red" href="#" uk-slidenav-previous uk-slider-item="previous"></a>
-    <a class="uk-position-center-right p-5 uk-overlay uk-overlay-primary uk-position-small w3-theme-text w3-text-red" style="color:red;" href="#" uk-slidenav-next uk-slider-item="next"></a>
+                <a class="uk-position-center-left uk-overlay uk-overlay-primary uk-position-small uk-hidden-hover" style="color:red;" href="#" uk-slidenav-previous uk-slider-item="previous"></a>
+                <a class="uk-position-center-right uk-overlay uk-overlay-primary uk-position-small" style="color:red;" href="#" uk-slidenav-next uk-slider-item="next"></a>
 
             </div>
           </div>
