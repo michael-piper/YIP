@@ -41,10 +41,6 @@
                     <th>price</th>
                     <th>quantitiy</th>
                     <th>total price</th>
-                    <th>shipping fee</th>
-                    <th>shipping name</th>
-
-                    <th>shipping address</th>
                     <th>action</th>
                 </tr>
             </tfoot>
@@ -105,9 +101,6 @@
               <th>${res.data[i].price}</th>
               <th>${res.data[i].quantity}</th>
               <th>${res.data[i].total_price}</th>
-              <th>${res.data[i].shipping_fee}</th>
-              <th>${contact.shipping_name}</th>
-              <th>${contact.shipping_state}, ${contact.shipping_address}</th>
 
               <th>
                 <button onclick="orderStatus(${res.data[i].id})" class="btn btn-danger btn-sm d-inline" title="move"><small><span class="fas fa-bus"></span> change status</small></button>
