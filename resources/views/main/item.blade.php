@@ -139,7 +139,7 @@
                 <div class="uk-width-1-2@s">
                     <div class="uk-card uk-card-default radius uk-margin-left">
                             <div class="uk-card-header">
-                                <h5>Product Details</h5>
+                                <h4>Product Details</h4>
                             </div>
                         <div class="uk-card-body">
                                 <div class="uk-grid-small" uk-grid>

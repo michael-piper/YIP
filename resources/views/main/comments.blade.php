@@ -37,7 +37,7 @@ if(isset($_GET['action']) && $_GET['action']=='comment'){
 <div class="uk-grid-small uk-child-width-1-2@s" uk-grid>
     <div>
         <section class="uk-margin-left uk-section uk-margin-small uk-dark uk-card-default uk-card-body">
-        <h3 class="uk-padding-remove uk-margin-remove">Product review <span class="float-right"><small>{{$comments->total()}} Review{{$comments->total()<=1?'':'s'}}</small> <span class="rating">{!!App\Product::rating($product->id)!!}</span>&nbsp;</span></h3>
+        <h4 class="uk-padding-remove uk-margin-remove">Product review <span class="float-right"><small>{{$comments->total()}} Review{{$comments->total()<=1?'':'s'}}</small> <span class="rating">{!!App\Product::rating($product->id)!!}</span>&nbsp;</span></h4>
             <hr class="m-0 p-0">
             <ul class="uk-comment-list">
                 @foreach($comments as $comment)
