@@ -110,7 +110,7 @@ if(isset($_GET['action']) && $_GET['action']=='comment'){
             </form>
             @else
             <div class="uk-text-center">
-                please login to add comment<br/>
+                Please login to add review<br/>
             <a href="/login?r={{Request::url()}}">login</a>
             </div>
             @endauth
