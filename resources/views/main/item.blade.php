@@ -15,7 +15,7 @@
             <div class="uk-position-relative uk-visible-toggle uk-light additional-img" tabindex="-1" uk-slider>
 
                 <ul class="uk-slider-items uk-child-width-1-2 uk-child-width-1-3@s uk-child-width-1-4@m">
-                    <li>
+                    <li uk-lightbox>
 
                         <a href="{{url($product->display_image??'/images/products/placeholder.png')}}">
                         <img src="{{url($product->display_image??'/images/products/placeholder.png')}}">
