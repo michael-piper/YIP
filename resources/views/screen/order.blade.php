@@ -357,7 +357,7 @@ display: block;
 	float: right;
 }
 
-.btn {
+.btn-order {
 	background: #53b5aa;
 	border: 1px solid #999;
 	border-style: none none solid none;
@@ -377,7 +377,7 @@ display: block;
 	transition: all .2s linear;
 }
 
-.btn:hover {
+.btn-order:hover {
 	color: #fff;
 	background: #429188;
 }

@@ -389,8 +389,8 @@
 }
 .additional-img img {
   float: left; /*display: inline-block has  automatic margin right and bottom :( */
-  width: 98px;
-  height: 45px;
+  width: 90px;
+  height: 90px;
   padding: 10px 5px;
   border: .5px solid #ddd;
   border-radius: 2px;

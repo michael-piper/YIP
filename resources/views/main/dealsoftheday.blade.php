@@ -16,11 +16,13 @@
             <div class="uk-card-media-top">
                 <img class="radius-top" style="width:100%;height:200px; min-height:200px;" src="{{ $product->display_image ?? '/images/product/placeholder.png'}}" alt="">
             </div>
-            <div style="max-height:80px;" class="uk-card-footer uk-hover">
-            <p class="uk-text-truncate uk-padding-remove uk-margin-remove text-dark"><small>{{$product->name}}</small></p>
-            <span class="price uk-padding-remove uk-margin-remove text-muted">
-                <span class="amount"><small><span class="currencySymbol">{{$currency}}</span>{{number_format($product->priceWithCommission(),'2','.',',')}}</small></span>
-            </span>
+            <div style="max-height:80px;" class="">
+                <p style="font-size:13px;height:40px;max-height:40px" class="uk-text-left uk-padding-remove uk-margin-remove text-dark">
+                        {{Str::limit($product->name,32, ' ')}}
+                </p>
+                <span class="price uk-padding-remove uk-margin-remove text-muted">
+                    <span class="amount"><small><span class="currencySymbol">{{$currency}}</span>{{number_format($product->priceWithCommission(),'2','.',',')}}</small></span>
+                </span>
             </div>
         </div>
         </a>

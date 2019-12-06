@@ -81,21 +81,17 @@
                             <p>{{$product->description}}</p>
                            </div>
                             <!--SELECT BLOCK-->
-                           <div class="block-select clearfix">
-                            <form>
+                           <div class="block-select clearfi">
+                            <form class="row">
                                 <input type="hidden" name="action" value="add_quantity">
-                              <div class="select-size">
+                              <div class="col-12">
                                 <span>Quantity</span>
-                                <select name="quantity" class="size" required="required">
-                                    <option value="">choose quantity</option>
-                                @for($i=1;$i < 101;$i++)
-                                    <option>{{$i}}</option>
-                                @endfor
-                                </select>
+                                <input name="quantity" class="form-control" placeholder="Choose amont of stock you want to add" type="number" min="0" required="required">
                               </div>
                               <!--BUTTON-->
-                              <button class="btn-product"><img src="">Add Item To Product</button>
-                             </form>
+                              <button class="btn-product col">Add Item To Product</button>
+                              <button class="btn-product col" onclick="addProductImage({{$product->id}})">Add More Product Image</button>
+                            </form>
                             </div>
                             <!--LINKS-->
                            <div class="block-footer clearfix">
@@ -389,8 +385,8 @@
 }
 .additional-img img {
   float: left; /*display: inline-block has  automatic margin right and bottom :( */
-  width: 98px;
-  height: 45px;
+  width: 90px;
+  height: 90px;
   padding: 10px 5px;
   border: .5px solid #ddd;
   border-radius: 2px;

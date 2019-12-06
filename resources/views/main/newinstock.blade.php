@@ -8,18 +8,22 @@
             <div class="uk-position-relative uk-visible-toggle uk-light" tabindex="-1" uk-slider>
 
     <ul class="uk-slider-items uk-child-width-1-2 uk-child-width-1-3@s uk-child-width-1-6@m">
+
+
         @forelse(App\Product::newInStock() as $product)
         <li class="uk-padding-small">
         <a href="/shop/product-{{$product->id}}/{{$product->name}}" class="woocommerce-LoopProduct-link woocommerce-loop-product__link">
-        <div class="uk-card radius">
+        <div class="uk-card uk-text-center radius">
             <div class="uk-card-media-top">
                 <img class="radius-top" style="width:100%;height:200px; min-height:200px;" src="{{ $product->display_image ?? '/images/product/placeholder.png'}}" alt="">
             </div>
-            <div style="max-height:80px;" class="uk-card-footer uk-hover">
-            <p class="uk-text-truncate uk-padding-remove uk-margin-remove text-dark"><small>{{$product->name}}</small></p>
-            <span class="price uk-padding-remove uk-margin-remove text-muted">
-                <span class="amount"><small><span class="currencySymbol">{{$currency}}</span>{{number_format($product->priceWithCommission(),'2','.',',')}}</small></span>
-            </span>
+            <div style="max-height:80px;" class="">
+                <p style="font-size:13px;height:40px;max-height:40px" class="uk-text-left uk-padding-remove uk-margin-remove text-dark">
+                        {{Str::limit($product->name,32, ' ')}}
+                </p>
+                <span class="price uk-padding-remove uk-margin-remove text-muted">
+                    <span class="amount"><small><span class="currencySymbol">{{$currency}}</span>{{number_format($product->priceWithCommission(),'2','.',',')}}</small></span>
+                </span>
             </div>
         </div>
         </a>

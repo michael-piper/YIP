@@ -10,7 +10,7 @@ crossorigin="anonymous"></script>
         return this;
     };
 </script>
-<link rel='stylesheet' href='https://fonts.googleapis.com/css?family=Open+Sans:400,300,600,700,800'>
+<link rel='stylesheet' href='https://fonts.googleapis.com/css?family=Roboto:400,300,600,700,800'>
 <!-- Latest compiled and minified CSS -->
 <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
 <!-- UIkit CSS -->
@@ -28,10 +28,14 @@ crossorigin="anonymous"></script>
 body{
     color:#000000;
     background-color:#f5f5f5;
+    font-family: "Roboto";
 }
 .radius-large{
     border-radius:25px;
 
+}
+.radius-medium{
+    border-radius:20px;
 }
 .radius{
     border-radius:5px;

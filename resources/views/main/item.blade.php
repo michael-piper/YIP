@@ -48,16 +48,16 @@
               <div class="block-price clearfix">
                     @if(isset($addons->discount) && is_int($addons->discount) && $addons->discount>0)
                     <div class="price-new clearfix">
-                        <span class="price-new-dollar">{{$currency}}{{$product->priceWithCommission()}}</span>
+                        <span class="price-new-dollar">{{$currency}}{{number_format($product->priceWithCommission(),'2','.',',')}}</span>
                         <span class="price-new-cent"></span>
                     </div>
                     <div class="price-old clearfix">
-                      <span class="price-old-dollar">{{$currency}}{{$product->priceWithCommission(false)}}</span>
+                      <span class="price-old-dollar">{{$currency}}{{number_format($product->priceWithCommission(false),'2','.',',')}}</span>
                       <span class="price-old-cent"></span>
                     </div>
                   @else
                     <div class="price-new clearfix">
-                        <span class="price-new-dollar">{{$currency}}{{$product->price}}</span>
+                        <span class="price-new-dollar">{{$currency}}{{number_format($product->priceWithCommission(),'2','.',',')}}</span>
                         <span class="price-new-cent"></span>
                     </div>
                   @endif
@@ -66,7 +66,7 @@
               <!--rating-->
               <div class="block-rating clearfix">
                 <!--review-->
-                <span class="review">40 Reviews</span>
+              <span class="review">@php($c_count=App\Comment::where(['product_id'=>$product->id])->count()) {{$c_count}} Review{{$c_count<=1?'':'s'}}</span>
               <span class="rating">{!!App\Product::rating($product_id)!!}</span>
               </div>
             </div>
@@ -123,6 +123,9 @@
  </div>
  </div>
     </section>
+    <div class="uk-margin-small-top">
+        @includeIf("main.comments")
+    </div>
 @else
 
 porduct not found

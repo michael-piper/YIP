@@ -35,14 +35,15 @@
   border: .5px solid #ddd;
   border-radius: 2px;
   padding: 60px 30px;
-  width: 390px;
+  width: 410px;
+  height: 410px;
   margin-bottom: 10px;
   cursor: pointer;
 }
 .additional-img img {
   float: left; /*display: inline-block has  automatic margin right and bottom :( */
-  width: 98px;
-  height: 45px;
+  width: 90px;
+  height: 90px;
   padding: 10px 5px;
   border: .5px solid #ddd;
   border-radius: 2px;
@@ -390,13 +391,14 @@ span.soldout{
 @endsection
 
 @section('content')
-<div class="uk-text-center uk-grid-small" uk-grid>
+<div class="uk-grid-small" uk-grid>
 
     <div class="uk-width-1-1@m">
       @include( "main.item")
     </div>
-    <div class="uk-width-1-1@m">
+    <div class="uk-text-center uk-width-1-1@m">
       @includeIf("main.topsellingitems")
     </div>
+
 </div>
 @endsection

@@ -345,7 +345,7 @@ a:hover {
 	float: right;
 }
 
-.btn {
+.btn-order {
 	background: #53b5aa;
 	border: 1px solid #999;
 	border-style: none none solid none;
@@ -365,7 +365,7 @@ a:hover {
 	transition: all .2s linear;
 }
 
-.btn:hover {
+.btn-order:hover {
 	color: #fff;
 	background: #429188;
 }
@@ -429,7 +429,7 @@ a:hover {
 <div class="container">
 <h1>Shopping cart <span>[</span> <em><a href="" target="_blank">{{count($cart)}} </a></em> <span class="last-span is-open">]</span>
 
- <a href="JavaScript::void(0);" class="continue btn-clearcart red">Clear Cart</a>
+ <a href="JavaScript::void(0);" class="continue btn-order-clearcart red">Clear Cart</a>
  <a href="/shop" class="continue">Continue Shopping</a>
 
 
@@ -488,7 +488,7 @@ a:hover {
 </div>
 <div class="right">
 <h1 class="total">Total: {{$currency}}<span></span></h1>
-<a class="btn btn-checkout">Checkout</a>
+<a class="btn-order btn-order-checkout">Checkout</a>
 </div>
 </div>
 </footer>
@@ -806,7 +806,7 @@ $(document).ready(function () {
 
   window.setTimeout(function () {$(".is-open").removeClass("is-open");}, 1200);
 
-  $(".btn-checkout").click(function () {
+  $(".btn-order-checkout").click(function () {
 	  @if(is_null($user))
 	  return UIkit.modal('#modal-signin').show();
 	  @endif
@@ -818,7 +818,7 @@ $(document).ready(function () {
    }
 
   });
-   $(".btn-clearcart").click(function () {
+   $(".btn-order-clearcart").click(function () {
     check = true;
     $(".remove").click();
   });
