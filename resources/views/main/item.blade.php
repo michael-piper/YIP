@@ -32,7 +32,6 @@
                 </ul>
                 <a class="uk-position-center-left uk-overlay uk-overlay-primary uk-position-small uk-hidden-hover" style="color:red;" href="#" uk-slidenav-previous uk-slider-item="previous"></a>
                 <a class="uk-position-center-right uk-overlay uk-overlay-primary uk-position-small" style="color:red;" href="#" uk-slidenav-next uk-slider-item="next"></a>
-
             </div>
           </div>
           <!-- PRODUCT INFORMATION -->
