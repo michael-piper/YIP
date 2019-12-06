@@ -1,7 +1,7 @@
 @php($currency=App\Product::currency())
 @php($products=App\Product::query())
 @isset($_GET['q'])
- @if(strlen($_GET['q'])>4)
+ @if(strlen($_GET['q'])>3)
   @php($where=[])
   @php($where[]=['active','=',1])
   @php($where[]=['name','LIKE',"%{$_GET['q']}%"])
