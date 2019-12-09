@@ -49,7 +49,7 @@
  @php($where[]=['year','LIKE','%'.$_GET['year'].'%'])
  @php($products=$products->where($where))
 @endif
-@if(isset($_GET['condition']))
+@if(isset($_GET['condition']) && $_GET['condition']!='')
  @php($where=[])
  @php($where[]=['active','=',1])
  @php($where[]=['condition','=',$_GET['condition']])

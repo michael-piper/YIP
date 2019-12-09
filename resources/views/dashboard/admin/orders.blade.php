@@ -179,7 +179,7 @@ orderStatus=function($id){
                     meta.order_status=this.$content.find('.order-status').val();
                     $.ajax({
                             method: "PATCH",
-                            url:API_URL+'v1/orders/'+data.id,
+                            url:API_URL+'v1/orders/'+$id,
                             data:meta
                         })
                     .then(function(res){
