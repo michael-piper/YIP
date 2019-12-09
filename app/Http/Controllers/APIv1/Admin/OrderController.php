@@ -82,7 +82,7 @@ class OrderController extends Controller
             return response()->json([
                 'error' => false,
                 'message'  => 'Order Updated',
-            ], 404);
+            ], 200);
         }
     }
     public function destroy($id)

@@ -16,6 +16,8 @@
             <tr>
               <th>#</th>
               <th>product name</th>
+              <th>order status</th>
+              <th>product status</th>
               <th>price</th>
               <th>quantitiy</th>
               <th>total price</th>
@@ -34,6 +36,8 @@
                 <tr>
                     <th>#</th>
                     <th>product name</th>
+                    <th>order status</th>
+                    <th>product status</th>
                     <th>price</th>
                     <th>quantitiy</th>
                     <th>total price</th>
@@ -101,6 +105,12 @@
         var html=`<tr>
               <th>${res.data[i].id}</th>
               <th>${res.data[i].product.name}</th>
+              <th>
+                    ${res.data[i].order_status ?res.data[i].order_status.name:'Not available'}
+              </th>
+              <th>
+                    ${res.data[i].payment_status?res.data[i].payment_status.name:'Not available'}
+              </th>
               <th>${res.data[i].price}</th>
               <th>${res.data[i].quantity}</th>
               <th>${res.data[i].total_price}</th>
@@ -211,6 +221,70 @@ orderStatus=function($id){
                 html+='<option value="'+res.data[i].id+'">'+res.data[i].name+'</option>';
             }
             jc.$content.find('.order-status').html(html);
+            });
+
+            this.$content.find('form').on('submit', function (e) {
+                // if the user submits the form by pressing enter in the field.
+                e.preventDefault();
+                jc.$$formSubmit.trigger('click'); // reference the button and click it
+            });
+        }
+    });
+  };
+
+
+paymentStatus=function($id){
+    $.confirm({
+        title: 'Change Payment Status!',
+        content: '' +
+        '<form action="" class="formName">' +
+        '<div class="form-group">' +
+        '<label>Select Status</label>' +
+        '<select  class="payment-status form-control" required>' +
+        '</select>'+
+        '</div>' +
+        '</form>',
+        buttons: {
+            formSubmit: {
+                text: 'Submit',
+                btnClass: 'btn-blue',
+                action: function () {
+                    var meta={};
+                    meta.payment_status=this.$content.find('.payment-status').val();
+                    $.ajax({
+                            method: "PATCH",
+                            url:API_URL+'v1/orders/'+$id,
+                            data:meta
+                        })
+                    .then(function(res){
+                        if(res.error){
+                            Toast.fire({
+                                type: 'error',
+                                title: res.message
+                            })
+                        }else{
+                            Toast.fire({
+                                type: 'success',
+                                title: res.message
+                            })
+                            loadOrder();
+                        }
+                    });
+                }
+            },
+            cancel: function () {
+                //close
+            },
+        },
+        onContentReady: function () {
+            // bind to events
+            var jc = this;
+            $.getJSON(API_URL+'v1/payment-status/').then(function(res){
+            var html='';
+            for(var i in res.data){
+                html+='<option value="'+res.data[i].id+'">'+res.data[i].name+'</option>';
+            }
+            jc.$content.find('.payment-status').html(html);
             });
 
             this.$content.find('form').on('submit', function (e) {
