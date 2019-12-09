@@ -55,7 +55,7 @@
  @php($where[]=['condition','=',$_GET['condition']])
  @php($products=$products->where($where))
 @endif
-@php($products=$products->paginate(16))
+@php($products=$products->paginate(18))
 <section class="uk-text-center uk-padding-small">
         <div class="uk-grid-small uk-child-width-1-4@m uk-child-width-1-6@l uk-text-center" uk-grid>
                 @forelse($products as $product)
