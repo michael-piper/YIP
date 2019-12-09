@@ -65,7 +65,7 @@ class OrderController extends Controller
                     'message'  => "Order with id # $id not found",
                 ], 404);
             }
-            $whitelist=['order-status'];
+            $whitelist=['order_status','payment_status'];
             foreach($request->input() as $name=>$input){
                 if(in_array($name,$whitelist)){
                     $order->{$name}=$input;
