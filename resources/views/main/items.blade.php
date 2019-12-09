@@ -57,7 +57,7 @@
 @endif
 @php($products=$products->paginate(16))
 <section class="uk-text-center uk-padding-small">
-        <div class="uk-grid-small uk-child-width-1-5@s uk-text-center" uk-grid>
+        <div class="uk-grid-small uk-child-width-1-4@m uk-child-width-1-6@l uk-text-center" uk-grid>
                 @forelse($products as $product)
                 <div>
                         <li class="product">
