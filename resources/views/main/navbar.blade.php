@@ -34,7 +34,7 @@
                         <section style="" class="uk-width-1-1 uk-section uk-card-default uk-card-body">
                                 <div class="uk-form-stacked uk-child-width-1-6@m uk-child-width-1-3@s uk-text-left" uk-grid>
                                         <div>
-                                            <label class="uk-form-label" for="form-stacked-select">Vehicle</label>
+                                            <label class="uk-form-label" for="form-stacked-select">Car Make</label>
                                             <div class="uk-form-controls">
                                                 <select name="make" value="{{$_GET['make']??''}}" class="uk-select make radius-large" onchange="changeCarModel(this.value);" data-placeholder="Select a year">
 

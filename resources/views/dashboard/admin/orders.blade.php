@@ -11,7 +11,7 @@
         </div>
         <!-- /.card-header -->
         <div class="card-body">
-          <table id='products-table' class="table table-bordered table-striped">
+          <table id='products-table' style="font-size: 9px;" class="table table-bordered table-striped">
             <thead>
             <tr>
               <th>#</th>
@@ -120,8 +120,8 @@
 
               <th>
                     <button onclick="removeOrder(${res.data[i].id})" class="btn btn-danger btn-sm d-inline" title="move"><small><span class="fas fa-trash"></span></small></button>
-
-                    <button onclick="orderStatus(${res.data[i].id})" class="btn btn-warning btn-sm d-inline" title="move"><small><span class="fas fa-bus"></span> change status</small></button>
+                    <button onclick="orderStatus(${res.data[i].id})" class="btn btn-warning btn-sm d-inline" title="move"><small style="font-size:8px;"><span class="fas fa-bus"></span>order</small></button>
+                    <button onclick="paymentStatus(${res.data[i].id})" class="btn btn-warning btn-sm d-inline" title="move"><small style="font-size:8px;"><span class="fas fa-bus"></span>payment</small></button>
               </th>
             </tr>`;
         $('#products-table tbody').append(html);

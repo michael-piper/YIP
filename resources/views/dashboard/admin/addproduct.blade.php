@@ -156,7 +156,7 @@
                                             </div>
                                     </div>
                                     <div class="input-group mb-3">
-                                        <textarea class="form-control" name="description" placeholder="Product description " minlength="70">{{$body['description'] ?? ''}}</textarea>
+                                        <textarea class="form-control" name="description" placeholder="Product description " minlength="1">{{$body['description'] ?? ''}}</textarea>
                                     </div>
                                 </div>
                         </div>
