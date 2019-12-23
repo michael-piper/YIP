@@ -1,3 +1,9 @@
+@php($user=Auth::user())
+@isset($user)
+@php($userdetails=App\UserDetail::where(['user_id'=>$user->id])->first())
+@else
+@php($userdetails=(object)[])
+@endisset
 @extends('layouts.main')
 
 @section("title","")
@@ -122,34 +128,44 @@ span.soldout{
 
 @section('content')
 <section>
-        <div class="uk-section uk-section-muted uk-flex uk-flex-middle uk-animation-fade">
+        <div class="uk-section uk-section-muted w-100 uk-flex uk-flex-middle uk-animation-fade ">
             <div class="uk-width-1-1">
                 <div class="uk-container">
                     <div class="uk-grid-margin uk-grid uk-grid-stack" uk-grid>
-                        <div class="uk-width-1-1@m">
-                            <div class="uk-margin uk-width-large uk-margin-auto uk-card uk-card-default uk-card-body uk-box-shadow-large">
-                                <h3 class="uk-card-title uk-text-center">Forget Password!</h3>
+                        <div class="uk-width-1-1@s uk-width-2-3@m uk-width-2-4@m uk-margin-auto">
+                            <div class="uk-margin uk-margin-auto uk-card uk-card-default uk-card-body uk-box-shadow-large radius-large">
+                                <h5 class="uk-card-titl uk-text-center">Edit Account Details!</h5>
                                 @include('includes.alerts')
-                                <form method="POST">
+                                <form method="POST" action="">
                                     @csrf
-                                    <div class="uk-margin">
-                                        <div class="uk-inline uk-width-1-1">
-                                            <span class="uk-form-icon" uk-icon="icon: mail"></span>
-                                            <input class="uk-input uk-form-large" name="email" placeholder="Email" type="text">
+                                    <div class="uk-margin uk-border-remove">
+                                        <div class="uk-inline uk-width-1-1" style="border:0 !important;">
+                                            <span class="uk-margin-left-small uk-padding-left uk-text-muted">Display name</span>
+                                            <input class="uk-input uk-form border-bottom" name="dispaly_name" value="{{$user->display_name}}" placeholder="Display name" type="text">
+                                        </div>
+                                    </div>
+                                    <div class="uk-margin uk-border-remove">
+                                        <div class="uk-inline uk-width-1-1" style="border:0 !important;">
+                                            <span class="uk-margin-left-small uk-padding-left uk-text-muted">Email</span>
+                                            <input class="uk-input uk-form border-bottom" name="email" value="{{$user->email}}" placeholder="Email" type="email">
                                         </div>
                                     </div>
                                     <div class="uk-margin">
                                         <div class="uk-inline uk-width-1-1">
-                                            <span class="uk-form-icon" uk-icon="icon: receiver"></span>
-                                            <input class="uk-input uk-form-large" name="phone" placeholder="Phone number" type="text">
+                                            <span class="uk-margin-left-small uk-padding-left uk-text-muted">Phone number</span>
+                                        <input class="uk-input uk-form border-bottom" name="phone" value="{{$user->phone}}" placeholder="Phone number" type="text">
                                         </div>
                                     </div>
                                     <div class="uk-margin">
-                                        <button class="uk-button uk-button-primary uk-button-large uk-width-1-1">Reset</button>
+                                            <div class="uk-inline uk-width-1-1">
+                                                <span class="uk-margin-left-small uk-padding-left uk-text-muted">Address</span>
+                                                <textarea class="uk-textarea uk-form border-bottom" name="userdetails/address" placeholder="address" type="text">{{$userdetails->addons()->address ?? ''}}</textarea>
+                                            </div>
                                     </div>
-                                    <div class="uk-text-small uk-text-center">
-                                        <label class="uk-float-left"><a class="uk-float-right uk-link uk-link-muted" href="/login">Login</a></label>
-                                       <label class="uk-float-right"> Not registered? <a href="/signup">Create an account</a></label>
+                                    <div class="uk-margin">
+                                        <div class="uk-inline uk-width-1-1 uk-text-center">
+                                            <button class="uk-button uk-button-primary uk-button-large uk-margin-auto radius-large">Save</button>
+                                        </div>
                                     </div>
                                 </form>
                             </div>

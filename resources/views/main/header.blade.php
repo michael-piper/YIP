@@ -79,6 +79,10 @@ background-color:#000 !important;
    color:yellow;
    background-color:transparent;
 }
+.w3-text-green{
+   color:green;
+   background-color:transparent;
+}
 .w3-theme-gradient {
 color: #000 !important;
 background:-webkit-linear-gradient(top,#64B5F6 25%,#42A5F5 75%)}
@@ -94,4 +98,11 @@ background:-ms-linear-gradient(top,#64B5F6 25%,#42A5F5 75%)}
 .w3-theme-gradient {
 color: #000 !important;
 background: linear-gradient(top,#64B5F6 25%,#42A5F5 75%)}
+.border-bottom{
+    border-top:0 !important; border-left:0; border-right:0;
+    border-bottom: #333 14px;
+}
+.border-bottom:hover, .border-bottom:active , .border-bottom:focus{
+    border-bottom-color: blue !important;
+}
 </style>

@@ -35,6 +35,13 @@ Route::get('/signup_vendor', 'ScreenController@signupVendor');
 Route::post('/signup_vendor', 'ScreenController@doSignupVendor');
 Route::get('/forgetpassword', 'ScreenController@forgetPassword');
 Route::post('/forgetpassword', 'ScreenController@doForgetPassword');
+Route::get('/enter-otp', 'ScreenController@enterOTP');
+Route::post('/enter-otp', 'ScreenController@doEnterOTP');
+Route::get('/resetpassword', 'ScreenController@resetPassword');
+Route::post('/resetpassword', 'ScreenController@doResetPassword');
+Route::get('/account', 'ScreenController@account');
+Route::get('/edit_account', 'ScreenController@editAccount');
+Route::post('/edit_account', 'ScreenController@doEditAccount');
 Route::apiResource('account/contacts', 'AccountContactController');
 
 Route::group(['prefix' => 'dashboard','middleware' => ['auth.vendor-admin']], function(){

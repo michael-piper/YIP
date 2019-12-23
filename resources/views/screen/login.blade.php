@@ -129,16 +129,7 @@ span.soldout{
                     <div class="uk-grid-margin uk-grid uk-grid-stack" uk-grid>
                         <div class="uk-width-1-1@m">
                             <div class="uk-margin uk-width-large uk-margin-auto uk-card uk-card-default uk-card-body uk-box-shadow-large">
-                                @if (isset($error))
-                                    @alert(['error'=>$error])
-                                    @endalert
-                                @elseif(isset($success))
-                                    @alert(['success'=>$success])
-                                    @endalert
-                                @elseif(isset($warning))
-                                    @alert(['warning'=>$warning])
-                                    @endalert
-                                @endif
+                                @include('includes.alerts')
                                 <h3 class="uk-card-title uk-text-center">Welcome back!</h3>
                                 <form action="@isset($_GET['r']){{'/login?r='.$_GET['r']}} @else {{'/login '}}@endisset" method="POST">
                                     @csrf

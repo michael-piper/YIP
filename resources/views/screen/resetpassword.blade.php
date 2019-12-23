@@ -128,20 +128,20 @@ span.soldout{
                     <div class="uk-grid-margin uk-grid uk-grid-stack" uk-grid>
                         <div class="uk-width-1-1@m">
                             <div class="uk-margin uk-width-large uk-margin-auto uk-card uk-card-default uk-card-body uk-box-shadow-large">
-                                <h3 class="uk-card-title uk-text-center">Forget Password!</h3>
+                                <h3 class="uk-card-title uk-text-center">Reset Password!</h3>
                                 @include('includes.alerts')
                                 <form method="POST">
                                     @csrf
                                     <div class="uk-margin">
                                         <div class="uk-inline uk-width-1-1">
-                                            <span class="uk-form-icon" uk-icon="icon: mail"></span>
-                                            <input class="uk-input uk-form-large" name="email" placeholder="Email" type="text">
+                                            <span class="uk-form-icon" uk-icon="icon: lock"></span>
+                                            <input class="uk-input uk-form-large" name="new-password" placeholder="New Password" type="password">
                                         </div>
                                     </div>
                                     <div class="uk-margin">
                                         <div class="uk-inline uk-width-1-1">
-                                            <span class="uk-form-icon" uk-icon="icon: receiver"></span>
-                                            <input class="uk-input uk-form-large" name="phone" placeholder="Phone number" type="text">
+                                            <span class="uk-form-icon" uk-icon="icon: lock"></span>
+                                            <input class="uk-input uk-form-large" name="confirm-new-password" placeholder="Confirm New Password" type="password">
                                         </div>
                                     </div>
                                     <div class="uk-margin">

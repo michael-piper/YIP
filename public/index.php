@@ -6,7 +6,7 @@
  * @package  Laravel
  * @author   Taylor Otwell <taylor@laravel.com>
  */
-
+ini_set("memory_limit","36M");
 define('LARAVEL_START', microtime(true));
 setlocale(LC_MONETARY,"en_US","");
 /*

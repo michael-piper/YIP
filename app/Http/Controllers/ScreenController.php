@@ -10,6 +10,8 @@ use App\Http\Controllers\ActionController;
 use App\Product;
 use App\Cart;
 use App\Order;
+use App\UserDetail;
+use App\User;
 class ScreenController extends Controller
 {
     //
@@ -450,8 +452,125 @@ class ScreenController extends Controller
     function forgetPassword(){
         return view('screen.forgetpassword');
     }
-    function doForgetPassword(){
-        return view('screen.forgetpassword');
+    function doForgetPassword(Request $request){
+        $phone=$request->input('phone');
+        $email=$request->input('email');
+        if(is_null($phone) && is_null($email) || $phone=='' && $email==''){
+            return view('screen.forgetpassword')->with('error','Phone or email can\'t be empty while trying to recover account');
+        }
+        $user=User::query();
+        $where=[];
+        if(!is_null($email))
+        $where[]=['email',$email];
+        if(!is_null($phone))
+        $where[]=['phone','LIKE','%'.$phone];
+        $user=User::orWhere($where)->first();
+        if(is_null($user))return view('screen.forgetpassword')->with('error','No account valid to your request');
+
+        if(ActionController::tryRequestOTP($user->id)==false){
+            return view('screen.forgetpassword')->with('error','Couldn\'t not recover account at this time please try again');
+        }
+        $message=urlencode('Please enter the otp sent to '.$user->phone.' '. $user->email);
+        return redirect()->intended('enter-otp?m='.$message.'&user_id='.$user->id);
+
+    }
+    function enterOTP(){
+        return view('screen.enterotp');
+    }
+    function doEnterOTP(Request $request){
+        $otp=$request->input('otp');
+        $user_id=$request->query('user_id');
+        $action=ActionController::tryVerifyOTP($user_id,$otp);
+        if($action==false){
+            return view('screen.enterotp')->with('error','OTP not valid');
+        }
+        $message=urlencode('Please enter your new password');
+        return redirect()->intended('resetpassword?m='.$message.'&key='.$action);
+    }
+    function resetPassword(){
+        return view('screen.resetpassword');
+    }
+    function doResetPassword(Request $request){
+        $password=$request->input('new-password');
+        $confirm_password=$request->input('confirm-new-password');
+        $key=$request->query('key');
+        if(is_null($password)) return view('screen.resetpassword')->with('error','Password can\'t be empty');
+        if(strlen($password)<8) return view('screen.resetpassword')->with('error','Password can\'t be less than 8 charaters');
+        if($password != $confirm_password) return view('screen.resetpassword')->with('error','Your new password can\'t be different from confirm password');
+        $action=ActionController::tryResetPassword($user_id,$password);
+        if($action == false){
+            return view('screen.resetpassword')->with('error','Password couldn\'t be reset at this time');
+        }
+        return redirect()->intended('login?m=Please+login+with+your+new+password');
+    }
+    function account(){
+        return view('screen.account');
+    }
+    function editAccount(){
+        return view('screen.edit_account');
+    }
+    function doEditAccount(Request $request){
+        $user=Auth::user();
+        $whitelist=['phone','display_name','email','display_image'];
+        $will_update_user=false;
+        $will_update_userdetails=false;
+        $vaildate=[];
+        $message=['success'=>'Profile updated'];
+        if(is_null($user))
+            return redirect()->intended('login?m=please+login');
+        $data=$request->input();
+
+        if(isset($data['email'] ) && isset($data['phone'])){
+            if($data['email']!=$user->email){
+                $vaildate['email']='required|unique:users,email';
+            }
+            if($data['phone'] != $user->phone){
+                $vaildate['phone']='required|unique:users,phone';
+            }
+        }
+        $validation = Validator::make($data,$vaildate);
+        if($validation->fails()){
+            $errors=$validation->errors();
+            foreach ($errors->all() as $o) {
+                $message=['error'=>$o];
+                break;
+            }
+
+        }else{
+            $userdetails=UserDetail::where(['user_id'=>$user->id])->first();
+            if(is_null($userdetails)){
+                $userdetails = new UserDetail;
+                $userdetails->user_id=$user->id;
+                $userdetails->save();
+                $userdetails->refresh();
+            }
+            $addons=(Array)$userdetails->addons();
+            foreach ($data as $name=>$value){
+                if(preg_match('/^userdetails\/([a-z0-9\-\_]+)/i',$name,$matches)){
+                    $addons[$matches[1]]=$value;
+                    $will_update_user=true;
+                }
+                if(in_array(strtolower($name),$whitelist)){
+                    $user->{$name}=$value;
+                    $will_update_userdetails=true;
+                }
+            }
+
+            if($will_update_user && $will_update_userdetails){
+                $userdetails->addons($addons);
+                $userdetails->save();
+                $user->save();
+            }else if($will_update_user){
+                $user->save();
+            }else if($will_update_userdetails){
+                $userdetails->addons($addons);
+                $userdetails->save();
+            }else{
+                $message=['error'=>'Profile details couldn\'t be updated'];
+            }
+        }
+        // $message=['error'=>'Profile details couldn\'t be updated'.json_encode($data)];
+        return view('screen.edit_account')->with($message);
     }
 
 }

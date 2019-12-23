@@ -15,16 +15,16 @@
             <thead>
             <tr>
               <th>#</th>
-              <th>product name</th>
-              <th>order status</th>
-              <th>product status</th>
-              <th>price</th>
-              <th>quantitiy</th>
-              <th>total price</th>
-              <th>shipping fee</th>
-              <th>shipping name</th>
-              <th>shipping address</th>
-              <th>action</th>
+              <th>Product name</th>
+              <th>Order status</th>
+              <th>Payment status</th>
+              <th>Price</th>
+              <th>Quantitiy</th>
+              <th>Total price</th>
+              <th>Shipping fee</th>
+              <th>Shipping name</th>
+              <th>Shipping address</th>
+              <th>Action</th>
             </tr>
             </thead>
             <tbody>
@@ -35,17 +35,17 @@
             <tfoot>
                 <tr>
                     <th>#</th>
-                    <th>product name</th>
-                    <th>order status</th>
-                    <th>product status</th>
-                    <th>price</th>
-                    <th>quantitiy</th>
-                    <th>total price</th>
-                    <th>shipping fee</th>
-                    <th>shipping name</th>
+                    <th>Product name</th>
+                    <th>Order status</th>
+                    <th>Payment status</th>
+                    <th>Price</th>
+                    <th>Quantitiy</th>
+                    <th>Total price</th>
+                    <th>Shipping fee</th>
+                    <th>Shipping name</th>
 
-                    <th>shipping address</th>
-                    <th>action</th>
+                    <th>Shipping address</th>
+                    <th>Action</th>
                 </tr>
             </tfoot>
           </table>

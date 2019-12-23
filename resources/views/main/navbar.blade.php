@@ -110,9 +110,9 @@
                     <a href="#" class="uk-padding-bottom-remove"><span class="uk-button-text">Account</span><span class="uk-icon uk-margin-remove" uk-icon="icon: triangle-down"></span></a>
                     <div class="uk-card uk-card-body radius-large" uk-dropdown>
                             <ul class="uk-list uk-list-divider">
-                                    <li><span class="uk-icon" uk-icon="icon: user"></span> <a class="alink-nav uk-button-text" href="/profile">View Account</a></li>
+                                    <li><span class="uk-icon" uk-icon="icon: user"></span> <a class="alink-nav uk-button-text" href="/account">View Account</a></li>
                                     <li><span class="uk-icon" uk-icon="icon: file-text"></span> <a class="alink-nav uk-button-text" href="/orders">Orders</a></li>
-                                    <li><span class="uk-icon" uk-icon="icon: heart"></span> <a class="alink-nav uk-button-text" href="/logout">Save Items</a></li>
+                                    <li><span class="uk-icon" uk-icon="icon: heart"></span> <a class="alink-nav uk-button-text" href="/orders">Save Items</a></li>
                                     @if(!is_null($user) && $user->type>1) <li><span class="fa fa-dashboard" ></span> <a href="/dashboard" class="uk-padding-bottom-remove"><span class="uk-button-text">Dashboard</span></a></li> @endif
 
                                     <li><span class="uk-icon" uk-icon="icon: sign-out"></span> <a class="alink-nav uk-button-text" href="/logout">Logout</a></li>

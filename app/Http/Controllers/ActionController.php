@@ -8,6 +8,8 @@ use App\User;
 use App\UserDetail;
 use App\ProductAvailable;
 use App\Product;
+use App\OTP;
+use Carbon\Carbon;
 use Mail;
 class ActionController extends Controller
 {
@@ -35,11 +37,67 @@ class ActionController extends Controller
             return false;
         }
     }
-    static function sendOTP($data){
+    static function sendOTP($map){
 
+        if($map['phone']){
+            $data=[];
+            $data['body']='Your otp is '.$map['otp'];
+            $data['phone']=$map['phone'];
+            ActionController::sendSMS($data);
+        }
+        if($map['email']){
+            $data=[];
+            $data['body']='Your otp is '.$map['otp'];
+            $data['email']=$map['email'];
+            $data['subject']='Reset Password OTP';
+            ActionController::sendMail($data);
+        }
+        return true;
     }
-    static function tryRequestOTP(Request $request){
+    static function tryRequestOTP($user_id){
+        $user=User::where('id',$user_id)->first();
+        if(is_null($user))return false;
+        $data=[];
+        $data['phone']=$user->phone;
+        $data['email']=$user->email;
+        $data['otp']=mt_rand(000000,999999);
+        $otp= OTP::where(['otp'=>$data['otp'],'user_id'=>$user_id,'active'=>1])->first();
+        if(!is_null($otp)){
+            return ActionController::tryRequestOTP($user_id);
+        }
+        $otp= new OTP;
+        $otp->user_id=$user_id;
+        $otp->otp=$data['otp'];
+        $otp->save();
+        ActionController::sendOTP($data);
+        return true;
+    }
+    static function tryVerifyOTP($user_id,$otp){
+        $user=User::where('id',$user_id)->first();
+        if(is_null($user) || is_null($otp) || $otp=='')return false;
+        $otp= OTP::where(['otp'=>$otp,'user_id'=>$user_id,'active'=>1])->first();
+        if(is_null($otp)){
+            return false;
+        }
+        $current_date= Carbon::now();
+        $created_date=Carbon($otp->created_at);
+        if($current_date->diffInMinutes($created_date)>10){
+            $otp->active=0;
 
+            $otp->save();
+            return false;
+        }
+        $user->verify_token=$user->id+'-'+md5(mt_rand(3000003111,9999999999)*time());
+        $user->save();
+        return $user->verify_token;
+    }
+    public function tryResetPassword($key,$password){
+        if(is_null($key))return false;
+        $user=User::where('verify_token',$key)->first();
+        if(is_null($user) || is_null($password) || $password=='')return false;
+        $user->password = bcrypt($request->input('password'));
+        $user->save();
+        return true;
     }
     public function tryUpdatePassword(Request $request){
         $user = User::from_api_token();

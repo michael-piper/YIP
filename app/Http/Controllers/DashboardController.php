@@ -83,7 +83,8 @@ class DashboardController extends Controller
     }
     function product(Request $request, $product_id){
         $this->__construct();
-        if(is_null($this->user))
+        $user=$this->user;
+        if(is_null($user))
             return redirect()->intended('login?m=please+login')->with('error', 'user not loged in!');
         if($this->isAdmin())
         $product=Product::where(['id'=>$product_id])->first();
@@ -108,7 +109,7 @@ class DashboardController extends Controller
     function editProduct($product_id){
         $this->__construct();
         $user=$this->user;
-        if(is_null($this->user))
+        if(is_null($user))
             return redirect()->intended('login?m=please+login')->with('error', 'user not loged in!');
         if($this->isAdmin())
             $product=Product::where(['id'=>$product_id])->first();
