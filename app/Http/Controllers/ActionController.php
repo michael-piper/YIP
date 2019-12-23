@@ -80,7 +80,7 @@ class ActionController extends Controller
             return false;
         }
         $current_date= Carbon::now();
-        $created_date=Carbon($otp->created_at);
+        $created_date=new Carbon($otp->created_at);
         if($current_date->diffInMinutes($created_date)>10){
             $otp->active=0;
 
