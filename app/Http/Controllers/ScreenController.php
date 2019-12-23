@@ -497,7 +497,7 @@ class ScreenController extends Controller
         if(is_null($password)) return view('screen.resetpassword')->with('error','Password can\'t be empty');
         if(strlen($password)<8) return view('screen.resetpassword')->with('error','Password can\'t be less than 8 charaters');
         if($password != $confirm_password) return view('screen.resetpassword')->with('error','Your new password can\'t be different from confirm password');
-        $action=ActionController::tryResetPassword($user_id,$password);
+        $action=ActionController::tryResetPassword($key,$password);
         if($action == false){
             return view('screen.resetpassword')->with('error','Password couldn\'t be reset at this time');
         }

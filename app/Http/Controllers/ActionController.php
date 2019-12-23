@@ -87,15 +87,16 @@ class ActionController extends Controller
             $otp->save();
             return false;
         }
-        $user->verify_token=$user->id+'-'+md5(mt_rand(3000003111,9999999999)*time());
+        $user->verify_token=$user->id.'-'.md5(mt_rand(3000003111,9999999999)*time());
         $user->save();
         return $user->verify_token;
     }
-    public function tryResetPassword($key,$password){
+    static public function tryResetPassword($key,$password){
         if(is_null($key))return false;
         $user=User::where('verify_token',$key)->first();
         if(is_null($user) || is_null($password) || $password=='')return false;
-        $user->password = bcrypt($request->input('password'));
+        $user->password = bcrypt($password);
+        $user->verify_token=null;
         $user->save();
         return true;
     }
