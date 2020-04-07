@@ -3,10 +3,10 @@
 <div class="uk-position-relative uk-visible-toggle uk-light" tabindex="-1" style="max-height:430px;">
 <ul class="uk-slideshow-items">
         <li>
-            <img src="/images/backgrounds/bg-01.png" alt="" uk-cove>
+            <img src="/images/backgrounds/bg-01.png" alt="" style="width:100%" uk-cove>
         </li>
         <li>
-            <img src="/images/backgrounds/bg-02.png" alt="" uk-cove>
+            <img src="/images/backgrounds/bg-02.png" alt="" style="width:100%" uk-cove>
         </li>
     </ul>
 
